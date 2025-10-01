@@ -1,0 +1,63 @@
+MVP GOAL:
+Show a working prototype where:
+- A user signs up.
+- Completes a short onboarding questionnaire.
+- Logs eco-friendly actions via an Eco Counter.
+- Sees their Eco Score and a live leaderboard for the current week.
+
+__________________________________________________________________
+
+CORE FEATURES OF THE MVP:
+
+User Management
+- Minimal users table (email, name).
+- No complex auth for MVP (just store user info).
+
+Questionnaire
+- One active questionnaire version.
+- A few questions (e.g., commute mode, diet type, reusable habits).
+- Options for single-choice questions.
+- Store user responses.
+
+Eco Actions
+- Predefined list of actions (e.g., “Cycle to work”, “Vegetarian meal”).
+- Each action has points per unit and CO₂e saved per unit.
+
+Eco Counter
+- Users log actions (+/− with quantity).
+- Points and CO₂ impact calculated in the app and stored in user_action_log.
+
+Leaderboard
+- Live view for current week (computed from logs).
+- Shows top users by Eco Score.
+
+__________________________________________________________________
+
+TABLES FOR MVP:
+
+- users → basic user info.
+- eco_actions → catalog of actions.
+- user_action_log → logs of actions.
+- questionnaire_versions → one active version.
+- questionnaire_questions → minimal set of questions.
+- questionnaire_options → options for single-choice questions.
+- user_responses → stores answers.
+
+(Optional):
+- question_option_recommendations → map answers to suggested actions.
+
+__________________________________________________________________
+
+EXCLUDED FROM MVP:
+- Weekly rollup tables (user_weekly_counters) → compute leaderboard live.
+- Gamification (badges).
+- Emission charts (can come later).
+- Real-time WebSocket updates (refresh leaderboard via API for now).
+
+__________________________________________________________________
+
+USER FLOW IN MVP:
+- Sign up → insert into users.
+- Onboarding questionnaire → fetch questions from questionnaire_questions and questionnaire_options, store answers in user_responses.
+- Eco Counter → fetch eco_actions, user logs actions → insert into user_action_log.
+- Leaderboard → query a view that sums points_delta for current wee- k.
