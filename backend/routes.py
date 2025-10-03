@@ -34,6 +34,15 @@ def sign_up():
         session['username'] = request.form['username']
 
         #TODO validate username and email are unique
+        users, emails = read_user_table()
+        username = request.form['username']
+        email = request.form['email']
+
+        if username in users:
+            return render_template('sign-up.html', error='Username already exists')
+
+        if email in emails:
+            return render_template('sign-up.html', error='Email already exists')
 
         h1 = sha256()
         h1.update(request.form['password'].encode('utf-8'))
@@ -67,8 +76,8 @@ def questionnaire():
 @app.route('/dashboard')
 def dashboard():
     #TODO: pull leaderboard from db
-    return "Dashboard"
-
+    leaderboard = read_view_table()
+    return render_template('dashboard.html', leaderboard=leaderboard)
 
 
 
