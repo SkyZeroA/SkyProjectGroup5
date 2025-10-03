@@ -37,7 +37,7 @@ def read_user_table():
 def read_view_table():
     db = _get_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT username, totalPoints FROM weekleaderboard')
+    cursor.execute('SELECT username, totalPoints FROM week_leaderboard')
     db_info = cursor.fetchall()
     _close_connection(db)
     return db_info
