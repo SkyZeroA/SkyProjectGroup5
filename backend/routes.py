@@ -3,6 +3,8 @@ from backend import app
 from hashlib import sha256
 
 from Questionnaire import Questionnaire
+from data_access import *
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/sign-in', methods=['GET', 'POST'])
@@ -10,13 +12,17 @@ def sign_in():
     if request.method == 'POST':
         session['email'] = request.form['email']
 
-        h = sha256()
-        h.update(request.form['password'].encode('utf-8'))
-        session['password'] = h.hexdigest()
+        session['password'] = request.form['password']
+        # h = sha256()
+        # h.update(request.form['password'].encode('utf-8'))
+        # session['password'] = h.hexdigest()
 
         #TODO: check db that password correct using email
+        if check_password(session['email'], session['password']):
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('sign-in.html', error='Incorrect username or password')
 
-        return redirect(url_for('dashboard'))
     return render_template('sign-in.html')
 
 
@@ -52,6 +58,8 @@ def questionnaire():
         answers = Questionnaire(request.form.to_dict())
         print(answers.get_questionnaire())
         return redirect(url_for('dashboard'))
+
+        #TODO: enter questionnaire data into db
 
     return render_template('questionnaire.html')
 
