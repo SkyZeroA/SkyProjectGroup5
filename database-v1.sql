@@ -6,7 +6,7 @@ CREATE TABLE User (
     firstName VARCHAR(50) NOT NULL,
     username VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    encrypted_password VARCHAR(50) NOT NULL
+    encrypted_password VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE QuestionnaireResponse (
@@ -17,14 +17,14 @@ CREATE TABLE QuestionnaireResponse (
     FOREIGN KEY(userID) REFERENCES User(userID)
 );
 
-CREATE TABLE Weeks (
+CREATE TABLE Week (
 	weekID INT NOT NULL PRIMARY KEY,
     week_start DATE NOT NULL,
     week_end DATE NOT NULL
 );
 
 
-CREATE TABLE Months (
+CREATE TABLE Month (
 	monthID INT NOT NULL PRIMARY KEY,
     month_start DATE NOT NULL,
     month_end DATE NOT NULL
@@ -41,7 +41,8 @@ CREATE TABLE UserActivity (
 	userID INT NOT NULL,
     activityID INT NOT NULL,
     FOREIGN KEY (userID) REFERENCES User(userID), 
-    FOREIGN KEY (activityID) REFERENCES ActivityKey(activityID)
+    FOREIGN KEY (activityID) REFERENCES ActivityKey(activityID),
+    PRIMARY KEY (userID, activityID)
 );
 
 CREATE TABLE EcoCounter (
@@ -52,7 +53,7 @@ CREATE TABLE EcoCounter (
     activityID INT NOT NULL,
     positive_activity BOOL NOT NULL,
     FOREIGN KEY (userID) REFERENCES User(userID), 
-    FOREIGN KEY (weekID) REFERENCES Weeks(weekID), 
-	FOREIGN KEY (monthID) REFERENCES Months(monthID), 
+    FOREIGN KEY (weekID) REFERENCES Week(weekID), 
+	FOREIGN KEY (monthID) REFERENCES Month(monthID), 
     FOREIGN KEY (activityID) REFERENCES ActivityKey(activityID)
 );
