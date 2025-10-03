@@ -46,7 +46,7 @@ def sign_up():
             #TODO: return to page with initial fields filled in
             return render_template('sign-up.html')
         else:
-            print(session['password'], session['email'], session['first-name'], session['username'])
+            insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
             return redirect(url_for('questionnaire'))
 
     return render_template('sign-up.html')
@@ -55,8 +55,10 @@ def sign_up():
 @app.route('/questionnaire', methods=['GET', 'POST'])
 def questionnaire():
     if request.method == 'POST':
-        answers = Questionnaire(request.form.to_dict())
+        print (session['email'])
+        answers = Questionnaire(request.form.to_dict(), get_user_id_from_db(session['email']))
         print(answers.get_questionnaire())
+        insert_into_questionnaire(answers.format_answers())
         return redirect(url_for('dashboard'))
 
         #TODO: enter questionnaire data into db
