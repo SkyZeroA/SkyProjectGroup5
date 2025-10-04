@@ -23,8 +23,8 @@ def init_db():
     sql_script = sql_path.read_text()
 
     # Connect without specifying the database so CREATE DATABASE / USE work
-    db = get_connection()
-    cursor = db.cursor()
+    conn = mysql.connect(user="root", passwd="", host="localhost")
+    cursor = conn.cursor()
     try:
         # Some mysql connector versions don't support multi=True on cursor.execute.
         # Split the script on semicolons and execute statements one-by-one.
@@ -37,14 +37,14 @@ def init_db():
             except Exception as e:
                 # If a statement fails, include context and re-raise
                 raise RuntimeError(f"Failed executing statement: {stmt[:200]!r}") from e
-        db.commit()
+        conn.commit()
     finally:
         try:
             cursor.close()
         except Exception:
             pass
         try:
-            db.close()
+            conn.close()
         except Exception:
             pass
 
