@@ -3,7 +3,9 @@ from backend import app
 from hashlib import sha256
 
 from Questionnaire import Questionnaire
-from data_access import *
+
+
+from data_access import read_view_table,check_password,read_user_table
 
 
 @app.route('/', methods=['GET', 'POST'])

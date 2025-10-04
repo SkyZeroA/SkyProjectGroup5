@@ -1,11 +1,11 @@
 import mysql.connector as mysql
 from pathlib import Path
 
-def _get_connection():
+def get_connection():
     return mysql.connect(user="root", passwd="", host="localhost", database="SkyZeroDB")
 
 
-def _close_connection(connection):
+def close_connection(connection):
     connection.close()
 
 def init_db():
@@ -23,8 +23,8 @@ def init_db():
     sql_script = sql_path.read_text()
 
     # Connect without specifying the database so CREATE DATABASE / USE work
-    conn = mysql.connect(user="root", passwd="", host="localhost")
-    cursor = conn.cursor()
+    db = get_connection()
+    cursor = db.cursor()
     try:
         # Some mysql connector versions don't support multi=True on cursor.execute.
         # Split the script on semicolons and execute statements one-by-one.
@@ -37,14 +37,14 @@ def init_db():
             except Exception as e:
                 # If a statement fails, include context and re-raise
                 raise RuntimeError(f"Failed executing statement: {stmt[:200]!r}") from e
-        conn.commit()
+        db.commit()
     finally:
         try:
             cursor.close()
         except Exception:
             pass
         try:
-            conn.close()
+            db.close()
         except Exception:
             pass
 
@@ -57,7 +57,7 @@ def init_insert():
 
     sql_script = insert_path.read_text()
 
-    db = _get_connection()
+    db = get_connection()
     cursor = db.cursor()
     try:
         # Some mysql connector versions don't support multi=True on cursor.execute.
@@ -83,11 +83,11 @@ def init_insert():
             pass
 
 def check_password(email, password_hash):
-    db = _get_connection()
+    db = get_connection()
     cursor = db.cursor()
     cursor.execute("SELECT encrypted_password FROM User WHERE email = %s", (email,))
     correct_password_hash = cursor.fetchone()[0]
-    _close_connection(db)
+    close_connection(db)
 
     if password_hash != correct_password_hash:
         return False
@@ -97,21 +97,21 @@ def check_password(email, password_hash):
 def read_user_table():
     user_list = []
     email_list = []
-    db = _get_connection()
+    db = get_connection()
     cursor = db.cursor()
     cursor.execute('SELECT username, email FROM User')
     db_info = cursor.fetchall()
     for username, email in db_info:
         user_list.append(username)
         email_list.append(email)
-    _close_connection(db)
+    close_connection(db)
     return user_list, email_list
 
 def read_view_table():
-    db = _get_connection()
+    db = get_connection()
     cursor = db.cursor()
     cursor.execute('SELECT username, totalPoints FROM week_leaderboard')
     db_info = cursor.fetchall()
-    _close_connection(db)
+    close_connection(db)
     return db_info
 
