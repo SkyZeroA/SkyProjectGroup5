@@ -196,36 +196,37 @@ INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_act
 (19, 5, 9, 18, TRUE);
 
 -- For Month
-CREATE OR REPLACE VIEW month_leaderboard AS SELECT
+CREATE OR REPLACE VIEW month_leaderboard AS
+SELECT
     u.username,
-    COALESCE(SUM(CASE 
-            WHEN ec.positive_activity = TRUE THEN a.value_points
-            ELSE -a.value_points
-        END)) AS totalPoints
-FROM EcoCounter ec
-JOIN ActivityKey a ON ec.activityID = a.activityID
-JOIN User u ON ec.userID = u.userID
-WHERE ec.monthID = (
-    SELECT monthID FROM Month 
-    WHERE CURRENT_DATE BETWEEN month_start AND month_end
-)
-AND ec.positive_activity = TRUE
+    COALESCE(SUM(CASE
+        WHEN ec.positive_activity = TRUE THEN a.value_points
+        WHEN ec.positive_activity = FALSE THEN -a.value_points
+    END), 0) AS totalPoints
+FROM User u
+LEFT JOIN EcoCounter ec
+    ON u.userID = ec.userID
+    AND ec.monthID = (
+        SELECT monthID FROM Month
+        WHERE CURRENT_DATE BETWEEN month_start AND month_end
+    )
+LEFT JOIN ActivityKey a ON ec.activityID = a.activityID
 GROUP BY u.username
 ORDER BY totalPoints DESC;
 
 -- For Week
 CREATE OR REPLACE VIEW week_leaderboard AS
-SELECT 
+SELECT
     u.username,
-    COALESCE(SUM(CASE 
+    COALESCE(SUM(CASE
         WHEN ec.positive_activity = TRUE THEN a.value_points
         WHEN ec.positive_activity = FALSE THEN -a.value_points
     END), 0) AS totalPoints
 FROM User u
-LEFT JOIN EcoCounter ec 
-    ON u.userID = ec.userID 
+LEFT JOIN EcoCounter ec
+    ON u.userID = ec.userID
     AND ec.weekID = (
-        SELECT weekID FROM Week 
+        SELECT weekID FROM Week
         WHERE CURRENT_DATE BETWEEN week_start AND week_end
     )
 LEFT JOIN ActivityKey a ON ec.activityID = a.activityID
