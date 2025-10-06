@@ -213,20 +213,21 @@ CREATE TABLE EcoCounter (
 -- (20, 20, 13, 20, TRUE);
 
 -- for month
-CREATE VIEW month_leaderboard as SELECT
+CREATE VIEW month_leaderboard AS
+SELECT
     u.username,
-    COALESCE(SUM(CASE 
-            WHEN ec.positive_activity = TRUE THEN a.value_points
-            ELSE -a.value_points
-        END)) AS totalPoints
-FROM EcoCounter ec
-JOIN ActivityKey a ON ec.activityID = a.activityID
-JOIN User u ON ec.userID = u.userID
-WHERE ec.monthID = (
-    SELECT monthID FROM Month 
-    WHERE CURRENT_DATE BETWEEN month_start AND month_end
-)
-AND ec.positive_activity = TRUE
+    COALESCE(SUM(CASE
+        WHEN ec.positive_activity = TRUE THEN a.value_points
+        WHEN ec.positive_activity = FALSE THEN -a.value_points
+    END), 0) AS totalPoints
+FROM User u
+LEFT JOIN EcoCounter ec
+    ON u.userID = ec.userID
+    AND ec.monthID = (
+        SELECT monthID FROM Month
+        WHERE CURRENT_DATE BETWEEN month_start AND month_end
+    )
+LEFT JOIN ActivityKey a ON ec.activityID = a.activityID
 GROUP BY u.username
 ORDER BY totalPoints DESC;
 
