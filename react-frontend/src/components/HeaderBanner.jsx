@@ -4,12 +4,12 @@ import GradientAccent from "./GradientAccent";
 const HeaderBanner = ({ className }) => {
   return (
     <div className={className}>
-      <GradientAccent className="absolute top-0 left-0 z-10" />
-      <header className="absolute top-1 left-0 w-full h-[51px] border-b border-solid border-[#dddddd] bg-white">
+      <GradientAccent className="fixed top-0 left-0 z-20" />
+      <header className="fixed top-1 left-0 w-full h-[60px] border-b border-solid border-[#dddddd] bg-white">
         <img
-          className="absolute top-3 left-[843px] w-[42px] h-[26px] object-cover"
-          alt="Sky Logo"
-          src="/image-8.png"
+          className="absolute top-3 left-[835px] w-auto h-[40px] object-cover"
+          alt="Sky Zero Logo"
+          src="/image-5.png"
         />
       </header>
     </div>

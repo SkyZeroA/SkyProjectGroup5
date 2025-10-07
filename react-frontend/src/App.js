@@ -1,4 +1,5 @@
 import SignIn from './screens/SignIn';
+import { SignUp } from './screens/SignUp';
 
 function App() {
   return (

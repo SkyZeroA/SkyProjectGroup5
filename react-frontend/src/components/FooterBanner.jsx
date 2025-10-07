@@ -17,7 +17,7 @@ const FooterBanner = ({ className }) => {
 
   return (
     <div className={className}>
-      <footer className="absolute bottom-1 left-0 w-full h-[70px] border-t border-solid border-[#dddddd] bg-white flex items-center px-16">
+      <footer className="fixed bottom-1 left-0 w-full h-[70px] border-t border-solid border-[#dddddd] bg-white flex items-center px-16">
         <div className="flex items-center space-x-4">
           <img
             className="w-14 h-[34px] object-cover"
@@ -44,7 +44,7 @@ const FooterBanner = ({ className }) => {
           </nav>
         </div>
       </footer>
-      <GradientAccent className="absolute bottom-0 left-0 z-10" />
+      <GradientAccent className="fixed bottom-0 left-0 z-10" />
     </div>
   );
 };

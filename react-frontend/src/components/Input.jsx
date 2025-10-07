@@ -84,4 +84,4 @@ const Input = ({ className, type, label, errorMessage, showError, ...props }, re
 };
 Input.displayName = "Input";
 
-export { Input };
+export default Input ;
