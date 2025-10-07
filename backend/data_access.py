@@ -18,7 +18,7 @@ def init_db():
             sql_path = p
             break
     if sql_path is None:
-        raise FileNotFoundError('No SQL schema file found. Expected create_table.sql, creat_table.sql or database-v1.sql in project root.')
+        raise FileNotFoundError('No SQL schema file found. Expected create_table.sql, create_table.sql or database-v1.sql in project root.')
 
     sql_script = sql_path.read_text()
 
@@ -114,4 +114,3 @@ def read_view_table():
     db_info = cursor.fetchall()
     close_connection(db)
     return db_info
-
