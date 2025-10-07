@@ -86,13 +86,12 @@ def check_password(email, password_hash):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("SELECT encrypted_password FROM User WHERE email = %s", (email,))
-    correct_password_hash = cursor.fetchone()[0]
+    correct_password_hash = cursor.fetchone()
     close_connection(db)
-
-    if password_hash != correct_password_hash:
+    if correct_password_hash is None:
         return False
     else:
-        return True
+        return password_hash == correct_password_hash[0]
 
 def insert_into_questionnaire(questionnaire):
     db = get_connection()
@@ -101,6 +100,7 @@ def insert_into_questionnaire(questionnaire):
     cursor.execute("INSERT INTO QuestionnaireResponse VALUES (%s, %s, %s, %s)", questionnaire)
     db.commit()
     close_connection(db)
+
 def read_user_table():
     user_list = []
     email_list = []
@@ -128,6 +128,7 @@ def insert_new_user(email, first_name, username, password):
     cursor.execute("INSERT INTO User(firstName, username, email, encrypted_password) VALUES (%s, %s, %s, %s)", (first_name, username, email, password))
     db.commit()
     close_connection(db)
+
 def read_view_table():
     db = get_connection()
     cursor = db.cursor()
