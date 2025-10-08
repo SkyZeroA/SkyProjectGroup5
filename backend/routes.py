@@ -1,39 +1,33 @@
-from flask import render_template, request, session, redirect, url_for
+from flask import render_template, request, session, redirect, url_for, jsonify
 from backend import app
 from hashlib import sha256
 
-from Questionnaire import Questionnaire
-from data_access import *
+from backend.Questionnaire import Questionnaire
+from backend.data_access import *
 
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/sign-in', methods=['GET', 'POST'])
+@app.route('/api/sign-in', methods=['POST'])
 def sign_in():
-    if request.method == 'POST':
-        session['email'] = request.form['email']
+    data = request.get_json()
+    session['email'] = data['email']
+    session['password'] = data['password']
+    # h = sha256()
+    # h.update(request.form['password'].encode('utf-8'))
+    # session['password'] = h.hexdigest()
 
-        session['password'] = request.form['password']
-        # h = sha256()
-        # h.update(request.form['password'].encode('utf-8'))
-        # session['password'] = h.hexdigest()
-
-        #TODO: check db that password correct using email
-        if check_password(session['email'], session['password']):
-            return redirect(url_for('dashboard'))
-        else:
-            return render_template('sign-in.html', error='Incorrect username or password')
-
-    return render_template('sign-in.html')
+    if check_password(session['email'], session['password']):
+        return jsonify({"message": "Sign in successful"}), 200
+    else:
+        return jsonify({"error": "Incorrect username or password"}), 401
 
 
-@app.route('/sign-up', methods=['GET', 'POST'])
+@app.route('/api/sign-up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
         session['email'] = request.form['email']
         session['first-name'] = request.form['first-name']
         session['username'] = request.form['username']
 
-        #TODO validate username and email are unique
         users, emails = read_user_table()
         username = request.form['username']
         email = request.form['email']
@@ -51,8 +45,6 @@ def sign_up():
         h2 = sha256()
         h2.update(request.form['confirm-password'].encode('utf-8'))
         if h2.hexdigest() != session['password']:
-
-            #TODO: return to page with initial fields filled in
             return render_template('sign-up.html')
         else:
             insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
@@ -70,14 +62,12 @@ def questionnaire():
         insert_into_questionnaire(answers.format_answers())
         return redirect(url_for('dashboard'))
 
-        #TODO: enter questionnaire data into db
 
     return render_template('questionnaire.html')
 
 
 @app.route('/dashboard')
 def dashboard():
-    #TODO: pull leaderboard from db
     leaderboard = read_view_table()
     return render_template('dashboard.html', leaderboard=leaderboard)
 

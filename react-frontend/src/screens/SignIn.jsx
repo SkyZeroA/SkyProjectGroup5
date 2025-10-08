@@ -4,15 +4,41 @@ import { Card, CardContent } from "../components/Card";
 import Input from "../components/Input";
 import HeaderBanner from "../components/HeaderBanner";
 import  FooterBanner from "../components/FooterBanner";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [attempts, setAttempts] = useState(0);
 
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    const signInPayload = { 
+      "email": email,
+      "password": password
+    };
+    console.log("Sign In Payload:", signInPayload);
 
+    await axios.post("http://127.0.0.1:9099/api/sign-in", signInPayload)
+      .then((response) => {
+        console.log("Sign In Response:", response.data);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setPassword("");
+          incrementAttempts();
+        }
+        console.error("Sign In Error:", error);
+      });
+  };
+
+  const incrementAttempts = () => {
+    setAttempts(attempts + 1);
+  }
 
   return (
-    <div className="bg-neutral-50 overflow-hidden w-full min-w-[1728px] min-h-[1024px] relative">
+    <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <HeaderBanner/>
 
       <main className="flex items-center justify-center min-h-screen">
@@ -44,18 +70,18 @@ const SignIn = () => {
                   id="password"
                   type="password"
                   label="Password"
-                  errorMessage="Enter your password."
+                  errorMessage={`${attempts === 0 ? "Enter your password." : "Incorrect password. Please try again."}`}
                   showError={true}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
   
-                <Button className="w-full h-auto p-0 bg-transparent hover:bg-transparent">
-                  <img
-                    className="w-[336px] h-[45px] object-cover"
-                    alt="Continue Button"
-                    src="/image-9.png"
-                  />
+                <Button
+                  asChild
+                  variant="default"
+                  className="w-full h-auto py-3 text=[#ffffff] bg-[#000ef5] hover:bg-[#004ef5] [font-family:'Sky_Text',Helvetica] text-[18.5px] "
+                >
+                  <Link to="/" onClick={handleSignIn}>Continue</Link>
                 </Button>
   
                 <div className="text-center space-y-4">

@@ -5,14 +5,14 @@ import Input from "../components/Input";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 
-export const SignUp = () => {
+const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   return (
-    <div className="bg-neutral-50 overflow-hidden w-full min-w-[1728px] min-h-[1024px] relative">
+    <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <HeaderBanner/>
 
       <main className="flex items-center justify-center min-h-screen">
@@ -71,12 +71,11 @@ export const SignUp = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
   
-                <Button className="w-full h-auto p-0 bg-transparent hover:bg-transparent">
-                  <img
-                    className="w-[336px] h-[45px] object-cover"
-                    alt="Continue Button"
-                    src="/image-9.png"
-                  />
+                <Button
+                  variant="default"
+                  className="w-full h-auto py-3 text=[#ffffff] bg-[#000ef5] hover:bg-[#004ef5] [font-family:'Sky_Text',Helvetica] text-[18.5px] "
+                >
+                  Continue
                 </Button>
   
                 <div className="text-center">
@@ -97,3 +96,5 @@ export const SignUp = () => {
     </div>
   );
 };
+
+export default SignUp;

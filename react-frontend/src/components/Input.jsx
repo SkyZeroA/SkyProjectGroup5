@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { cn } from  "../lib/utils";
 
 
 const Input = ({ className, type, label, errorMessage, showError, ...props }, ref) => {
@@ -25,13 +24,12 @@ const Input = ({ className, type, label, errorMessage, showError, ...props }, re
         <div className="relative">
           {label && (
             <label
-              className={cn(
-                "absolute left-3 bg-white px-2 transition-all duration-200 pointer-events-none",
-                "[font-family:'Sky_Text',Helvetica] font-normal text-[15px] leading-[22.5px]",
-                (isFocused || props.value || hasBeenTouched)
-                  ? "-top-2 text-[15px]"
-                  : "top-1/2 -translate-y-1/2 text-[15px]"
-              )}
+              className={
+                `absolute left-3 bg-white px-2 transition-all duration-200 pointer-events-none
+                [font-family:'Sky_Text',Helvetica] font-normal text-[15px] leading-[22.5px]"
+                ${isFocused || props.value || hasBeenTouched ? "-top-2 text-[15px]" : "top-1/2 -translate-y-1/2 text-[15px]"}`
+              }
+
               style={{ color: labelColor }}
             >
               {label}
@@ -39,15 +37,13 @@ const Input = ({ className, type, label, errorMessage, showError, ...props }, re
           )}
           <input
             type={type}
-            className={cn(
-              "flex h-[54px] w-full rounded-[3px] bg-white px-3 py-2 text-sm transition-colors",
-              "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-              "placeholder:text-muted-foreground",
-              "focus-visible:outline-none focus-visible:ring-0",
-              "disabled:cursor-not-allowed disabled:opacity-50",
+            className={`flex h-[54px] w-full rounded-[3px] bg-white px-3 py-2 text-sm transition-colors
+              file:border-0 file:bg-transparent file:text-sm file:font-medium
+              placeholder:text-muted-foreground
+              focus-visible:outline-none focus-visible:ring-0
+              disabled:cursor-not-allowed disabled:opacity-50
               "[font-family:'Sky_Text',Helvetica] font-normal",
-              className
-            )}
+              ${className}`}
             style={{
               borderWidth: isFocused ? "2px" : "1px",
               borderColor: borderColor,
