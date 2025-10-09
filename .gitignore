@@ -226,6 +226,7 @@ __marimo__/
 ## FRONTEND ---------
 # dependencies
 react-frontend/node_modules
+node_modules/
 /.pnp
 .pnp.js
 

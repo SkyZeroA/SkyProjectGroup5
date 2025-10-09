@@ -5,12 +5,14 @@ import Input from "../components/Input";
 import HeaderBanner from "../components/HeaderBanner";
 import  FooterBanner from "../components/FooterBanner";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
+
+  const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -23,6 +25,9 @@ const SignIn = () => {
     await axios.post("http://127.0.0.1:9099/api/sign-in", signInPayload)
       .then((response) => {
         console.log("Sign In Response:", response.data);
+        if (response.status === 200) {
+          navigate("/sign-up")
+        }
       })
       .catch((error) => {
         if (error.response.status === 401) {
@@ -77,11 +82,11 @@ const SignIn = () => {
                 />
   
                 <Button
-                  asChild
                   variant="default"
                   className="w-full h-auto py-3 text=[#ffffff] bg-[#000ef5] hover:bg-[#004ef5] [font-family:'Sky_Text',Helvetica] text-[18.5px] "
+                  onClick={handleSignIn}
                 >
-                  <Link to="/" onClick={handleSignIn}>Continue</Link>
+                  Continue
                 </Button>
   
                 <div className="text-center space-y-4">
