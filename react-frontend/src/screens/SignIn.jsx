@@ -25,12 +25,12 @@ const SignIn = () => {
     await axios.post("http://127.0.0.1:9099/api/sign-in", signInPayload)
       .then((response) => {
         console.log("Sign In Response:", response.data);
-        if (response.status === 200) {
+        if (response?.data?.message === "Sign in successful") {
           navigate("/sign-up")
         }
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response?.data?.error === "Incorrect username or password") {
           setPassword("");
           incrementAttempts();
         }
@@ -100,6 +100,7 @@ const SignIn = () => {
                   <Button
                     variant="link"
                     className="h-auto p-0 [font-family:'Sky_Text',Helvetica]  text-[#000ef5] text-[16.5px] leading-[24.8px]"
+                    onClick={() => {navigate('/sign-up')}}
                   >
                     Create a new account
                   </Button>

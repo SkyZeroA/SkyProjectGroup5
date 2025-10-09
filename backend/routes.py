@@ -10,9 +10,12 @@ from backend.data_access import *
 def sign_in():
     data = request.get_json()
     session['email'] = data['email']
+
+    # TODO:
+    # Remove this line when passwords are hashed in the database
     session['password'] = data['password']
     # h = sha256()
-    # h.update(request.form['password'].encode('utf-8'))
+    # h.update(rdata['password'].encode('utf-8'))
     # session['password'] = h.hexdigest()
 
     if check_password(session['email'], session['password']):
@@ -21,36 +24,40 @@ def sign_in():
         return jsonify({"error": "Incorrect username or password"}), 401
 
 
-@app.route('/api/sign-up', methods=['GET', 'POST'])
+@app.route('/api/sign-up', methods=['POST'])
 def sign_up():
-    if request.method == 'POST':
-        session['email'] = request.form['email']
-        session['first-name'] = request.form['first-name']
-        session['username'] = request.form['username']
+    data = request.get_json()
 
-        users, emails = read_user_table()
-        username = request.form['username']
-        email = request.form['email']
+    session['email'] = data['email']
+    session['first-name'] = data['first-name']
+    session['username'] = data['username']
 
-        if username in users:
-            return render_template('sign-up.html', error='Username already exists')
+    users, emails = read_user_table()
 
-        if email in emails:
-            return render_template('sign-up.html', error='Email already exists')
+    if session['username'] in users:
+        return jsonify({"error": "Username already exists"}), 401
 
-        h1 = sha256()
-        h1.update(request.form['password'].encode('utf-8'))
-        session['password'] = h1.hexdigest()
+    if session['email'] in emails:
+        return jsonify({"error": "Email already has an account"}), 401
 
-        h2 = sha256()
-        h2.update(request.form['confirm-password'].encode('utf-8'))
-        if h2.hexdigest() != session['password']:
-            return render_template('sign-up.html')
-        else:
-            insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
-            return redirect(url_for('questionnaire'))
+    # TODO:
+    # Remove this line when passwords are hashed in the database    
+    session['password'] = data['password']
+    # h1 = sha256()
+    # h1.update(data['password'].encode('utf-8'))
+    # session['password'] = h1.hexdigest()
 
-    return render_template('sign-up.html')
+    # TODO:
+    # Uncomment this and remove second if statement when passwords are hashed in the database
+
+    # h2 = sha256()
+    # h2.update(data['confirm-password'].encode('utf-8'))
+    # if h2.hexdigest() != session['password']:
+    if data['confirm-password'] != data['password']:
+        return jsonify({"error": "Passwords do not match"}), 401
+    else:
+        insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
+        return jsonify({"message": "Sign up successful"}), 200
 
 
 @app.route('/questionnaire', methods=['GET', 'POST'])
