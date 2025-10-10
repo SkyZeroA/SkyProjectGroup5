@@ -44,125 +44,113 @@ const Questionnaire = () => {
 
 
   return (
-    <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
-      <HeaderBanner/>
+    <div className="bg-neutral-50 min-h-screen w-full">
+      <HeaderBanner />
 
-      <Card className="absolute top-[106px] left-[609px] w-[510px] h-[249px] bg-white rounded-[7px]">
-        <CardContent className="p-0">
-          <h1 className="absolute py-6 top-[25px] left-[76px] w-[358px] h-[29px] flex items-center justify-center bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-[38px] text-center tracking-[0] leading-[57px] whitespace-nowrap">
-            Welcome to ClearSky
-          </h1>
-          <p className="absolute top-[99px] left-[58px] w-[402px] h-[132px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9">
-            You will now be asked a series of questions relating to your carbon
-            footprint so that we can calculate a baseline.
-          </p>
-        </CardContent>
-      </Card>
+      {/* Intro card, centered and responsive */}
+      <div className="container mx-auto px-4">
+        <Card className="mx-auto mt-12 max-w-2xl bg-white rounded-lg shadow">
+          <CardContent className="p-6">
+            <h1 className="text-center text-3xl md:text-4xl font-semibold text-green-600">
+              Welcome to ClearSky
+            </h1>
+            <p className="mt-4 text-center text-sm md:text-base text-gray-700">
+              You will now be asked a series of questions relating to your carbon
+              footprint so that we can calculate a baseline.
+            </p>
+          </CardContent>
+        </Card>
 
-      <Card className="absolute top-[380px] left-[76px] w-[1575px] h-[148px] bg-white rounded-[7px] border-0">
-        <CardContent className="p-0">
-          <h2 className="absolute top-0 left-[6px] w-[402px] h-[41px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9 whitespace-nowrap">
-            Question 1: How do you get to work?
-          </h2>
+        {/* Question 1 */}
+        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
+          <CardContent className="p-6">
+            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
+              Question 1: How do you get to work?
+            </h2>
 
-          <RadioGroup
-            value={transportMethod}
-            onValueChange={setTransportMethod}
-            className="flex justify-between items-center w-full mt-12 px-12"
-          >
-            {transportOptions.map((option) => (
-              <div
-                key={option.value}
-                className={"flex flex-col items-center"}
-              >
-                <Label className="w-[67px] h-[41px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9 whitespace-nowrap cursor-pointer">
-                  {option.label}
-                </Label>
-                <div className="flex justify-center mt-[14px]">
+            <RadioGroup
+              value={transportMethod}
+              onValueChange={setTransportMethod}
+              className="flex justify-between items-center w-full mt-6 px-6 overflow-x-auto"
+            >
+              {transportOptions.map((option) => (
+                <div key={option.value} className="flex items-center gap-3 min-w-[120px] justify-center">
+                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
                   <RadioGroupItem
                     value={option.value}
                     id={option.value}
-                    className="w-[27px] h-[27px] bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
+                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
                   />
                 </div>
-              </div>
-            ))}
-          </RadioGroup>
-        </CardContent>
-      </Card>
+              ))}
+            </RadioGroup>
+          </CardContent>
+        </Card>
 
-      <Card className="absolute top-[553px] left-[76px] w-[1575px] h-[148px] bg-white rounded-[7px] border-0">
-        <CardContent className="p-0">
-          <h2 className="absolute top-0 left-[6px] w-[624px] h-[41px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9 whitespace-nowrap">
-            Question 2: How far do you travel to get to work? (in miles)
-          </h2>
+        {/* Question 2 */}
+        <Card className="mx-auto mt-6 max-w-5xl bg-white rounded-lg shadow">
+          <CardContent className="p-6">
+            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
+              Question 2: How far do you travel to get to work? (in miles)
+            </h2>
 
-          <RadioGroup
-            value={travelDistance}
-            onValueChange={setTravelDistance}
-            className="flex justify-between items-center w-full mt-12 px-12"
-          >
-            {distanceOptions.map((option, index) => (
-              <div
-                key={option.value}
-                className={"flex flex-col items-center"}
-              >
-                <Label className="w-[67px] h-[41px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9 whitespace-nowrap cursor-pointer">
-                  {option.label}
-                </Label>
-                <div className="flex justify-center mt-[14px]">
+            <RadioGroup
+              value={travelDistance}
+              onValueChange={setTravelDistance}
+              className="flex justify-between items-center w-full mt-6 px-6 overflow-x-auto"
+            >
+              {distanceOptions.map((option) => (
+                <div key={option.value} className="flex items-center gap-3 min-w-[120px] justify-center">
+                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
                   <RadioGroupItem
                     value={option.value}
                     id={`distance-${option.value}`}
-                    className="w-[27px] h-[27px] bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
+                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
                   />
                 </div>
-              </div>
-            ))}
-          </RadioGroup>
-        </CardContent>
-      </Card>
+              ))}
+            </RadioGroup>
+          </CardContent>
+        </Card>
 
-      <Card className="absolute top-[726px] left-[76px] w-[1575px] h-[148px] bg-white rounded-[7px] border-0">
-        <CardContent className="p-0">
-          <h2 className="absolute top-0 left-[6px] w-[603px] h-[41px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9 whitespace-nowrap">
-            Question 3: How many days a week are you in the office?
-          </h2>
-            <Slider />
-          <div className="relative">
-            {dayLabels.map((day, index) => (
-              <div
-                key={index}
-                className={`absolute top-[53px] ${day.left} w-[67px] h-[41px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9 whitespace-nowrap`}
-              >
-                {day.label}
-              </div>
-            ))}
+        {/* Question 3 */}
+        <Card className="mx-auto mt-6 max-w-5xl bg-white rounded-lg shadow">
+          <CardContent className="p-6">
+            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
+              Question 3: How many days a week are you in the office?
+            </h2>
 
-            <div className="absolute top-[105px] left-[152px] w-[1272px] h-[27px] bg-[#ebebeb] rounded-[13.5px]" />
-            <div className="absolute top-[105px] left-[152px] w-[379px] h-[27px] bg-[#7399ff] rounded-[13.5px]" />
-            <div className="absolute top-[105px] left-[508px] w-[27px] h-[27px] flex bg-[#ebebeb] rounded-[13.5px]">
-              <div className="bg-neutral-50 mt-1 w-[19px] h-[19px] ml-1 rounded-[9.5px]" />
+            <div className="mt-6">
+              <Slider value={officeDays} onChange={setOfficeDays} min={0} max={7} />
+
+              <div className="mt-6 grid grid-cols-8 gap-2 text-center text-xs md:text-sm text-gray-700">
+                {dayLabels.map((day, index) => (
+                  <div key={index} className="flex justify-center">
+                    {day.label}
+                  </div>
+                ))}
+              </div>
+
+              {/* visual bar (kept simple and responsive) */}
+              <div className="mt-4 h-3 bg-gray-200 rounded-full w-full">
+                <div className="h-3 bg-[#7399ff] rounded-full transition-all duration-200" style={{ width: `${(officeDays / 7) * 100}%` }} />
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <div className="absolute top-[928px] left-[734px] w-[260px] h-[45px] flex items-center justify-center [font-family:'Sky_Text',Helvetica] font-normal text-black text-2xl text-center tracking-[0] leading-9">
-        Press to submit answers
+        <div className="text-center mt-8 text-sm text-gray-700">Press to submit answers</div>
+
+        <div className="flex justify-center mt-4">
+          <Button className="bg-[#7399ff] hover:bg-[#5577dd] text-white rounded-md px-6 py-2">Continue</Button>
+        </div>
+
+        <div className="flex justify-center mt-6">
+          <img alt="Sky Zero Logo" src="/image-5.png" className="w-36 h-auto" />
+        </div>
       </div>
 
-      <Button className="absolute top-[974px] left-[696px] w-[336px] h-[45px] bg-[#7399ff] hover:bg-[#5577dd] text-white rounded-md [font-family:'Sky_Text',Helvetica] font-normal text-lg h-auto">
-        Continue
-      </Button>
-
-      <img
-        className="top-[1081px] left-[793px] w-[141px] h-[79px] absolute object-cover"
-        alt="Sky Zero Logo"
-        src="/image-5.png"
-      />
-
-      <FooterBanner/>
+      <FooterBanner />
     </div>
   );
 };

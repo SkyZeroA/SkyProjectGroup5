@@ -1,11 +1,12 @@
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { CircleIcon } from "lucide-react";
+import { cn } from "../lib/utils";
 import React from "react";
 
 const RadioGroup = ({ className, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Root
-      className={`grid gap-2 ${className}`}
+      className={`flex gap-2 ${className ?? ""}`}
       {...props}
       ref={ref}
     />
