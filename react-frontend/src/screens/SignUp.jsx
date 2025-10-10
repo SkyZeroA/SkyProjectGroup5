@@ -76,7 +76,7 @@ const SignUp = () => {
 
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
-      <HeaderBanner/>
+      <HeaderBanner className="lg:fixed"/>
 
       <main className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center">
@@ -167,7 +167,7 @@ const SignUp = () => {
         </div>
       </main>
 
-      <FooterBanner/>
+      <FooterBanner className="lg:fixed"/>
     </div>
   );
 };

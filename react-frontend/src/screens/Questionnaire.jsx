@@ -30,7 +30,16 @@ const Questionnaire = () => {
     { value: "30+", label: "30+" },
   ];
 
-  const dayLabels = Array.from({ length: 8 }, (_, i) => i.toString());
+  const dayLabels = [
+  { label: "0", left: "left-52" },
+  { label: "1", left: "left-[386px]" },
+  { label: "2", left: "left-[564px]" },
+  { label: "3", left: "left-[742px]" },
+  { label: "4", left: "left-[920px]" },
+  { label: "5", left: "left-[1098px]" },
+  { label: "6", left: "left-[1276px]" },
+  { label: "7", left: "left-[1454px]" },
+  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -113,7 +122,7 @@ const Questionnaire = () => {
             </h2>
 
             <div className="mt-6">
-              <Slider value={officeDays} onChange={setOfficeDays} min={0} max={7} />
+              <Slider value={dayLabels} onChange={setOfficeDays} min={0} max={7} />
 
               <div className="mt-6 grid grid-cols-8 gap-2 text-center text-xs md:text-sm text-gray-700">
                 {dayLabels.map((day, index) => (
