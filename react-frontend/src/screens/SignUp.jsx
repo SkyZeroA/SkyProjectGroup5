@@ -20,7 +20,6 @@ const SignUp = () => {
 
   const navigate = useNavigate()
 
-
   // Each error caught in this function sets the relevant error message and clears the relevant fields
   // This is so if the user makes two mistakes, one after the other, they will not see both error messages, only the one relevant to their most recent mistake
   // There will be a better way to do this but I can't think of it right now
