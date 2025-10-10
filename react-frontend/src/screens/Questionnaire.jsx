@@ -12,49 +12,42 @@ const Questionnaire = () => {
   const [travelDistance, setTravelDistance] = useState("15-20");
   const [officeDays, setOfficeDays] = useState(2);
 
-    // Options for now, will use JSON file later ?
   const transportOptions = [
-    { value: "car", label: "Car", left: "left-52" },
-    { value: "bike", label: "Bike", left: "left-[457px]" },
-    { value: "bus", label: "Bus", left: "left-[706px]" },
-    { value: "train", label: "Train", left: "left-[955px]" },
-    { value: "walk", label: "Walk", left: "left-[1204px]" },
-    { value: "plane", label: "Plane", left: "left-[1453px]" },
+    { value: "car", label: "Car" },
+    { value: "bike", label: "Bike" },
+    { value: "bus", label: "Bus" },
+    { value: "train", label: "Train" },
+    { value: "walk", label: "Walk" },
+    { value: "plane", label: "Plane" },
   ];
 
   const distanceOptions = [
-    { value: "0-5", label: "0-5", left: "left-52" },
-    { value: "5-10", label: "5-10", left: "left-[457px]" },
-    { value: "10-15", label: "10-15", left: "left-[706px]" },
-    { value: "15-20", label: "15-20", left: "left-[955px]" },
-    { value: "20-30", label: "20-30", left: "left-[1204px]" },
-    { value: "30+", label: "30+", left: "left-[1453px]" },
+    { value: "0-5", label: "0-5" },
+    { value: "5-10", label: "5-10" },
+    { value: "10-15", label: "10-15" },
+    { value: "15-20", label: "15-20" },
+    { value: "20-30", label: "20-30" },
+    { value: "30+", label: "30+" },
   ];
 
-  const dayLabels = [
-    { label: "0", left: "left-52" },
-    { label: "1", left: "left-[386px]" },
-    { label: "2", left: "left-[564px]" },
-    { label: "3", left: "left-[742px]" },
-    { label: "4", left: "left-[920px]" },
-    { label: "5", left: "left-[1098px]" },
-    { label: "6", left: "left-[1276px]" },
-    { label: "7", left: "left-[1454px]" },
-  ];
-
+  const dayLabels = Array.from({ length: 8 }, (_, i) => i.toString());
 
   return (
-    <div className="bg-neutral-50 min-h-screen w-full">
-      <HeaderBanner />
+    <div className="flex flex-col min-h-screen bg-neutral-50">
+      {/* Sticky Header */}
+      <div className="top-0 z-10 bg-white shadow-md">
+        <HeaderBanner />
+      </div>
 
-      {/* Intro card, centered and responsive */}
-      <div className="container mx-auto px-4">
-        <Card className="mx-auto mt-12 max-w-2xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h1 className="text-center text-3xl md:text-4xl font-semibold text-green-600">
+      {/* Main Scrollable Content */}
+      <main className="flex-1 overflow-y-auto px-6 py-12 space-y-12">
+        {/* Welcome Card */}
+        <Card className="mx-auto max-w-2xl">
+          <CardContent>
+            <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-green-300 via-green-500 to-green-700 text-transparent bg-clip-text">
               Welcome to ClearSky
             </h1>
-            <p className="mt-4 text-center text-sm md:text-base text-gray-700">
+            <p className="mt-4 text-center text-xl">
               You will now be asked a series of questions relating to your carbon
               footprint so that we can calculate a baseline.
             </p>
@@ -62,24 +55,23 @@ const Questionnaire = () => {
         </Card>
 
         {/* Question 1 */}
-        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
+        <Card className="bg-white">
+          <CardContent>
+            <h2 className="text-2xl text-center mb-6">
               Question 1: How do you get to work?
             </h2>
-
             <RadioGroup
               value={transportMethod}
               onValueChange={setTransportMethod}
-              className="flex justify-between items-center w-full mt-6 px-6 overflow-x-auto"
+              className="flex justify-between items-center w-full mt-12 px-12 gap-8"
             >
               {transportOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] justify-center">
-                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
+                <div key={option.value} className="flex items-center">
+                  <Label className="text-xl">{option.label}</Label>
                   <RadioGroupItem
                     value={option.value}
                     id={option.value}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
+                    className="w-6 h-6 mt-2 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff]"
                   />
                 </div>
               ))}
@@ -105,7 +97,7 @@ const Questionnaire = () => {
                   <RadioGroupItem
                     value={option.value}
                     id={`distance-${option.value}`}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
+                    className="w-6 h-6 mt-2 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff]"
                   />
                 </div>
               ))}
@@ -139,17 +131,21 @@ const Questionnaire = () => {
           </CardContent>
         </Card>
 
-        <div className="text-center mt-8 text-sm text-gray-700">Press to submit answers</div>
-
-        <div className="flex justify-center mt-4">
-          <Button className="bg-[#7399ff] hover:bg-[#5577dd] text-white rounded-md px-6 py-2">Continue</Button>
+        {/* Submit Section */}
+        <div className="flex flex-col items-center space-y-4">
+          <p className="text-xl">Press to submit answers</p>
+          <Button className="w-64 bg-[#7399ff] hover:bg-[#5577dd] text-white rounded-md text-lg">
+            Continue
+          </Button>
+          <img
+            className="w-[141px] h-[79px]"
+            alt="Sky Zero Logo"
+            src="/image-5.png"
+          />
         </div>
+      </main>
 
-        <div className="flex justify-center mt-6">
-          <img alt="Sky Zero Logo" src="/image-5.png" className="w-36 h-auto" />
-        </div>
-      </div>
-
+      {/* Footer */}
       <FooterBanner />
     </div>
   );
