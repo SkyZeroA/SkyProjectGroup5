@@ -31,14 +31,14 @@ const Questionnaire = () => {
   ];
 
   const dayLabels = [
-  { label: "0", left: "left-52" },
-  { label: "1", left: "left-[386px]" },
-  { label: "2", left: "left-[564px]" },
-  { label: "3", left: "left-[742px]" },
-  { label: "4", left: "left-[920px]" },
-  { label: "5", left: "left-[1098px]" },
-  { label: "6", left: "left-[1276px]" },
-  { label: "7", left: "left-[1454px]" },
+    { label: "0", left: "left-52" },
+    { label: "1", left: "left-[386px]" },
+    { label: "2", left: "left-[564px]" },
+    { label: "3", left: "left-[742px]" },
+    { label: "4", left: "left-[920px]" },
+    { label: "5", left: "left-[1098px]" },
+    { label: "6", left: "left-[1276px]" },
+    { label: "7", left: "left-[1454px]" },
   ];
 
   return (
@@ -51,7 +51,7 @@ const Questionnaire = () => {
       {/* Main Scrollable Content */}
       <main className="flex-1 overflow-y-auto px-6 py-12 space-y-12">
         {/* Welcome Card */}
-        <Card className="mx-auto max-w-2xl">
+        <Card className="mx-auto max-w-2xl bg-white">
           <CardContent>
             <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-green-300 via-green-500 to-green-700 text-transparent bg-clip-text">
               Welcome to ClearSky
@@ -64,23 +64,25 @@ const Questionnaire = () => {
         </Card>
 
         {/* Question 1 */}
-        <Card className="bg-white">
-          <CardContent>
-            <h2 className="text-2xl text-center mb-6">
+        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
+          <CardContent className="p-6">
+            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
               Question 1: How do you get to work?
             </h2>
             <RadioGroup
               value={transportMethod}
               onValueChange={setTransportMethod}
-              className="flex justify-between items-center w-full mt-12 px-12 gap-8"
-            >
+              className={
+                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
+                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
+              }>
               {transportOptions.map((option) => (
-                <div key={option.value} className="flex items-center">
-                  <Label className="text-xl">{option.label}</Label>
+                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
+                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
                   <RadioGroupItem
                     value={option.value}
                     id={option.value}
-                    className="w-6 h-6 mt-2 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff]"
+                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
                   />
                 </div>
               ))}
@@ -89,7 +91,7 @@ const Questionnaire = () => {
         </Card>
 
         {/* Question 2 */}
-        <Card className="mx-auto mt-6 max-w-5xl bg-white rounded-lg shadow">
+        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
           <CardContent className="p-6">
             <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
               Question 2: How far do you travel to get to work? (in miles)
@@ -98,15 +100,18 @@ const Questionnaire = () => {
             <RadioGroup
               value={travelDistance}
               onValueChange={setTravelDistance}
-              className="flex justify-between items-center w-full mt-6 px-6 overflow-x-auto"
+              className={
+                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
+                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
+              }
             >
               {distanceOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] justify-center">
+                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
                   <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
                   <RadioGroupItem
                     value={option.value}
                     id={`distance-${option.value}`}
-                    className="w-6 h-6 mt-2 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff]"
+                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
                   />
                 </div>
               ))}
@@ -122,20 +127,19 @@ const Questionnaire = () => {
             </h2>
 
             <div className="mt-6">
-              <Slider value={dayLabels} onChange={setOfficeDays} min={0} max={7} />
+              <Slider value={officeDays} onChange={setOfficeDays} min={0} max={7} jump={1} />
 
-              <div className="mt-6 grid grid-cols-8 gap-2 text-center text-xs md:text-sm text-gray-700">
+              {/* <div className="mt-6 w-full grid grid-cols-8 gap-[9vw] text-center text-xs md:text-sm text-gray-700">
                 {dayLabels.map((day, index) => (
                   <div key={index} className="flex justify-center">
                     {day.label}
                   </div>
                 ))}
-              </div>
-
+              </div> */}
               {/* visual bar (kept simple and responsive) */}
-              <div className="mt-4 h-3 bg-gray-200 rounded-full w-full">
+              {/* <div className="mt-4 h-3 bg-gray-200 rounded-full w-full">
                 <div className="h-3 bg-[#7399ff] rounded-full transition-all duration-200" style={{ width: `${(officeDays / 7) * 100}%` }} />
-              </div>
+              </div> */}
             </div>
           </CardContent>
         </Card>
@@ -146,12 +150,8 @@ const Questionnaire = () => {
           <Button className="w-64 bg-[#7399ff] hover:bg-[#5577dd] text-white rounded-md text-lg">
             Continue
           </Button>
-          <img
-            className="w-[141px] h-[79px]"
-            alt="Sky Zero Logo"
-            src="/image-5.png"
-          />
         </div>
+  
       </main>
 
       {/* Footer */}
