@@ -5,20 +5,33 @@ import App from '../App';
 // allows you to do things like: expect(element).toBeInTheDocument()
 import '@testing-library/jest-dom';
 
-
-
-// Mock the screen components to make them predictable for unit tests
-jest.mock('../screens/SignIn', () => () => <div>Mock SignIn</div>);
-jest.mock('../screens/SignUp', () => () => <div>Mock SignUp</div>);
-jest.mock('../screens/Questionnaire', () => () => <div>Mock Questionnaire</div>);
-jest.mock('../screens/Dashboard', () => () => <div>Mock Dashboard</div>);
-
-// Use Jest manual mock in src/__mocks__/react-router-dom.js
+// Use Jest manual mock in __mocks__/react-router-dom.js
 // jest.mock('react-router-dom');
 
 
+// Mock the screen components to make them predictable for unit tests
+jest.mock('../screens/SignIn', () => () => <div>SignIn</div>);
+jest.mock('../screens/SignUp', () => () => <div>SignUp</div>);
+jest.mock('../screens/Questionnaire', () => () => <div>Questionnaire</div>);
+jest.mock('../screens/Dashboard', () => () => <div>Dashboard</div>);
 
-test('App renders SignIn route by default', () => {
+
+test('App renders Sign In route by default', () => {
   render(<App />);
-  expect(screen.getByText(/Mock SignIn/)).toBeInTheDocument();
+  expect(screen.getByText(/SignIn/)).toBeInTheDocument();
+});
+
+test('App renders Sign Up route', () => {
+  render(<App />);
+  expect(screen.getByText(/SignUp/)).toBeInTheDocument();
+});
+
+test('App renders Questionnaire route', () => {
+  render(<App />);
+  expect(screen.getByText(/Questionnaire/)).toBeInTheDocument();
+});
+
+test('App renders Dashboard route', () => {
+  render(<App />);
+  expect(screen.getByText(/Dashboard/)).toBeInTheDocument();
 });
