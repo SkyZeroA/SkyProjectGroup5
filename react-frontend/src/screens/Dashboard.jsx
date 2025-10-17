@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback } from "../components/Avatar";
 import { Card, CardContent } from "../components/Card";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
+import ProgressBar from "../components/ProgressBar";
 import Switch from "../components/Switch"
 import { React, useState, useEffect } from "react";
 import axios from "axios";
@@ -98,6 +99,12 @@ const Dashboard = () => {
         <div className="w-2/3">
           <Card className="h-full bg-white rounded-lg shadow">
             <CardContent>
+								<div className="p-4">
+									<h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
+									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">100 Tons</span> of CO2</p>
+
+									<ProgressBar className=""/>
+								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">
                 Tips to reduce your Carbon Footprint
               </h2>
