@@ -44,8 +44,7 @@ const Dashboard = () => {
   //   fetchUserActivities();
   // }, []);
 
-	useEffect(() => {
-		const fetchLeaderboard = async () => {
+	const fetchLeaderboard = async () => {
 			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
 			.then(response => {
         setWeekData(response.data.weekLeaderboard);
@@ -55,10 +54,10 @@ const Dashboard = () => {
         console.error("Failed to fetch data from json" , error);
       });
     };
-		fetchLeaderboard();
-	}, []);
-	console.log(weekData);
-	console.log(monthData);
+	
+  useEffect(() => {
+    fetchLeaderboard();
+  }, []);
 
 	const current = isOn ? weekData : monthData;
 
@@ -70,11 +69,13 @@ const Dashboard = () => {
       ...user,
       isCurrentUser: user.name === username,
     }));
+  
 
   const handleFormSubmit = async (answers) => {
     console.log("Form submitted with answers:", answers);
     try {
       const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
+      await fetchLeaderboard();
       console.log("Server response:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -178,5 +179,6 @@ const Dashboard = () => {
     </div>
   );
 };
+
 
 export default Dashboard;
