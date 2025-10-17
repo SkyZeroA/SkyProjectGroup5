@@ -81,7 +81,6 @@ test("successful signup navigates to /questionnaire", async () => {
     });
 });
 
-
 test("handles username already exists error", async () => {
     mockedAxios.post.mockRejectedValueOnce({
       response: {
@@ -126,4 +125,38 @@ test("handles email already has an account error", async () => {
         screen.getByText(/Email already has an account. Please use another./i)
       ).toBeInTheDocument();
     });
+});
+
+test("handles passwords do not match error", async () => {
+    mockedAxios.post.mockRejectedValueOnce({
+      response: {
+        status: 401,
+        data: { error: "Passwords do not match" },
+      },
+    });
+
+    render(<SignUp />);
+
+    fireEvent.change(screen.getByLabelText(/^Password$/i), {
+      target: { value: "password1" },
+    });
+    fireEvent.change(screen.getByLabelText(/Confirm Password/i), {
+      target: { value: "password2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+      expect(
+        screen.getByText(/Passwords do not match. Please re-type./i)
+      ).toBeInTheDocument();
+    });
+});
+
+test('clicking "Already got an account?" navigates to sign-in', () => {
+    render(<SignUp />);
+    fireEvent.click(
+      screen.getByText(/Already got an account\? Sign in here/i)
+    );
+    expect(mockNavigate).toHaveBeenCalledWith("/");
 });
