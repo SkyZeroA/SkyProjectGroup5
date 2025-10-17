@@ -3,7 +3,6 @@ import { Button } from "../components/Button";
 import { Card, CardContent } from "../components/Card";
 import FooterBanner from "../components/FooterBanner";
 import HeaderBanner from "../components/HeaderBanner";
-import Slider from "../components/Slider";
 import { Label } from "../components/Label";
 import { RadioGroup, RadioGroupItem } from "../components/RadioGroup";
 import axios from "axios";
@@ -17,8 +16,6 @@ const Questionnaire = () => {
   const [homeEfficiency, setHomeEfficiency] = useState(0);
 
   const navigate = useNavigate();
-
-
 
   // const transportOptions = [
   //   { value: "car", label: "Car" },
@@ -92,7 +89,6 @@ const Questionnaire = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
-      {/* Sticky Header */}
       <div className="top-0 z-10 bg-white shadow-md">
         <HeaderBanner />
       </div>
