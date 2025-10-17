@@ -86,6 +86,3 @@ def dashboard():
                    "monthLeaderboard": month_leaderboard,
                    "username": username}), 200
 
-
-
-

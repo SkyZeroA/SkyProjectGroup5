@@ -2,13 +2,15 @@ import { Avatar, AvatarFallback } from "../components/Avatar";
 import { Card, CardContent } from "../components/Card";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
-import { React, useState, useEffect, use } from "react";
+import Switch from "../components/Switch"
+import { React, useState, useEffect } from "react";
 import axios from "axios";
 
 const Dashboard = () => {
   const [weekData, setWeekData] = useState([]);
 	const [monthData, setMonthData] = useState([]);
 	const [username, setUsername] = useState([]);
+	const [isOn, setIsOn] = useState(false);
 
 	useEffect(() => {
 		const fetchLeaderboard = async () => {
@@ -26,22 +28,11 @@ const Dashboard = () => {
 	console.log(weekData);
 	console.log(monthData);
 
-const exampleData = [
-    { name: "Harry", score: 0 },
-    { name: "Ben", score: 0 },
-    { name: "Zubin", score: 0 },
-    { name: "Adnan", score: 0 },
-    { name: "Taran", score: 0 },
-    { name: "Sarah", score: 0 },
-    { name: "Mike", score: 0 },
-    { name: "Emma1", score: 0 },
-    { name: "Mike1", score: 0 },
-    { name: "Emma", score: 0 },
-  ];
+	const current = isOn ? weekData : monthData;
 
-	console.log(exampleData);
+	console.log(current);
 
-  const leaderboardData = weekData
+  const leaderboardData = current
     .sort((a, b) => b.score - a.score)
     .map((user) => ({
       ...user,
@@ -64,7 +55,7 @@ const exampleData = [
               <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-center text-[38px] leading-[57px]">
                   Leaderboard
               </h1>
-							<Card className="h-[calc(100vh-196px)] bg-neutral-50 rounded-lg overflow-y-auto">
+							<Card className="h-[calc(100vh-296px)] bg-neutral-50 rounded-lg overflow-y-auto">
 								<CardContent>
 								<div className="mt-6 space-y-4">
 									{leaderboardData.map((user) => (
@@ -94,6 +85,11 @@ const exampleData = [
 								</div>
 							</CardContent>
 							</Card>
+							<div className="flex justify-center items-center mt-8">
+								<span className="mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Monthly</span>
+									<Switch setOutput={setIsOn} option1={weekData} option2={monthData} />
+								<span className="ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Weekly</span>
+							</div>
             </CardContent>
           </Card>
         </div>
