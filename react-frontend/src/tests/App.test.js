@@ -22,8 +22,6 @@ test('App renders Sign In route by default', () => {
   expect(screen.getByText(/SignIn/)).toBeInTheDocument();
 });
 
-
-
 test('App renders Sign Up route', () => {
   render(<App />);
   expect(screen.getByText(/SignUp/)).toBeInTheDocument();

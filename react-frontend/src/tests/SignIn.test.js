@@ -27,8 +27,7 @@ test('renders the SignIn form with input fields and button', () => {
     expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
     expect(screen.getByText(/Create a new account/i)).toBeInTheDocument();
   });
-
-  
+ 
 test('updates email and password on user input', () => {
     render(<SignIn />);
 
@@ -41,7 +40,6 @@ test('updates email and password on user input', () => {
     expect(emailInput.value).toBe('test@example.com');
     expect(passwordInput.value).toBe('password123');
   });
-
 
 test('submits form and navigates on successful sign-in', async () => {
     mockedAxios.post.mockResolvedValueOnce({

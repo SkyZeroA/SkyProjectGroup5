@@ -39,7 +39,7 @@ test("renders all questions and submit button", () => {
   });
 
 
- test("allows selecting transport, diet, and home efficiency options", () => {
+test("allows selecting transport, diet, and home efficiency options", () => {
     render(<Questionnaire />);
 
     // Select one of each option group
@@ -56,4 +56,34 @@ test("renders all questions and submit button", () => {
     expect(transportOption).toBeChecked();
     expect(dietOption).toBeChecked();
     expect(homeOption).toBeChecked();
+  });
+
+
+test("submits questionnaire successfully and navigates to /dashboard", async () => {
+    mockedAxios.post.mockResolvedValueOnce({
+      data: { message: "Questionnaire submitted successfully" },
+    });
+
+    render(<Questionnaire />);
+
+    // Select one option from each question
+    fireEvent.click(screen.getByLabelText(/Car \(Electric\)/i));
+    fireEvent.click(screen.getByLabelText(/Vegan/i));
+    fireEvent.click(screen.getByLabelText(/Moderately Efficient/i));
+
+    // Click the Continue button
+    fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        "http://localhost:9099/api/questionnaire",
+        {
+          transportMethod: 3,
+          diet: 3,
+          homeEfficiency: 1,
+        },
+        { withCredentials: true }
+      );
+      expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+    });
   });
