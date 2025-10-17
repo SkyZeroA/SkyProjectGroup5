@@ -78,7 +78,7 @@ const Questionnaire = () => {
     };
     console.log("Questionnaire Payload:", questionnairePayload);
 
-    await axios.post("http://127.0.0.1:9099/api/questionnaire", questionnairePayload, { withCredentials: true })
+    await axios.post("http://localhost:9099/api/questionnaire", questionnairePayload, { withCredentials: true })
       .then((response) => {
         console.log("Response:", response.data);
         if (response?.data?.message === "Questionnaire submitted successfully") {

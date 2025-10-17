@@ -61,18 +61,17 @@ def sign_up():
         return jsonify({"message": "Sign up successful"}), 200
 
 
-@app.route('/api/questionnaire', methods=['GET', 'POST'])
+@app.route('/api/questionnaire', methods=['POST'])
 def questionnaire():
-    if request.method == 'POST':
-        # print("User email from session:", session['email'])
-        print(session['email'])
-        data = request.get_json()
-        print("Questionnaire data received:", data)
-        answers = Questionnaire(data, get_user_id_from_db(session['email']))
-        # print(answers.get_questionnaire())
-        insert_into_questionnaire(answers.format_answers())
-        return jsonify({"message": "Questionnaire submitted successfully"}), 200
-    return jsonify({"message": "Good request method"}), 200
+    # print("User email from session:", session['email'])
+    print(session['email'])
+    data = request.get_json()
+    print("Questionnaire data received:", data)
+    answers = Questionnaire(data, get_user_id_from_db(session['email']))
+    # print(answers.get_questionnaire())
+    insert_into_questionnaire(answers.format_answers())
+    return jsonify({"message": "Questionnaire submitted successfully"}), 200
+
 
 
 @app.route('/dashboard')

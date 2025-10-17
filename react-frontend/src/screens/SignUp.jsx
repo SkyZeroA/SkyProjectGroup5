@@ -34,7 +34,7 @@ const SignUp = () => {
     };
     console.log("Sign Up Payload:", signUpPayload);
 
-    await axios.post("http://127.0.0.1:9099/api/sign-up", signUpPayload, { withCredentials: true })
+    await axios.post("http://localhost:9099/api/sign-up", signUpPayload, { withCredentials: true })
       .then((response) => {
         console.log("Sign In Response:", response.data);
         if (response?.data?.message === "Sign up successful") {
