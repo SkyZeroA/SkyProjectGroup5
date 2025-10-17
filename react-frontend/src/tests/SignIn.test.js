@@ -42,3 +42,29 @@ test('updates email and password on user input', () => {
     expect(passwordInput.value).toBe('password123');
   });
 
+
+test('submits form and navigates on successful sign-in', async () => {
+    mockedAxios.post.mockResolvedValueOnce({
+      data: { message: 'Sign in successful' },
+    });
+
+    render(<SignIn />);
+
+    fireEvent.change(screen.getByLabelText(/Email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/Password/i), {
+      target: { value: 'password123' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalledWith(
+        'http://localhost:9099/api/sign-in',
+        { email: 'test@example.com', password: 'password123' },
+        { withCredentials: true }
+      );
+      expect(mockNavigate).toHaveBeenCalledWith('/sign-up');
+    });
+});
