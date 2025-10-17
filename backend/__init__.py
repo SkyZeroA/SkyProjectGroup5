@@ -17,6 +17,3 @@ app.config['SECRET_KEY'] = SECRET_KEY
 from . import routes
 
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
-
-
-

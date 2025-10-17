@@ -74,11 +74,16 @@ def questionnaire():
 
 
 
-@app.route('/dashboard')
+@app.route('/api/dashboard', methods=['GET'])
 def dashboard():
-    leaderboard = read_view_table()
-    return render_template('dashboard.html', leaderboard=leaderboard)
-
-
-
+    email = session['email']
+    username = get_username_from_db(email)
+    week_leaderboard = read_view_table_week()
+    month_leaderboard = read_view_table_month()
+    print(week_leaderboard)
+    print(month_leaderboard)
+    return jsonify({"message": "Leaderboard send successful",
+                   "weekLeaderboard": week_leaderboard,
+                   "monthLeaderboard": month_leaderboard,
+                   "username": username}), 200
 
