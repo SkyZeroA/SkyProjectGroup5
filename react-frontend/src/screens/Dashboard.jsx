@@ -44,10 +44,10 @@ const Dashboard = () => {
 									{leaderboardData.map((user) => (
 										<Card
 											key={user.name}
-											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out ${
+											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
 												user.isCurrentUser
-													? "border-2 border-transparent bg-gradient-to-r from-green-300 to-green-700"
-													: "bg-white"
+													? "border-2 border-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]"
+													: ""
 											}`}
 										>
 											<div className="flex items-center gap-4">
