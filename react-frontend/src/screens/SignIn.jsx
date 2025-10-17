@@ -22,11 +22,11 @@ const SignIn = () => {
     };
     console.log("Sign In Payload:", signInPayload);
 
-    await axios.post("http://127.0.0.1:9099/api/sign-in", signInPayload)
+    await axios.post("http://localhost:9099/api/sign-in", signInPayload, {withCredentials:true})
       .then((response) => {
         console.log("Sign In Response:", response.data);
         if (response?.data?.message === "Sign in successful") {
-          navigate("/sign-up")
+          navigate("/dashboard")
         }
       })
       .catch((error) => {

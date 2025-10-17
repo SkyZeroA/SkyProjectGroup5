@@ -2,29 +2,50 @@ import { Avatar, AvatarFallback } from "../components/Avatar";
 import { Card, CardContent } from "../components/Card";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
+import { React, useState, useEffect, use } from "react";
+import axios from "axios";
 
 const Dashboard = () => {
-  const exampleData = [
-    { name: "Harry", score: 9 },
-    { name: "Ben", score: 19 },
-    { name: "Zubin", score: 16 },
-    { name: "Adnan", score: 12 },
-    { name: "Taran", score: 12 },
-    { name: "Sarah", score: 25 },
-    { name: "Mike", score: 8 },
-    { name: "Emma", score: 14 },
-		{ name: "Adnan", score: 12 },
-    { name: "Taran", score: 12 },
-    { name: "Sarah", score: 25 },
-    { name: "Mike", score: 8 },
-    { name: "Emma", score: 14 },
+  const [weekData, setWeekData] = useState([]);
+	const [monthData, setMonthData] = useState([]);
+	const [username, setUsername] = useState([]);
+
+	useEffect(() => {
+		const fetchLeaderboard = async () => {
+			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
+			.then(response => {
+        setWeekData(response.data.weekLeaderboard);
+				setMonthData(response.data.monthLeaderboard);
+				setUsername(response.data.username);
+      }).catch((error) => {
+        console.error("Failed to fetch data from json" , error);
+      });
+    };
+		fetchLeaderboard();
+	}, []);
+	console.log(weekData);
+	console.log(monthData);
+
+const exampleData = [
+    { name: "Harry", score: 0 },
+    { name: "Ben", score: 0 },
+    { name: "Zubin", score: 0 },
+    { name: "Adnan", score: 0 },
+    { name: "Taran", score: 0 },
+    { name: "Sarah", score: 0 },
+    { name: "Mike", score: 0 },
+    { name: "Emma1", score: 0 },
+    { name: "Mike1", score: 0 },
+    { name: "Emma", score: 0 },
   ];
 
-  const leaderboardData = exampleData
+	console.log(exampleData);
+
+  const leaderboardData = weekData
     .sort((a, b) => b.score - a.score)
     .map((user) => ({
       ...user,
-      isCurrentUser: user.name === "Ben",
+      isCurrentUser: user.name === username,
     }));
 
   return (
