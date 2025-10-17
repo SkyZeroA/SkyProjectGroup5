@@ -2,15 +2,21 @@ import { Avatar, AvatarFallback } from "../components/Avatar";
 import { Card, CardContent } from "../components/Card";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
+import Switch from "../components/Switch"
 import { Button } from "../components/Button";
 import Popup from "../components/PopUp";
-import React, { useState, useEffect, use } from "react";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
 
 
 const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
+	const [weekData, setWeekData] = useState([]);
+	const [monthData, setMonthData] = useState([]);
+	const [username, setUsername] = useState([]);
+	const [isOn, setIsOn] = useState(false);
+
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -38,23 +44,31 @@ const Dashboard = () => {
   //   fetchUserActivities();
   // }, []);
 
-  
-  const exampleData = [
-    { name: "Harry", score: 9 },
-    { name: "Ben", score: 19 },
-    { name: "Zubin", score: 16 },
-    { name: "Adnan", score: 12 },
-    { name: "Taran", score: 12 },
-    { name: "Sarah", score: 25 },
-    { name: "Mike", score: 8 },
-    { name: "Emma", score: 14 },
-  ];
+	useEffect(() => {
+		const fetchLeaderboard = async () => {
+			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
+			.then(response => {
+        setWeekData(response.data.weekLeaderboard);
+				setMonthData(response.data.monthLeaderboard);
+				setUsername(response.data.username);
+      }).catch((error) => {
+        console.error("Failed to fetch data from json" , error);
+      });
+    };
+		fetchLeaderboard();
+	}, []);
+	console.log(weekData);
+	console.log(monthData);
 
-  const leaderboardData = exampleData
+	const current = isOn ? weekData : monthData;
+
+	console.log(current);
+
+  const leaderboardData = current
     .sort((a, b) => b.score - a.score)
     .map((user) => ({
       ...user,
-      isCurrentUser: user.name === "Ben",
+      isCurrentUser: user.name === username,
     }));
 
   const handleFormSubmit = async (answers) => {
@@ -82,10 +96,10 @@ const Dashboard = () => {
         <div className="w-1/3">
           <Card className="h-[calc(100vh-96px)] bg-white rounded-lg">
             <CardContent>
-              <h1 className="mb-4 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-center text-[38px] leading-[57px]">
+              <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-center text-[38px] leading-[57px]">
                   Leaderboard
               </h1>
-							<Card className="h-[calc(100vh-196px)] bg-neutral-50 rounded-lg overflow-y-auto">
+							<Card className="h-[calc(100vh-296px)] bg-neutral-50 rounded-lg overflow-y-auto">
 								<CardContent>
 								<div className="mt-6 space-y-4">
 									{leaderboardData.map((user) => (
@@ -93,7 +107,7 @@ const Dashboard = () => {
 											key={user.name}
 											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
 												user.isCurrentUser
-													? "border-2 border-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]"
+													? "sticky top-0 bottom-0 z-10 border-2 border-green-500"
 													: ""
 											}`}
 										>
@@ -115,6 +129,11 @@ const Dashboard = () => {
 								</div>
 							</CardContent>
 							</Card>
+							<div className="flex justify-center items-center mt-8">
+								<span className="mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Monthly</span>
+									<Switch setOutput={setIsOn} option1={weekData} option2={monthData} />
+								<span className="ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Weekly</span>
+							</div>
             </CardContent>
           </Card>
         </div>

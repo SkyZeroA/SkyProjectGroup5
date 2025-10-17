@@ -57,26 +57,20 @@ def sign_up():
         return jsonify({"error": "Passwords do not match"}), 401
     else:
         insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
+        print("New user inserted:", session['username'], session['email'])
         return jsonify({"message": "Sign up successful"}), 200
 
 
-@app.route('/questionnaire', methods=['GET', 'POST'])
+@app.route('/api/questionnaire', methods=['POST'])
 def questionnaire():
-    if request.method == 'POST':
-        print (session['email'])
-        answers = Questionnaire(request.form.to_dict(), get_user_id_from_db(session['email']))
-        print(answers.get_questionnaire())
-        insert_into_questionnaire(answers.format_answers())
-        return redirect(url_for('dashboard'))
-
-
-    return render_template('questionnaire.html')
-
-
-@app.route('/api/dashboard')
-def dashboard():
-    leaderboard = read_view_table()
-    return render_template('dashboard.html', leaderboard=leaderboard)
+    # print("User email from session:", session['email'])
+    print(session['email'])
+    data = request.get_json()
+    print("Questionnaire data received:", data)
+    answers = Questionnaire(data, get_user_id_from_db(session['email']))
+    # print(answers.get_questionnaire())
+    insert_into_questionnaire(answers.format_answers())
+    return jsonify({"message": "Questionnaire submitted successfully"}), 200
 
 
 @app.route('/api/user-activities', methods=['GET'])
@@ -98,6 +92,7 @@ def log_activity():
               insert_user_activity(user_id, activity_id, week_number, month_number)
     return jsonify({"message": "Activity logged successfully"}), 200
 
+
 @app.route('/api/fetch-questions', methods=['GET'])
 def fetch_questions():
     print("Fetching activity questions...")
@@ -105,4 +100,16 @@ def fetch_questions():
     return jsonify(questions), 200
 
 
+@app.route('/api/dashboard', methods=['GET'])
+def dashboard():
+    email = session['email']
+    username = get_username_from_db(email)
+    week_leaderboard = read_view_table_week()
+    month_leaderboard = read_view_table_month()
+    print(week_leaderboard)
+    print(month_leaderboard)
+    return jsonify({"message": "Leaderboard send successful",
+                   "weekLeaderboard": week_leaderboard,
+                   "monthLeaderboard": month_leaderboard,
+                   "username": username}), 200
 

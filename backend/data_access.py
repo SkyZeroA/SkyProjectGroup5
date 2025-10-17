@@ -123,6 +123,14 @@ def get_user_id_from_db(email):
     close_connection(db)
     return user_id
 
+def get_username_from_db(email):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT username FROM User WHERE email = %s", (email,))
+    username = cursor.fetchone()[0]
+    close_connection(db)
+    return username
+
 def insert_new_user(email, first_name, username, password):
     db = get_connection()
     cursor = db.cursor()
@@ -130,13 +138,23 @@ def insert_new_user(email, first_name, username, password):
     db.commit()
     close_connection(db)
 
-def read_view_table():
+def read_view_table_week():
     db = get_connection()
     cursor = db.cursor()
     cursor.execute('SELECT username, totalPoints FROM week_leaderboard')
     db_info = cursor.fetchall()
     close_connection(db)
-    return db_info
+    converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
+    return converted_data
+
+def read_view_table_month():
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute('SELECT username, totalPoints FROM month_leaderboard')
+    db_info = cursor.fetchall()
+    close_connection(db)
+    converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
+    return converted_data
 
 def get_current_week_number():
     today = date.today()
