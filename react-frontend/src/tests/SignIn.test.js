@@ -63,6 +63,7 @@ test('submits form and navigates on successful sign-in', async () => {
         { email: 'test@example.com', password: 'password123' },
         { withCredentials: true }
       );
-      expect(mockNavigate).toHaveBeenCalledWith('/sign-up');
+      // expect(mockNavigate).toHaveBeenCalledWith('/sign-up');
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
 });
