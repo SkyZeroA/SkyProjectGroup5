@@ -13,6 +13,11 @@ const Dashboard = () => {
     { name: "Sarah", score: 25 },
     { name: "Mike", score: 8 },
     { name: "Emma", score: 14 },
+		{ name: "Adnan", score: 12 },
+    { name: "Taran", score: 12 },
+    { name: "Sarah", score: 25 },
+    { name: "Mike", score: 8 },
+    { name: "Emma", score: 14 },
   ];
 
   const leaderboardData = exampleData
@@ -35,7 +40,7 @@ const Dashboard = () => {
         <div className="w-1/3">
           <Card className="h-[calc(100vh-96px)] bg-white rounded-lg">
             <CardContent>
-              <h1 className="mb-4 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-center text-[38px] leading-[57px]">
+              <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-center text-[38px] leading-[57px]">
                   Leaderboard
               </h1>
 							<Card className="h-[calc(100vh-196px)] bg-neutral-50 rounded-lg overflow-y-auto">
@@ -46,7 +51,7 @@ const Dashboard = () => {
 											key={user.name}
 											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
 												user.isCurrentUser
-													? "border-2 border-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]"
+													? "sticky top-0 bottom-0 z-10 border-2 border-green-500"
 													: ""
 											}`}
 										>

@@ -14,15 +14,6 @@ const Avatar = ({ className, ...props }, ref) => (
 );
 Avatar.displayName = AvatarPrimitive.Root.displayName;
 
-const AvatarImage = ({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image
-    ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
-    {...props}
-  />
-);
-AvatarImage.displayName = AvatarPrimitive.Image.displayName;
-
 const AvatarFallback = ({ className, ...props }, ref) => (
   <AvatarPrimitive.Fallback
     ref={ref}
@@ -35,4 +26,4 @@ const AvatarFallback = ({ className, ...props }, ref) => (
 );
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
-export { Avatar, AvatarImage, AvatarFallback };
+export { Avatar, AvatarFallback };
