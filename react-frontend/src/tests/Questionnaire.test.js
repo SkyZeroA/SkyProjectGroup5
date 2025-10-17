@@ -37,3 +37,23 @@ test("renders all questions and submit button", () => {
       screen.getByRole("button", { name: /Continue/i })
     ).toBeInTheDocument();
   });
+
+
+ test("allows selecting transport, diet, and home efficiency options", () => {
+    render(<Questionnaire />);
+
+    // Select one of each option group
+    const transportOption = screen.getByLabelText(/Car \(Electric\)/i);
+    const dietOption = screen.getByLabelText(/Vegan/i);
+    const homeOption = screen.getByLabelText(/Inefficient/i);
+
+    // Simulate selecting them
+    fireEvent.click(transportOption);
+    fireEvent.click(dietOption);
+    fireEvent.click(homeOption);
+
+    // Verify they are selected
+    expect(transportOption).toBeChecked();
+    expect(dietOption).toBeChecked();
+    expect(homeOption).toBeChecked();
+  });
