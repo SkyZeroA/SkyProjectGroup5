@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like: expect(element).toBeInTheDocument()
@@ -20,6 +21,15 @@ test('App renders Sign In route by default', () => {
   render(<App />);
   expect(screen.getByText(/SignIn/)).toBeInTheDocument();
 });
+
+// test('App renders Sign In route by default', () => {
+//   render(
+//     <MemoryRouter initialEntries={['/']}>
+//       <App />
+//     </MemoryRouter>
+//   );
+//   expect(screen.getByText(/SignIn/)).toBeInTheDocument();
+// });
 
 test('App renders Sign Up route', () => {
   render(<App />);
