@@ -43,7 +43,6 @@ const Questionnaire = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
-      {/* Sticky Header */}
       <div className="top-0 z-10 bg-white shadow-md">
         <HeaderBanner />
       </div>
