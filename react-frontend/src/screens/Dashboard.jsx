@@ -4,9 +4,41 @@ import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import { Button } from "../components/Button";
 import Popup from "../components/PopUp";
-import React from "react";
+import React, { useState, useEffect, use } from "react";
+import axios from "axios";
+
 
 const Dashboard = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
+        setQuestions(response.data);
+      } catch (error) {
+        console.error("Error fetching activity questions:", error);
+      }
+    };
+    fetchQuestions();
+  }, []);
+
+  // Will replace above and be used later when we add preferences for user activities
+  // const [userActivities, setUserActivities] = useState([]);
+  // useEffect(() => {
+  //   const fetchUserActivities = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:9099/api/user-activities");
+  //       setUserActivities(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching user activities:", error);
+  //     }
+  //   };
+  //   fetchUserActivities();
+  // }, []);
+
+  
   const exampleData = [
     { name: "Harry", score: 9 },
     { name: "Ben", score: 19 },
@@ -25,7 +57,15 @@ const Dashboard = () => {
       isCurrentUser: user.name === "Ben",
     }));
 
-  const [isFormOpen, setIsFormOpen] = React.useState(false);
+  const handleFormSubmit = async (answers) => {
+    console.log("Form submitted with answers:", answers);
+    try {
+      const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
+      console.log("Server response:", response.data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -108,7 +148,11 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
-      <Popup Form isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
+      {/* Will be used later when we add preferences for user activities
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={userActivities} onSubmit={handleFormSubmit} />
+      */}
+
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} onSubmit={handleFormSubmit} />
 
       {/* Footer */}
       <FooterBanner />

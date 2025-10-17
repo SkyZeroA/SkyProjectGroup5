@@ -73,11 +73,36 @@ def questionnaire():
     return render_template('questionnaire.html')
 
 
-@app.route('/dashboard')
+@app.route('/api/dashboard')
 def dashboard():
     leaderboard = read_view_table()
     return render_template('dashboard.html', leaderboard=leaderboard)
 
+
+@app.route('/api/user-activities', methods=['GET'])
+def user_activities():
+    user_id = get_user_id_from_db(session['email'])
+    activities = get_users_preferred_activities(user_id)
+    return jsonify(activities), 200
+
+
+@app.route('/api/log-activity', methods=['POST'])
+def log_activity():
+    data = request.get_json()
+    user_id = get_user_id_from_db(session['email'])
+    week_number = get_current_week_number()
+    month_number = get_current_month_number()
+    for activity_name, value in data.items():
+       activity_id = get_activity_id(activity_name)
+       for _ in range(value):
+              insert_user_activity(user_id, activity_id, week_number, month_number)
+    return jsonify({"message": "Activity logged successfully"}), 200
+
+@app.route('/api/fetch-questions', methods=['GET'])
+def fetch_questions():
+    print("Fetching activity questions...")
+    questions = get_all_activity_names()
+    return jsonify(questions), 200
 
 
 

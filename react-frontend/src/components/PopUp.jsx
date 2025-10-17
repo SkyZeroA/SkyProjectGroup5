@@ -1,10 +1,43 @@
 // components/PopupForm.jsx or .tsx
 
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Card, CardContent } from "./Card";
 
-const PopupForm = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+const PopupForm = ({ isOpen, onClose, questions, onSubmit }) => {
+    const [answers, setAnswers] = useState({});
+
+    useEffect(() => {
+        if (isOpen) {
+        const initialAnswers = questions.reduce((acc, q) => {
+            acc[q] = 0;
+            return acc;
+        }, {});
+        setAnswers(initialAnswers);
+        }
+    }, [isOpen, questions]);
+
+    if (!isOpen) {return null; }
+
+
+    const increment = (question) => {
+        setAnswers((prev) => ({
+        ...prev,
+        [question]: prev[question] + 1,
+        }));
+    };
+
+    const decrement = (question) => {
+        setAnswers((prev) => ({
+        ...prev,
+        [question]: Math.max(0, prev[question] - 1), // prevent negatives
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(answers);
+        onClose();
+  };
 
   return (
     <div
@@ -16,21 +49,35 @@ const PopupForm = ({ isOpen, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <CardContent>
-          <h2 className="text-xl font-semibold mb-4">Add Score</h2>
+          <h2 className="text-xl font-semibold mb-4">Log Your Activities</h2>
 
-          {/* Example form */}
-          <form>
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-full mb-3 p-2 border border-gray-300 rounded"
-            />
-            <input
-              type="number"
-              placeholder="Score"
-              className="w-full mb-4 p-2 border border-gray-300 rounded"
-            />
-            <div className="flex justify-end gap-2">
+          <form onSubmit={handleSubmit}>
+            {questions.map((question) => (
+              <div key={question} className="mb-4">
+                <label className="block mb-2 font-medium text-gray-800">
+                  {question}
+                </label>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => decrement(question)}
+                    className="bg-gray-200 px-3 py-1 rounded text-lg"
+                  >
+                    −
+                  </button>
+                  <span className="text-lg w-8 text-center">{answers[question]}</span>
+                  <button
+                    type="button"
+                    onClick={() => increment(question)}
+                    className="bg-gray-200 px-3 py-1 rounded text-lg"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            <div className="flex justify-end gap-2 mt-6">
               <button
                 type="button"
                 className="bg-gray-200 px-4 py-2 rounded"
@@ -40,7 +87,7 @@ const PopupForm = ({ isOpen, onClose }) => {
               </button>
               <button
                 type="submit"
-                className="bg-green-500 text-white px-4 py-2 rounded"
+                className="bg-green-600 text-white px-4 py-2 rounded"
               >
                 Submit
               </button>

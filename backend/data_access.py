@@ -1,5 +1,6 @@
 import mysql.connector as mysql
 from pathlib import Path
+from datetime import date
 
 def get_connection():
     return mysql.connect(user="root", passwd="", host="localhost", database="SkyZeroDB")
@@ -136,3 +137,56 @@ def read_view_table():
     db_info = cursor.fetchall()
     close_connection(db)
     return db_info
+
+def get_current_week_number():
+    today = date.today()
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT weekID FROM Week WHERE week_start <= %s AND week_end >= %s", (today, today))
+    week_number = cursor.fetchone()[0]
+    close_connection(db)
+    return week_number
+
+def get_current_month_number():
+    today = date.today()
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT monthID FROM Month WHERE month_start <= %s AND month_end >= %s", (today, today))
+    month_number = cursor.fetchone()[0]
+    close_connection(db)
+    return month_number
+
+def get_users_preferred_activities(user_id):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT ak.activity_name FROM UserActivity ua JOIN ActivityKey ak ON ua.activityID = ak.activityID WHERE ua.userID = %s")
+    activities = [row[0] for row in cursor.fetchall()]
+    close_connection(db)
+    return activities
+
+def get_all_activity_names():
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT activity_name FROM ActivityKey")
+    activities = [row[0] for row in cursor.fetchall()]
+    close_connection(db)
+    return activities
+
+def get_activity_id(activity_name):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT activityID FROM ActivityKey WHERE activity_name = %s", (activity_name,))
+    activity_id = cursor.fetchone()[0]
+    close_connection(db)
+    return activity_id
+
+
+def insert_user_activity(user_id, activity, weekID, monthID):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        INSERT INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (user_id, weekID, monthID, activity, True))
+    db.commit()
+    close_connection(db)
