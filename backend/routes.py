@@ -57,20 +57,22 @@ def sign_up():
         return jsonify({"error": "Passwords do not match"}), 401
     else:
         insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
+        print("New user inserted:", session['username'], session['email'])
         return jsonify({"message": "Sign up successful"}), 200
 
 
-@app.route('/questionnaire', methods=['GET', 'POST'])
+@app.route('/api/questionnaire', methods=['GET', 'POST'])
 def questionnaire():
     if request.method == 'POST':
-        print (session['email'])
-        answers = Questionnaire(request.form.to_dict(), get_user_id_from_db(session['email']))
-        print(answers.get_questionnaire())
+        # print("User email from session:", session['email'])
+        print(session['email'])
+        data = request.get_json()
+        print("Questionnaire data received:", data)
+        answers = Questionnaire(data, get_user_id_from_db(session['email']))
+        # print(answers.get_questionnaire())
         insert_into_questionnaire(answers.format_answers())
-        return redirect(url_for('dashboard'))
-
-
-    return render_template('questionnaire.html')
+        return jsonify({"message": "Questionnaire submitted successfully"}), 200
+    return jsonify({"message": "Good request method"}), 200
 
 
 @app.route('/dashboard')
