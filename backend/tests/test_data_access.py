@@ -15,19 +15,6 @@ TEST_PASSWORD = "test123"
 class TestDatabaseFunctions(TestCase):
 
     def setUp(self):
-
-        self.data_access = MagicMock()
-        self.sample_data = [
-            {"id": 1, "name": "Alice"},
-            {"id": 2, "name": "Bob"},
-            {"id": 3, "name": "Charlie"},
-        ]
-        self.data_access.get_all.return_value = self.sample_data
-        self.data_access.get_by_id.side_effect = lambda x: next((item for item in self.sample_data if item["id"] == x), None)
-        self.data_access.create.side_effect = lambda x: {"id": len(self.sample_data) + 1, **x}
-        self.data_access.update.side_effect = lambda id, x: {**x, "id": id} if any(item["id"] == id for item in self.sample_data) else None
-        self.data_access.delete.side_effect = lambda id: True if any(item["id"] == id for item in self.sample_data) else False
-
         patcher = patch('mysql.connector.connect')
         self.addCleanup(patcher.stop)
         self.mock_connect = patcher.start()
