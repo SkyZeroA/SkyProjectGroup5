@@ -1,10 +1,10 @@
-import unittest
+from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
 from flask import session
 from backend import app
 
-class TestFlaskAPI(unittest.TestCase):
+class TestFlaskAPI(TestCase):
 
     def setUp(self):
         self.app = app.test_client()

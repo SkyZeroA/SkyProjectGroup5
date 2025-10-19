@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 from datetime import date
-from backend.data_access import (insert_new_user, get_user_id_from_db, get_username_from_db,
+from backend.data_access import (init_db, init_insert,insert_new_user, get_user_id_from_db, get_username_from_db,
                                  check_password, insert_into_questionnaire, read_user_table,
                                  read_view_table_week, read_view_table_month, get_current_week_number, get_current_month_number,
                                  get_users_preferred_activities, get_activity_id, get_all_activity_names, insert_user_activity)
@@ -23,6 +23,38 @@ class TestDatabaseFunctions(TestCase):
         self.mock_cursor = MagicMock()
         self.mock_connect.return_value = self.mock_conn
         self.mock_conn.cursor.return_value = self.mock_cursor
+
+    # Test for read create database file
+    @patch("backend.data_access.Path.read_text",
+           return_value="CREATE DATABASE test; USE test; CREATE TABLE User(id INT);")
+    @patch("backend.data_access.Path.exists", return_value=True)
+    def test_init_db(self, mock_exists, mock_read_text):
+
+        init_db()
+        self.mock_cursor.execute.assert_any_call("CREATE DATABASE test")
+        self.mock_cursor.execute.assert_any_call("USE test")
+        self.mock_cursor.execute.assert_any_call("CREATE TABLE User(id INT)")
+        self.mock_conn.commit.assert_called_once()
+
+    # Test for read insert table file
+    @patch("backend.data_access.Path.read_text", return_value="CREATE VIEW test_view AS SELECT * FROM User;")
+    @patch("backend.data_access.Path.exists", return_value=True)
+    def test_init_insert(self, mock_exists, mock_read_text):
+        init_insert()
+        self.mock_cursor.execute.assert_called_with("CREATE VIEW test_view AS SELECT * FROM User")
+        self.mock_conn.commit.assert_called_once()
+
+    #  Test for Missing File Error
+    @patch("backend.data_access.Path.exists", return_value=False)
+    def test_init_db_file_not_found(self, mock_exists):
+        with self.assertRaises(FileNotFoundError):
+            init_db()
+
+    #  Test for Missing File Error
+    @patch("backend.data_access.Path.exists", return_value=False)
+    def test_init_insert_file_not_found(self, mock_exists):
+        with self.assertRaises(FileNotFoundError):
+            init_insert()
 
     # Insert a user and verify it's in the DB.
     def test_insert_new_user(self):
