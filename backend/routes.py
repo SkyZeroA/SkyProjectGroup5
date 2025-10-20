@@ -85,5 +85,6 @@ def dashboard():
     return jsonify({"message": "Leaderboard send successful",
                    "weekLeaderboard": week_leaderboard,
                    "monthLeaderboard": month_leaderboard,
+                   "progressBar": progres_bar,
                    "username": username}), 200
 

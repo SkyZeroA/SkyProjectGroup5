@@ -14,7 +14,7 @@ const Dashboard = () => {
 	const [isOn, setIsOn] = useState(false);
 
 	useEffect(() => {
-		const fetchLeaderboard = async () => {
+		const fetchData = async () => {
 			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
 			.then(response => {
         setWeekData(response.data.weekLeaderboard);
@@ -24,21 +24,17 @@ const Dashboard = () => {
         console.error("Failed to fetch data from json" , error);
       });
     };
-		fetchLeaderboard();
+		fetchData();
 	}, []);
-	console.log(weekData);
-	console.log(monthData);
 
 	const current = isOn ? weekData : monthData;
-
-	console.log(current);
-
   const leaderboardData = current
     .sort((a, b) => b.score - a.score)
     .map((user) => ({
       ...user,
       isCurrentUser: user.name === username,
     }));
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -103,7 +99,11 @@ const Dashboard = () => {
 									<h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
 									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">100 Tons</span> of CO2</p>
 
-									<ProgressBar className=""/>
+									<ProgressBar className="flex justify-center items-center"/>
+
+                  <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
+                    Currently, you have produced <strong>50 Tons</strong> of CO2 so far, which is <strong>50 Tons Less</strong> than projected for this point in the year!
+                  </p>
 								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">
                 Tips to reduce your Carbon Footprint
