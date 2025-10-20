@@ -17,6 +17,7 @@ const Dashboard = () => {
 	const [monthData, setMonthData] = useState([]);
 	const [username, setUsername] = useState([]);
   const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
+  const [currentCarbon, setCurrentCarbon] = useState([]);
 	const [isOn, setIsOn] = useState(false);
 
 
@@ -53,6 +54,7 @@ const Dashboard = () => {
 				setMonthData(response.data.monthLeaderboard);
 				setUsername(response.data.username);
         setTotalProjectedCarbon(response.data.projectedCarbon)
+        setCurrentCarbon(response.data.currentCarbon)
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
       });
@@ -62,8 +64,7 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  const currentCarbon = 2;
-  const projectedCarbon = currentCarbon + 1;
+  const projectedCarbon = Math.round(1.1 * currentCarbon * 100) / 100;
 
 	const current = isOn ? weekData : monthData;
   const leaderboardData = current
@@ -154,7 +155,7 @@ const Dashboard = () => {
 									<ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
 
                   <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
-                    Currently, you have produced <strong>{currentCarbon} Tons</strong> of CO2 so far, which is <strong>{projectedCarbon - currentCarbon} Tons Less</strong> than projected for this point in the year!
+                    Currently, you have produced <strong>{currentCarbon} Tons</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} Tons Less</strong> than projected for this point in the year!
                   </p>
 								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">
