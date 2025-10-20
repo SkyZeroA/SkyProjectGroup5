@@ -4,17 +4,48 @@ import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import ProgressBar from "../components/ProgressBar";
 import Switch from "../components/Switch"
-import { React, useState, useEffect } from "react";
+import { Button } from "../components/Button";
+import Popup from "../components/PopUp";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
+
 
 const Dashboard = () => {
-  const [weekData, setWeekData] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [questions, setQuestions] = useState([]);
+	const [weekData, setWeekData] = useState([]);
 	const [monthData, setMonthData] = useState([]);
 	const [username, setUsername] = useState([]);
 	const [isOn, setIsOn] = useState(false);
 
-	useEffect(() => {
-		const fetchData = async () => {
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
+        setQuestions(response.data);
+      } catch (error) {
+        console.error("Error fetching activity questions:", error);
+      }
+    };
+    fetchQuestions();
+  }, []);
+
+  // Will replace above and be used later when we add preferences for user activities
+  // const [userActivities, setUserActivities] = useState([]);
+  // useEffect(() => {
+  //   const fetchUserActivities = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:9099/api/user-activities");
+  //       setUserActivities(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching user activities:", error);
+  //     }
+  //   };
+  //   fetchUserActivities();
+  // }, []);
+
+	const fetchData = async () => {
 			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
 			.then(response => {
         setWeekData(response.data.weekLeaderboard);
@@ -24,8 +55,10 @@ const Dashboard = () => {
         console.error("Failed to fetch data from json" , error);
       });
     };
-		fetchData();
-	}, []);
+	
+  useEffect(() => {
+    fetchData();
+  }, []);
 
 	const current = isOn ? weekData : monthData;
   const leaderboardData = current
@@ -36,11 +69,25 @@ const Dashboard = () => {
     }));
   
 
+  const handleFormSubmit = async (answers) => {
+    console.log("Form submitted with answers:", answers);
+    try {
+      const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
+      await fetchData();
+      console.log("Server response:", response.data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  }
+  
+
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
       {/* Sticky Header */}
       <div className="top-0 z-10 bg-white">
-        <HeaderBanner />
+        <HeaderBanner logoAlign="left" navbar={<Button variant="link"
+                    className="h-auto p-0 [font-family:'Sky_Text',Helvetica]  text-[#000ef5] text-[16.5px] leading-[24.8px] bg-green-500 text-white px-4 py-2 rounded" 
+                    onClick={() => setIsFormOpen(true)}>Form</Button>} />
       </div>
 
       {/* Main Content */}
@@ -130,11 +177,17 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
+      {/* Will be used later when we add preferences for user activities
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={userActivities} onSubmit={handleFormSubmit} />
+      */}
+
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} onSubmit={handleFormSubmit} />
 
       {/* Footer */}
       <FooterBanner />
     </div>
   );
 };
+
 
 export default Dashboard;
