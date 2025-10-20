@@ -16,6 +16,7 @@ const Dashboard = () => {
 	const [weekData, setWeekData] = useState([]);
 	const [monthData, setMonthData] = useState([]);
 	const [username, setUsername] = useState([]);
+  const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
 	const [isOn, setIsOn] = useState(false);
 
 
@@ -51,6 +52,7 @@ const Dashboard = () => {
         setWeekData(response.data.weekLeaderboard);
 				setMonthData(response.data.monthLeaderboard);
 				setUsername(response.data.username);
+        setTotalProjectedCarbon(response.data.projectedCarbon)
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
       });
@@ -59,6 +61,9 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const currentCarbon = 2;
+  const projectedCarbon = currentCarbon + 1;
 
 	const current = isOn ? weekData : monthData;
   const leaderboardData = current
@@ -144,12 +149,12 @@ const Dashboard = () => {
             <CardContent>
 								<div className="p-4">
 									<h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
-									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">100 Tons</span> of CO2</p>
+									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} Tons</span> of CO2</p>
 
-									<ProgressBar className="flex justify-center items-center"/>
+									<ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
 
                   <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
-                    Currently, you have produced <strong>50 Tons</strong> of CO2 so far, which is <strong>50 Tons Less</strong> than projected for this point in the year!
+                    Currently, you have produced <strong>{currentCarbon} Tons</strong> of CO2 so far, which is <strong>{projectedCarbon - currentCarbon} Tons Less</strong> than projected for this point in the year!
                   </p>
 								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">

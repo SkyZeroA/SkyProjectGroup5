@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProgressBar = ({ current = 50, projected = 65, totalProjected = 100 }) => {
+const ProgressBar = ({ current, projected, totalProjected}) => {
   const percentCurrent = (current / totalProjected) * 100;
   const percentProjected = (projected / totalProjected) * 100;
 

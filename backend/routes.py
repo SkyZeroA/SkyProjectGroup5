@@ -106,11 +106,16 @@ def dashboard():
     username = get_username_from_db(email)
     week_leaderboard = read_view_table_week()
     month_leaderboard = read_view_table_month()
+    answers, user_id = get_answers_from_questionnaire(email)
+    questionnaire_answers = Questionnaire(answers, user_id)
+    print(questionnaire_answers)
+    projected_carbon = questionnaire_answers.calculate_projected_carbon_footprint()
     print(week_leaderboard)
     print(month_leaderboard)
+    print(projected_carbon)
     return jsonify({"message": "Leaderboard send successful",
                    "weekLeaderboard": week_leaderboard,
                    "monthLeaderboard": month_leaderboard,
-                   "progressBar": progres_bar,
+                   "projectedCarbon": projected_carbon,
                    "username": username}), 200
 

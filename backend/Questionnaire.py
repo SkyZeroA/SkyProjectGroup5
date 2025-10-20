@@ -37,7 +37,7 @@ class Questionnaire:
         # "Not very efficient (older building or appliances)": 2.5
         energy_efficiency_emissions = [0.8, 1.5, 2.5]
 
-        transport, diet, efficiency = self._questionnaire.values();
+        transport, diet, efficiency = self._questionnaire.values()
 
         # Calculate footprint
         total = (
