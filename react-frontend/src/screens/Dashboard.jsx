@@ -102,16 +102,24 @@ const Dashboard = () => {
                 <Button 
                   variant="link"
                   className="bg-green-500 text-white" 
-                  onClick={() => setIsFormOpen(true)}>
+                  onClick={() => setIsFormOpen(true)}
+                >
                   Form
                 </Button>
               </div>
 
               {/* Right content */}
               <div className="ml-auto">
+                <Button
+                  variant="link"
+                  onClick={() => navigate("/profile")}
+                >
+                  {username}
+                </Button>
                 <Button 
                   variant="link"
-                  onClick={() => navigate("/")}>
+                  onClick={() => navigate("/")}
+                >
                   Sign Out
                 </Button>
               </div>
