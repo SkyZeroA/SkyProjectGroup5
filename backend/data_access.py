@@ -204,12 +204,12 @@ def get_current_month_number():
 def get_users_preferred_activities(user_id):
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT ak.activity_name FROM UserActivity ua JOIN ActivityKey ak ON ua.activityID = ak.activityID WHERE ua.userID = %s")
+    cursor.execute("SELECT ak.activity_name FROM UserActivity ua JOIN ActivityKey ak ON ua.activityID = ak.activityID WHERE ua.userID = %s", (user_id,))
     activities = [row[0] for row in cursor.fetchall()]
     close_connection(db)
     return activities
 
-
+# The old way to get all questions in ActivityKey table
 def get_all_activity_names():
     db = get_connection()
     cursor = db.cursor()
@@ -226,6 +226,18 @@ def get_activity_id(activity_name):
     activity_id = cursor.fetchone()[0]
     close_connection(db)
     return activity_id
+
+def update_user_preferred_activities(user_id, selected_activities):
+    db = get_connection()
+    cursor = db.cursor()
+    # First, delete existing activities for the user
+    cursor.execute("DELETE FROM UserActivity WHERE userID = %s", (user_id,))
+    # Then, insert the new selected activities
+    for activity_name in selected_activities:
+        activity_id = get_activity_id(activity_name)
+        cursor.execute("INSERT INTO UserActivity (userID, activityID) VALUES (%s, %s)", (user_id, activity_id))
+    db.commit()
+    close_connection(db)
 
 
 def insert_user_activity(user_id, activity, weekID, monthID):

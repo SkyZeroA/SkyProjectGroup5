@@ -2,9 +2,12 @@
 
 import React, {useState, useEffect} from "react";
 import { Card, CardContent } from "./Card";
+import { Button } from "./Button";
 
-const PopupForm = ({ isOpen, onClose, questions, onSubmit }) => {
+const PopupForm = ({ isOpen, onClose, questions, onSubmit, allQuestions, onActivitiesSave }) => {
     const [answers, setAnswers] = useState({});
+    const [selectedActivities, setSelectedActivities] = useState([]);
+    const [isEditingActivities, setIsEditingActivities] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
@@ -39,6 +42,19 @@ const PopupForm = ({ isOpen, onClose, questions, onSubmit }) => {
         onClose();
   };
 
+  const handleActivitiesSave = async () => {
+    await onActivitiesSave(selectedActivities);
+    setIsEditingActivities(false);
+  };
+
+  const handleActivitySelect = (activity) => {
+    setSelectedActivities((prev) =>
+      prev.includes(activity)
+        ? prev.filter((a) => a !== activity)
+        : [...prev, activity]
+    );
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -49,8 +65,33 @@ const PopupForm = ({ isOpen, onClose, questions, onSubmit }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <CardContent>
-          <h2 className="text-xl font-semibold mb-4">Log Your Activities</h2>
-
+          <h2 className="text-xl font-semibold mb-4">{isEditingActivities ? "Edit Your Activities" : "Log Your Activities"}</h2>
+          <Button onClick={() => setIsEditingActivities(!isEditingActivities)} variant="link" size="sm">
+            {isEditingActivities ? "Back to Form" : "Edit Activities"}
+          </Button>
+          {isEditingActivities ? (
+            <div className="max-h-[300px] overflow-y-auto">
+              {allQuestions.map((activity) => (
+                <label key={activity} className="block mb-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedActivities.includes(activity)}
+                    onChange={() => handleActivitySelect(activity)}
+                    className="mr-2"
+                  />
+                  {activity}
+                </label>
+              ))}
+              <div className="flex justify-end gap-2 mt-6">
+                <button className="bg-gray-200 px-4 py-2 rounded" onClick={() => setIsEditingActivities(false)}>
+                  Cancel
+                </button>
+                <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={handleActivitiesSave}>
+                  Save
+                </button>
+              </div>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit}>
             {questions.map((question) => (
               <div key={question} className="mb-4">
@@ -93,6 +134,7 @@ const PopupForm = ({ isOpen, onClose, questions, onSubmit }) => {
               </button>
             </div>
           </form>
+          )}
         </CardContent>
       </Card>
     </div>

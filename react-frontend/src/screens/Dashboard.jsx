@@ -6,7 +6,7 @@ import ProgressBar from "../components/ProgressBar";
 import Switch from "../components/Switch"
 import { Button } from "../components/Button";
 import Popup from "../components/PopUp";
-import axios from "axios";
+import axios, { all } from "axios";
 import React, { useState, useEffect } from "react";
 
 
@@ -19,33 +19,29 @@ const Dashboard = () => {
   const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
   const [currentCarbon, setCurrentCarbon] = useState([]);
 	const [isOn, setIsOn] = useState(false);
+  const [allQuestions, setAllQuestions] = useState([]);
 
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-        setQuestions(response.data);
-      } catch (error) {
+  const fetchAllQuestions = async () => {
+      const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true })
+      .then(response => {
+        setAllQuestions(response.data);
+      })
+      .catch(error => {
         console.error("Error fetching activity questions:", error);
-      }
-    };
-    fetchQuestions();
-  }, []);
+      });
+  };
 
-  // Will replace above and be used later when we add preferences for user activities
-  // const [userActivities, setUserActivities] = useState([]);
-  // useEffect(() => {
-  //   const fetchUserActivities = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:9099/api/user-activities");
-  //       setUserActivities(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching user activities:", error);
-  //     }
-  //   };
-  //   fetchUserActivities();
-  // }, []);
+  //Will replace above and be used later when we add preferences for user activities
+  const fetchUserActivities = async () => {
+      const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true })
+      .then(response => {
+        setQuestions(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching user activities:", error);
+      });
+  };
 
 	const fetchData = async () => {
 			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
@@ -61,6 +57,8 @@ const Dashboard = () => {
     };
 	
   useEffect(() => {
+    fetchUserActivities();
+    fetchAllQuestions();
     fetchData();
   }, []);
 
@@ -85,6 +83,19 @@ const Dashboard = () => {
       console.error("Error submitting form:", error);
     }
   }
+
+  const handleActivitySave = async (selected) => {
+  try {
+    await axios.post(
+      "http://localhost:9099/api/update-user-activities",
+      { activities: selected },
+      { withCredentials: true }
+    );
+    await fetchUserActivities();
+  } catch (error) {
+    console.error("Error saving user activities:", error);
+  }
+};
   
 
   return (
@@ -187,7 +198,7 @@ const Dashboard = () => {
       <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={userActivities} onSubmit={handleFormSubmit} />
       */}
 
-      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} onSubmit={handleFormSubmit} />
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} onSubmit={handleFormSubmit} allQuestions={allQuestions} onActivitiesSave={handleActivitySave} />
 
       {/* Footer */}
       <FooterBanner />
