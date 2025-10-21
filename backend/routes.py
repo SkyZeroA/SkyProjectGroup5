@@ -80,16 +80,28 @@ def user_activities():
     return jsonify(activities), 200
 
 
+# @app.route('/api/log-activity', methods=['POST'])
+# def log_activity():
+#     data = request.get_json()
+#     user_id = get_user_id_from_db(session['email'])
+#     week_number = get_current_week_number()
+#     month_number = get_current_month_number()
+#     for activity_name, value in data.items():
+#        activity_id = get_activity_id(activity_name)
+#        for _ in range(value):
+#               insert_user_activity(user_id, activity_id, week_number, month_number)
+#     return jsonify({"message": "Activity logged successfully"}), 200
+
 @app.route('/api/log-activity', methods=['POST'])
 def log_activity():
     data = request.get_json()
     user_id = get_user_id_from_db(session['email'])
     week_number = get_current_week_number()
     month_number = get_current_month_number()
-    for activity_name, value in data.items():
-       activity_id = get_activity_id(activity_name)
-       for _ in range(value):
-              insert_user_activity(user_id, activity_id, week_number, month_number)
+    question = data.get('question')
+    isPositive = data.get('isPositive')
+    activity_id = get_activity_id(question)
+    insert_user_activity(user_id, activity_id, week_number, month_number, isPositive)
     return jsonify({"message": "Activity logged successfully"}), 200
 
 # The old way to get all questions in ActivityKey table
@@ -106,6 +118,17 @@ def update_user_activities():
     user_id = get_user_id_from_db(session['email'])
     update_user_preferred_activities(user_id, selected_activities)
     return jsonify({"message": "User activities updated successfully"}), 200
+
+@app.route('/api/user-activity-counts', methods=['GET'])
+def user_activity_counts():
+    user_id = get_user_id_from_db(session['email'])
+    activities = get_users_preferred_activities(user_id)
+    activity_counts = {}
+    for activity in activities:
+        activity_id = get_activity_id(activity)
+        count = get_user_activity_count(user_id, activity_id)
+        activity_counts[activity] = count
+    return jsonify(activity_counts), 200
     
 
 @app.route('/api/dashboard', methods=['GET'])

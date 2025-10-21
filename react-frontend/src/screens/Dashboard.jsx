@@ -60,7 +60,7 @@ const Dashboard = () => {
     fetchUserActivities();
     fetchAllQuestions();
     fetchData();
-  }, []);
+  }, [isFormOpen]);
 
   const projectedCarbon = Math.round(1.1 * currentCarbon * 100) / 100;
 
@@ -73,24 +73,21 @@ const Dashboard = () => {
     }));
   
 
-  const handleFormSubmit = async (answers) => {
-    console.log("Form submitted with answers:", answers);
-    try {
-      const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
-      await fetchData();
-      console.log("Server response:", response.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  }
+  // const handleFormSubmit = async (answers) => {
+  //   console.log("Form submitted with answers:", answers);
+  //   try {
+  //     const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
+  //     await fetchData();
+  //     console.log("Server response:", response.data);
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //   }
+  // }
 
   const handleActivitySave = async (selected) => {
   try {
     await axios.post(
-      "http://localhost:9099/api/update-user-activities",
-      { activities: selected },
-      { withCredentials: true }
-    );
+      "http://localhost:9099/api/update-user-activities", { activities: selected }, { withCredentials: true });
     await fetchUserActivities();
   } catch (error) {
     console.error("Error saving user activities:", error);
@@ -194,11 +191,8 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
-      {/* Will be used later when we add preferences for user activities
-      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={userActivities} onSubmit={handleFormSubmit} />
-      */}
 
-      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} onSubmit={handleFormSubmit} allQuestions={allQuestions} onActivitiesSave={handleActivitySave} />
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} allQuestions={allQuestions} onActivitiesSave={handleActivitySave} />
 
       {/* Footer */}
       <FooterBanner />

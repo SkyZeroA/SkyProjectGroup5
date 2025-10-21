@@ -230,22 +230,33 @@ def get_activity_id(activity_name):
 def update_user_preferred_activities(user_id, selected_activities):
     db = get_connection()
     cursor = db.cursor()
-    # First, delete existing activities for the user
     cursor.execute("DELETE FROM UserActivity WHERE userID = %s", (user_id,))
-    # Then, insert the new selected activities
     for activity_name in selected_activities:
         activity_id = get_activity_id(activity_name)
         cursor.execute("INSERT INTO UserActivity (userID, activityID) VALUES (%s, %s)", (user_id, activity_id))
     db.commit()
     close_connection(db)
 
+def get_user_activity_count(user_id, activity_id):
+    db = get_connection()
+    cursor = db.cursor()
+    week_number = get_current_week_number()
+    cursor.execute("""
+        SELECT 
+            COALESCE(SUM(CASE WHEN ec.positive_activity = TRUE THEN 1 ELSE -1 END), 0) as count
+        FROM EcoCounter ec 
+        WHERE ec.userID = %s AND ec.activityID = %s AND ec.weekID = %s
+    """, (user_id, activity_id, week_number))
+    count = cursor.fetchone()[0]
+    close_connection(db)
+    return count
 
-def insert_user_activity(user_id, activity, weekID, monthID):
+def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("""
         INSERT INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity)
         VALUES (%s, %s, %s, %s, %s)
-    """, (user_id, weekID, monthID, activity, True))
+    """, (user_id, weekID, monthID, activity, positive_activity))
     db.commit()
     close_connection(db)
