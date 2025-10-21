@@ -93,22 +93,31 @@ const Dashboard = () => {
     <div className="flex flex-col min-h-screen bg-neutral-50">
       {/* Sticky Header */}
       <div className="top-0 z-10 bg-white">
-        <HeaderBanner logoAlign="left" navbar={
-          <div className="w-full px-4 py-2 rounded [font-family:'Sky_Text',Helvetica] text-[16.5px] h-auto p-0 leading-[24.8px]">
-            <Button 
-              variant="link"
-              className="bg-green-500 text-white" 
-              onClick={() => setIsFormOpen(true)}>
-                Form
-            </Button> 
-            <Button 
-              variant="link"
-              className="ml-auto text-right"
-              onClick={() => navigate("/")}>
-                Sign Out
-            </Button>
-          </div>
-        } />
+        <HeaderBanner
+          logoAlign="left"
+          navbar={
+            <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
+              {/* Left content */}
+              <div>
+                <Button 
+                  variant="link"
+                  className="bg-green-500 text-white" 
+                  onClick={() => setIsFormOpen(true)}>
+                  Form
+                </Button>
+              </div>
+
+              {/* Right content */}
+              <div className="ml-auto">
+                <Button 
+                  variant="link"
+                  onClick={() => navigate("/")}>
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          }
+        />
     </div>
 
       {/* Main Content */}

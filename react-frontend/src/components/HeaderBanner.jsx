@@ -17,7 +17,7 @@ const HeaderBanner = ({ className , navbar= null, logoAlign = "center" }) => {
     />
 
     {logoAlign === "left" && navbar && (
-      <nav className="flex items-center gap-4">
+      <nav className="flex items-center gap-4 w-full">
         {navbar}
       </nav>
     )}
