@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import Popup from "../components/PopUp";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 
 const Dashboard = () => {
@@ -20,6 +21,7 @@ const Dashboard = () => {
   const [currentCarbon, setCurrentCarbon] = useState([]);
 	const [isOn, setIsOn] = useState(false);
 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -91,10 +93,23 @@ const Dashboard = () => {
     <div className="flex flex-col min-h-screen bg-neutral-50">
       {/* Sticky Header */}
       <div className="top-0 z-10 bg-white">
-        <HeaderBanner logoAlign="left" navbar={<Button variant="link"
-                    className="h-auto p-0 [font-family:'Sky_Text',Helvetica]  text-[#000ef5] text-[16.5px] leading-[24.8px] bg-green-500 text-white px-4 py-2 rounded" 
-                    onClick={() => setIsFormOpen(true)}>Form</Button>} />
-      </div>
+        <HeaderBanner logoAlign="left" navbar={
+          <div className="w-full px-4 py-2 rounded [font-family:'Sky_Text',Helvetica] text-[16.5px] h-auto p-0 leading-[24.8px]">
+            <Button 
+              variant="link"
+              className="bg-green-500 text-white" 
+              onClick={() => setIsFormOpen(true)}>
+                Form
+            </Button> 
+            <Button 
+              variant="link"
+              className="ml-auto text-right"
+              onClick={() => navigate("/")}>
+                Sign Out
+            </Button>
+          </div>
+        } />
+    </div>
 
       {/* Main Content */}
       <main className="flex flex-1 px-6 py-6 gap-6">
