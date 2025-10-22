@@ -95,14 +95,15 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
           <h2 className="text-xl font-semibold mb-4">{isEditingActivities ? "Edit Your Activities" : "Log Your Activities"}</h2>
           <Button onClick={() => {
     if (!isEditingActivities) {
-      setSelectedActivities([...questions]); // Use current user activities
+      setSelectedActivities([...questions]);
     }
     setIsEditingActivities((prev) => !prev);
-  }} variant="link" size="sm">
+  }} variant="link" size="sm" className="bg-green-600 text-white px-4 py-2 rounded">
             {isEditingActivities ? "Back to Form" : "Edit Activities"}
           </Button>
           {isEditingActivities ? (
-            <div className="max-h-[300px] overflow-y-auto">
+            <div>
+            <div className="max-h-80 overflow-y-auto pr-2">
               {allQuestions.map((activity) => (
                 <label key={activity} className="block mb-2">
                   <input
@@ -114,6 +115,7 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                   {activity}
                 </label>
               ))}
+              </div>
               <div className="flex justify-end gap-2 mt-6">
                 <button className="bg-gray-200 px-4 py-2 rounded" onClick={() => setIsEditingActivities(false)}>
                   Cancel
@@ -122,10 +124,11 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                   Save
                 </button>
               </div>
-            </div>
+              </div>
           ) : (
           <form onSubmit={handleSubmit}>
-            <p className="text-sm text-gray-600 mt-2 mb-4">Activity count will reset at the start of each week.</p>
+            <p className="text-sm text-gray-600 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal">Activity counts will reset at the start of each week.</p>
+            <div className="max-h-80 overflow-y-auto pr-2">
             {questions.map((question) => (
               <div key={question} className="mb-4">
                 <label className="block mb-2 font-medium text-gray-800">
@@ -150,6 +153,7 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                 </div>
               </div>
             ))}
+            </div>
 
             <div className="flex justify-end gap-2 mt-6">
               <button
