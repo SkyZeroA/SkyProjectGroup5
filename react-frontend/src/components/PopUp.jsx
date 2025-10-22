@@ -88,11 +88,11 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
       onClick={onClose}
     >
       <Card
-        className="bg-white w-full max-w-md rounded-lg shadow-lg p-6"
+        className="bg-white w-[90vw] max-w-md min-w-[320px] max-h-[80vh] rounded-lg shadow-lg p-6 overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <CardContent>
-          <h2 className="text-xl font-semibold justify-center mb-4">{isEditingActivities ? "Edit Your Activities" : "Log Your Activities"}</h2>
+          <h2 className="text-xl font-semibold text-center mb-4">{isEditingActivities ? "Edit Your Activities" : "Log Your Activities"}</h2>
           {isEditingActivities ? (
             <div>
             <div className="max-h-80 overflow-y-auto pr-2">
