@@ -92,15 +92,7 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
         onClick={(e) => e.stopPropagation()}
       >
         <CardContent>
-          <h2 className="text-xl font-semibold mb-4">{isEditingActivities ? "Edit Your Activities" : "Log Your Activities"}</h2>
-          <Button onClick={() => {
-    if (!isEditingActivities) {
-      setSelectedActivities([...questions]);
-    }
-    setIsEditingActivities((prev) => !prev);
-  }} variant="link" size="sm" className="bg-green-600 text-white px-4 py-2 rounded">
-            {isEditingActivities ? "Back to Form" : "Edit Activities"}
-          </Button>
+          <h2 className="text-xl font-semibold justify-center mb-4">{isEditingActivities ? "Edit Your Activities" : "Log Your Activities"}</h2>
           {isEditingActivities ? (
             <div>
             <div className="max-h-80 overflow-y-auto pr-2">
@@ -128,7 +120,7 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
           ) : (
           <form onSubmit={handleSubmit}>
             <p className="text-sm text-gray-600 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal">Activity counts will reset at the start of each week.</p>
-            <div className="max-h-80 overflow-y-auto pr-2">
+            <div className="max-h-80 overflow-y-auto pr-2 mt-4">
             {questions.map((question) => (
               <div key={question} className="mb-4">
                 <label className="block mb-2 font-medium text-gray-800">
@@ -155,10 +147,18 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
             ))}
             </div>
 
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-between gap-2 mt-6">
+              <button onClick={() => {
+    if (!isEditingActivities) {
+      setSelectedActivities([...questions]);
+    }
+    setIsEditingActivities((prev) => !prev);
+  }} type="button" className="flex bg-green-600 text-white px-4 py-2 rounded">
+            Edit Activities
+          </button>
               <button
                 type="button"
-                className="bg-green-600 text-white px-4 py-2 rounded"
+                className="flex bg-green-600 text-white px-4 py-2 rounded"
                 onClick={onClose}
               >
                 Close
