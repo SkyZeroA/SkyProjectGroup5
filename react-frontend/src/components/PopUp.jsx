@@ -26,32 +26,29 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
       const fetchActivityCounts = async () => {
         try {
           const response = await axios.get("http://localhost:9099/api/user-activity-counts", { withCredentials: true });
-          setAnswers(response.data);
+          setAnswers(response.data || {});
         } catch (error) {
           console.error("Error fetching activity counts:", error);
         }
       };
-
       if (isOpen) {
         fetchActivityCounts();
       }
-    }, [isOpen]);
+    }, [isOpen, questions]);
 
     if (!isOpen) {return null; }
-
-
 
     const increment = (question) => {
         setAnswers((prev) => ({
         ...prev,
-        [question]: prev[question] + 1,
+        [question]: Number(prev[question]) + 1,
         }));
     };
 
     const decrement = (question) => {
         setAnswers((prev) => ({
         ...prev,
-        [question]: Math.max(0, prev[question] - 1), // prevent negatives
+        [question]: Math.max(0, Number(prev[question]) - 1),
         }));
     };
 
@@ -125,12 +122,17 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                   Save
                 </button>
               </div>
-              </div>
+            </div>
           ) : (
           <form onSubmit={handleSubmit}>
             <p className="text-sm text-gray-600 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal">Activity counts will reset at the start of each week.</p>
             <div className="max-h-80 overflow-y-auto pr-2 mt-4">
-            {questions.map((question) => (
+              {questions.length === 0 ? (
+                <p className="text-gray-600 text-sm italic">
+                  No activities set. Click "Edit Activities" below to add some.
+                </p>
+              ) : (
+            questions.map((question) => (
               <div key={question} className="mb-4">
                 <label className="block mb-2 font-medium text-gray-800">
                   {question}
@@ -138,7 +140,10 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    onClick={() => {decrement(question); handleSubmit(question, 0)}}
+                    onClick={() => {if (Number(answers[question] || 0) > 0) {
+                                      decrement(question);
+                                      handleSubmit(question, 0);
+                                    }}}
                     className="bg-gray-200 px-3 py-1 rounded text-lg"
                   >
                     −
@@ -153,18 +158,17 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                   </button>
                 </div>
               </div>
-            ))}
+            )))}
             </div>
-
             <div className="flex justify-between gap-2 mt-6">
               <button onClick={() => {
-    if (!isEditingActivities) {
-      setSelectedActivities([...questions]);
-    }
-    setIsEditingActivities((prev) => !prev);
-  }} type="button" className="flex bg-green-600 text-white px-4 py-2 rounded">
-            Edit Activities
-          </button>
+                if (!isEditingActivities) {
+                  setSelectedActivities([...questions]);
+                }
+                setIsEditingActivities((prev) => !prev);}} 
+                type="button" className="flex bg-green-600 text-white px-4 py-2 rounded">
+              Edit Activities
+              </button>
               <button
                 type="button"
                 className="flex bg-green-600 text-white px-4 py-2 rounded"
