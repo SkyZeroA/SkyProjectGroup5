@@ -95,18 +95,27 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
           <h2 className="text-xl font-semibold text-center mb-4">{isEditingActivities ? "Edit Your Activities" : "Log Your Activities"}</h2>
           {isEditingActivities ? (
             <div>
-            <div className="max-h-80 overflow-y-auto pr-2">
-              {allQuestions.map((activity) => (
-                <label key={activity} className="block mb-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedActivities.includes(activity)}
-                    onChange={() => handleActivitySelect(activity)}
-                    className="mr-2"
-                  />
-                  {activity}
-                </label>
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-80 overflow-y-auto pr-2">
+                {allQuestions.map((activity) => {
+                  const isSelected = selectedActivities.includes(activity);
+                  return (
+                    <div
+                      key={activity}
+                      onClick={() => handleActivitySelect(activity)}
+                      className={`cursor-pointer p-4 border rounded-md shadow-sm transition
+                        ${isSelected ? 'bg-green-100 border-green-600 text-green-800' : 'bg-white hover:bg-gray-100'}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{activity}</span>
+                        {isSelected && (
+                          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
               <div className="flex justify-end gap-2 mt-6">
                 <button className="bg-gray-200 px-4 py-2 rounded" onClick={() => setIsEditingActivities(false)}>
