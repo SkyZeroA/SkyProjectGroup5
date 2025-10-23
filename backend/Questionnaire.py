@@ -64,7 +64,7 @@ class Questionnaire:
         current_value = total * year_progress
 
         return {
-            "annual_total": round(total, 2),
-            "current_to_date": round(current_value, 2),
-            "year_progress_percent": round(year_progress * 100, 2)
+            "annual_total": round(total),
+            "current_to_date": round(current_value),
+            "year_progress_percent": round(year_progress * 100)
         }
