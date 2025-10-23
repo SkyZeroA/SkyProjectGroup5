@@ -1,4 +1,5 @@
 from datetime import datetime
+from backend.data_access import *
 
 class Questionnaire:
     def __init__(self, answers, user_id):
@@ -21,34 +22,36 @@ class Questionnaire:
 
         # Emission factors (tonnes CO₂ per year)
 
-        # "Walk / Cycle": 0.2,
-        # "Public Transport": 0.8,
-        # "Car (Petrol/Diesel)": 2.4,
-        # "Car (Electric)": 1.2,
-        # "Work from home": 0.3
-        transport_emissions = [0.2, 0.8, 2.4, 1.2, 0.3]
+        # Transport options kg CO2 / km
+        # Work from home, Walk/Cycle, Public Transport (Bus/Train), Car (Petrol/Deisel), Car (Electic)
+        transport_emission_factors = [0.0, 0.0, 0.05, 0.25, 0.05]
 
-        # "Meat-based": 2.5,
-        # "Mixed": 1.7,
-        # "Vegetarian": 1.0,
-        # "Vegan": 0.6
-        diet_emissions = [2.5, 1.7, 1.0, 0.6]
+        # Travel distance (miles)
+        # 0-5, 5-10, 10-15, 15-20, 20-30, 30+
+        travel_distance = [2.5, 7.5, 12.5, 17.5, 25, 40]
+        
+        # Meats eaten kg Co2 (Assumes 200g eaten)
+        # Beef, Lamb, Pork, Chicken, Turkey, Fish
+        meat_eaten = [10.0, 8.0, 2.0, 1.6, 2.4, 1.4]
 
-        # "Very efficient (modern insulation, LED lights, smart appliances)": 0.8,
-        # "Moderately efficient (some energy-saving features)": 1.5,
-        # "Not very efficient (older building or appliances)": 2.5
-        energy_efficiency_emissions = [0.8, 1.5, 2.5]
-
-        transport, diet, efficiency = self._questionnaire.values()
+        tef_index, td_index, office_days, days_eating_meat, me_index, heating_hours = self._questionnaire.values()
 
         # Calculate footprint
-        total = (
-            transport_emissions[transport] +
-            diet_emissions[diet] +
-            energy_efficiency_emissions[efficiency]
-        )
+        # Travel dist * 2 because return journey
+        # Assumes 48 working weeks in the year
+        transport_emissions = transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * office_days * 48 # kg CO2 / year
 
-         # Get current date
+        # Assumes meat eating habits year round
+        diet_emissions = days_eating_meat * meat_eaten[me_index] * 52 # kg CO2 / year
+
+        # Assumes 10 kWh/hour boiler
+        # 0.2 is the heating emission factor kg CO2 / hour
+        # Assumes heating on for winter months only = 90 days
+        heating_emissions = heating_hours * 0.2 * 10 * 90 # kg CO2 / year
+
+        total = transport_emissions + diet_emissions + heating_emissions
+
+        # Get current date
         today = datetime.today()
         day_of_year = today.timetuple().tm_yday
 
@@ -59,10 +62,24 @@ class Questionnaire:
 
         # Calculate year progress
         year_progress = day_of_year / days_in_year
-        current_value = total * year_progress
+        projected = total * year_progress
+
+        counts = get_user_activity_count_total(self._id)
+
+        # ----------- Activity Key --------------
+        # 1: Ride Bike
+        # 7: Avoid meat
+
+        for (activity_id, count) in counts:
+            if activity_id == 1:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 7:
+                diet_emissions -= meat_eaten[me_index] * count
+
+        current = (transport_emissions + diet_emissions + heating_emissions) * year_progress
 
         return {
-            "annual_total": round(total, 2),
-            "current_to_date": round(current_value, 2),
-            "year_progress_percent": round(year_progress * 100, 2)
+            "annual_total": round(total),
+            "projected": round(projected),
+            "current": round(current)
         }

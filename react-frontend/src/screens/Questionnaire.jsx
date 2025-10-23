@@ -3,75 +3,34 @@ import { Button } from "../components/Button";
 import { Card, CardContent } from "../components/Card";
 import FooterBanner from "../components/FooterBanner";
 import HeaderBanner from "../components/HeaderBanner";
-import { Label } from "../components/Label";
-import { RadioGroup, RadioGroupItem } from "../components/RadioGroup";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import RadioQuestion from "../components/RadioQuestion";
+import SliderQuestion from "../components/SliderQuestion";
 
 const Questionnaire = () => {
   const [transportMethod, setTransportMethod] = useState(0);
-  // const [travelDistance, setTravelDistance] = useState("15-20");
-  // const [officeDays, setOfficeDays] = useState(2);
-  const [diet, setDiet] = useState(0);
-  const [homeEfficiency, setHomeEfficiency] = useState(0);
+  const [travelDistance, setTravelDistance] = useState(0);
+  const [officeDays, setOfficeDays] = useState(0);
+  const [dietDays, setDietDays] = useState(0);
+  const [meats, setMeats] = useState(0);
+  const [heatingHours, setHeatingHours] = useState(0);
+
+  // Keeps track of current question
+  // Used to make numbers consistent with conditionally displayed questions
+  let questionNumber = 1;
 
   const navigate = useNavigate();
-
-  // const transportOptions = [
-  //   { value: "car", label: "Car" },
-  //   { value: "bike", label: "Bike" },
-  //   { value: "bus", label: "Bus" },
-  //   { value: "train", label: "Train" },
-  //   { value: "walk", label: "Walk" },
-  //   { value: "plane", label: "Plane" },
-  // ];
-  const transportOptions = [
-    { value: 0, label: "Walk/Cycle" },
-    { value: 1, label: "Public Transport (Bus/Train)" },
-    { value: 2, label: "Car (Petrol/Diesel)" },
-    { value: 3, label: "Car (Electric)" },
-    { value: 4, label: "Work from Home" },
-  ];
-
-  // const distanceOptions = [
-  //   { value: "0-5", label: "0-5" },
-  //   { value: "5-10", label: "5-10" },
-  //   { value: "10-15", label: "10-15" },
-  //   { value: "15-20", label: "15-20" },
-  //   { value: "20-30", label: "20-30" },
-  //   { value: "30+", label: "30+" },
-  // ];
-
-  // const dayLabels = [
-  //   { label: "0", left: "left-52" },
-  //   { label: "1", left: "left-[386px]" },
-  //   { label: "2", left: "left-[564px]" },
-  //   { label: "3", left: "left-[742px]" },
-  //   { label: "4", left: "left-[920px]" },
-  //   { label: "5", left: "left-[1098px]" },
-  //   { label: "6", left: "left-[1276px]" },
-  //   { label: "7", left: "left-[1454px]" },
-  // ];
-
-  const dietOptions = [
-    { value: 0, label: "Meat-based (Daily Consumption)" },
-    { value: 1, label: "Mixed (Occasional Meat, Mostly Vegetarian)" },
-    { value: 2, label: "Vegetarian" },
-    { value: 3, label: "Vegan" },
-  ];
-
-  const energyEfficiencyOptions = [
-    { value: 0, label: "Very Efficient (Modern insulation, LED lighting, smart appliances)" },
-    { value: 1, label: "Moderately Efficient (Some energy-saving features)" },
-    { value: 2, label: "Inefficient (Older buildings or appliances)" },
-  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const questionnairePayload = { 
       "transportMethod": transportMethod,
-      "diet": diet,
-      "homeEfficiency": homeEfficiency
+      "travelDistance": travelDistance,
+      "officeDays": officeDays,
+      "dietDays": dietDays,
+      "meats": meats,
+      "heatingHours": heatingHours,
     };
     console.log("Questionnaire Payload:", questionnairePayload);
 
@@ -98,210 +57,86 @@ const Questionnaire = () => {
         {/* Welcome Card */}
         <Card className="mx-auto max-w-2xl bg-white">
           <CardContent>
-            <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-green-300 via-green-500 to-green-700 text-transparent bg-clip-text">
+            <h1 className="mb-4 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-transparent text-[38px] text-center leading-[57px]">
               Welcome to ClearSky
             </h1>
-            <p className="mt-4 text-center text-xl">
-              You will now be asked a series of questions relating to your carbon
+            <p className="mt-4 text-center text-xl [font-family:'Sky_Text',Helvetica]">
+              You will now be asked a series of lifestyle questions relating to your carbon
               footprint so that we can calculate a baseline.
             </p>
           </CardContent>
         </Card>
 
-        {/* Question 1
-        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
-              Question 1: How do you get to work?
-            </h2>
-            <RadioGroup
-              value={transportMethod}
-              onValueChange={setTransportMethod}
-              className={
-                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
-                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
-              }>
-              {transportOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
-                  <RadioGroupItem
-                    value={option.value}
-                    id={option.value}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))}
-            </RadioGroup>
-          </CardContent>
-        </Card> */}
+        {/* Questions */}
+        <RadioQuestion
+          options={[
+            { value: 0, label: "Work from Home" },
+            { value: 1, label: "Walk/Cycle" },
+            { value: 2, label: "Public Transport (Bus/Train)" },
+            { value: 3, label: "Car (Petrol/Diesel)" },
+            { value: 4, label: "Car (Electric)" },
+          ]}
+          current={transportMethod}
+          setCurrent={setTransportMethod}
+          question={`Question ${questionNumber++}: How do you usually commute to work?`}
+        />
 
-        {/* Question 1 */}
-        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
-              Question 1: How do you usually commute to work?
-            </h2>
-            <RadioGroup
-              value={transportMethod}
-              onValueChange={setTransportMethod}
-              className={
-                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
-                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
-              }>
-              {/* {transportOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
-                  <RadioGroupItem
-                    value={option.value}
-                    id={option.value}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))} */}
-            {transportOptions.map((option) => (
-            <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-            <Label htmlFor={`transport-${option.value}`}  // ✅ Link label to radio
-              className="text-sm md:text-base cursor-pointer"
-            >
-              {option.label}
-            </Label>
-            <RadioGroupItem value={option.value}
-              id={`transport-${option.value}`}        // ✅ Matching ID
-              className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-            />
-          </div>
-        ))}
-            </RadioGroup>
-          </CardContent>
-        </Card>
+        { transportMethod !== 0 && (
+        <>
+          <RadioQuestion
+            options={[
+              { value: 0, label: "0-5" },
+              { value: 1, label: "5-10" },
+              { value: 2, label: "10-15" },
+              { value: 3, label: "15-20" },
+              { value: 4, label: "20-30" },
+              { value: 5, label: "30+" },
+            ]}
+            current={travelDistance}
+            setCurrent={setTravelDistance}
+            question={`Question ${questionNumber++}: How far do you travel to get to work? (in miles)`}
+          />
 
-        {/* Question 2
-        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
-              Question 2: How far do you travel to get to work? (in miles)
-            </h2>
+          <SliderQuestion
+            max={7}
+            current={officeDays}
+            setCurrent={setOfficeDays}
+            question={`Question ${questionNumber++}: How many days a week are you in the office?`}
+          />
+        </>
+        )}
 
-            <RadioGroup
-              value={travelDistance}
-              onValueChange={setTravelDistance}
-              className={
-                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
-                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
-              }
-            >
-              {distanceOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
-                  <RadioGroupItem
-                    value={option.value}
-                    id={`distance-${option.value}`}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))}
-            </RadioGroup>
-          </CardContent>
-        </Card> */}
+        <SliderQuestion
+          max={7}
+          current={dietDays}
+          setCurrent={setDietDays}
+          question={`Question ${questionNumber++}: How many days a week do you eat meat?`}
+        />
 
-        {/* Question 2 */}
-        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
-              Question 2: What type of diet do you typically follow?
-            </h2>
+        { dietDays !== 0 && (
+          <RadioQuestion
+            options={[
+              { value: 0, label: "Beef" },
+              { value: 1, label: "Lamb" },
+              { value: 2, label: "Pork" },
+              { value: 3, label: "Chicken" },
+              { value: 4, label: "Turkey" },
+              { value: 5, label: "Fish" },
+            ]}
+            current={meats}
+            setCurrent={setMeats}
+            question={`Question ${questionNumber++}: Which meat do you eat most?`}
+          />
+        )}
 
-            <RadioGroup
-              value={diet}
-              onValueChange={setDiet}
-              className={
-                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
-                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
-              }
-            >
-              {/* {dietOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
-                  <RadioGroupItem
-                    value={option.value}
-                    id={`diet-${option.value}`}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))} */}
-              {dietOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label
-                    htmlFor={`diet-${option.value}`}        // ✅ Link label to radio
-                    className="text-sm md:text-base cursor-pointer"
-                  >
-                    {option.label}
-                  </Label>
-                  <RadioGroupItem value={option.value}
-                    id={`diet-${option.value}`}             // ✅ Matching ID
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))}
-            </RadioGroup>
-          </CardContent>
-        </Card>
+        <SliderQuestion
+        max={24}
+        jump={2}
+        current={heatingHours}
+        setCurrent={setHeatingHours}
+        question={`Question ${questionNumber++}: How many hours per day do you have your heating on in winter?`}
+        />
 
-        {/* Question 3
-        <Card className="mx-auto mt-6 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
-              Question 3: How many days a week are you in the office?
-            </h2>
-
-            <div className="mt-6">
-              <Slider value={officeDays} onChange={setOfficeDays} min={0} max={7} jump={1} />
-            </div>
-          </CardContent>
-        </Card> */}
-
-        {/* Question 3 */}
-        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
-              Question 3: How energy-efficient is your home?
-
-            </h2>
-
-            <RadioGroup
-              value={homeEfficiency}
-              onValueChange={setHomeEfficiency}
-              className={
-                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
-                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
-              }
-            >
-              {/* {energyEfficiencyOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
-                  <RadioGroupItem
-                    value={option.value}
-                    id={`energy-efficiency-${option.value}`}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))} */}
-              {energyEfficiencyOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label htmlFor={`energy-efficiency-${option.value}`} // ✅ Link label to radio
-                    className="text-sm md:text-base cursor-pointer"
-                  >
-                    {option.label}
-                  </Label>
-                  <RadioGroupItem value={option.value}
-                    id={`energy-efficiency-${option.value}`}       // ✅ Matching ID
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))}
-            </RadioGroup>
-          </CardContent>
-        </Card>
 
         {/* Submit Section */}
         <div className="flex flex-col items-center space-y-4">

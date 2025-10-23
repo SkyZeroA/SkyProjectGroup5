@@ -80,25 +80,56 @@ def user_activities():
     return jsonify(activities), 200
 
 
+# @app.route('/api/log-activity', methods=['POST'])
+# def log_activity():
+#     data = request.get_json()
+#     user_id = get_user_id_from_db(session['email'])
+#     week_number = get_current_week_number()
+#     month_number = get_current_month_number()
+#     for activity_name, value in data.items():
+#        activity_id = get_activity_id(activity_name)
+#        for _ in range(value):
+#               insert_user_activity(user_id, activity_id, week_number, month_number)
+#     return jsonify({"message": "Activity logged successfully"}), 200
+
 @app.route('/api/log-activity', methods=['POST'])
 def log_activity():
     data = request.get_json()
     user_id = get_user_id_from_db(session['email'])
     week_number = get_current_week_number()
     month_number = get_current_month_number()
-    for activity_name, value in data.items():
-       activity_id = get_activity_id(activity_name)
-       for _ in range(value):
-              insert_user_activity(user_id, activity_id, week_number, month_number)
+    question = data.get('question')
+    isPositive = data.get('isPositive')
+    activity_id = get_activity_id(question)
+    insert_user_activity(user_id, activity_id, week_number, month_number, isPositive)
     return jsonify({"message": "Activity logged successfully"}), 200
 
-
+# The old way to get all questions in ActivityKey table
 @app.route('/api/fetch-questions', methods=['GET'])
 def fetch_questions():
-    print("Fetching activity questions...")
     questions = get_all_activity_names()
     return jsonify(questions), 200
 
+@app.route('/api/update-user-activities', methods=['POST'])
+def update_user_activities():
+    data = request.get_json()
+    selected_activities = data.get('activities', [])
+    print("Selected activities received:", selected_activities)
+    user_id = get_user_id_from_db(session['email'])
+    update_user_preferred_activities(user_id, selected_activities)
+    return jsonify({"message": "User activities updated successfully"}), 200
+
+@app.route('/api/user-activity-counts', methods=['GET'])
+def user_activity_counts():
+    user_id = get_user_id_from_db(session['email'])
+    activities = get_users_preferred_activities(user_id)
+    activity_counts = {}
+    for activity in activities:
+        activity_id = get_activity_id(activity)
+        count = get_user_activity_count(user_id, activity_id)
+        activity_counts[activity] = count
+    return jsonify(activity_counts), 200
+    
 
 @app.route('/api/dashboard', methods=['GET'])
 def dashboard():
@@ -106,17 +137,21 @@ def dashboard():
     username = get_username_from_db(email)
     week_leaderboard = read_view_table_week()
     month_leaderboard = read_view_table_month()
+    
     answers, user_id = get_answers_from_questionnaire(email)
     questionnaire_answers = Questionnaire(answers, user_id)
-    print(questionnaire_answers)
+    # print(questionnaire_answers)
     projected_carbon_dict = questionnaire_answers.calculate_projected_carbon_footprint()
-    projected = projected_carbon_dict["annual_total"]
-    current = projected_carbon_dict["current_to_date"]
-    print(week_leaderboard)
-    print(month_leaderboard)
+    total_projected = projected_carbon_dict["annual_total"]
+    projected = projected_carbon_dict["projected"]
+    current = projected_carbon_dict["current"]
+    print(projected_carbon_dict)
+    # print(week_leaderboard)
+    # print(month_leaderboard)
     return jsonify({"message": "Leaderboard send successful",
                    "weekLeaderboard": week_leaderboard,
                    "monthLeaderboard": month_leaderboard,
+                   "totalProjectedCarbon": total_projected,
                    "projectedCarbon": projected,
                    "currentCarbon": current,
                    "username": username}), 200

@@ -101,7 +101,9 @@ def insert_into_questionnaire(questionnaire):
     db = get_connection()
     cursor = db.cursor()
     # Needs %s for each question, first %s is for the userID
-    cursor.execute("INSERT INTO QuestionnaireResponse VALUES (%s, %s, %s, %s)", questionnaire)
+    answers = len(questionnaire)
+    placeholders = ", ".join(["%s"] * answers)
+    cursor.execute(f"INSERT INTO QuestionnaireResponse VALUES ({placeholders})", questionnaire)
     db.commit()
     close_connection(db)
 
@@ -110,13 +112,13 @@ def get_answers_from_questionnaire(email):
     db = get_connection()
     cursor = db.cursor()
     user_id = get_user_id_from_db(email)
-    cursor.execute("SELECT question_one, question_two, question_three FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
+    cursor.execute("SELECT question_one, question_two, question_three, question_four, question_five, question_six FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
     response = cursor.fetchone()
     close_connection(db)
     if response is None:
         return []
     else:
-        response = {"question_one": response[0], "question_two": response[1], "question_three": response[2]}
+        response = {"q1": response[0], "q2": response[1], "q3": response[2], "q4": response[3], "q5": response[4], "q6": response[5]}
         return response, user_id
 
 
@@ -203,12 +205,12 @@ def get_current_month_number():
 def get_users_preferred_activities(user_id):
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT ak.activity_name FROM UserActivity ua JOIN ActivityKey ak ON ua.activityID = ak.activityID WHERE ua.userID = %s")
+    cursor.execute("SELECT ak.activity_name FROM UserActivity ua JOIN ActivityKey ak ON ua.activityID = ak.activityID WHERE ua.userID = %s", (user_id,))
     activities = [row[0] for row in cursor.fetchall()]
     close_connection(db)
     return activities
 
-
+# The old way to get all questions in ActivityKey table
 def get_all_activity_names():
     db = get_connection()
     cursor = db.cursor()
@@ -226,12 +228,51 @@ def get_activity_id(activity_name):
     close_connection(db)
     return activity_id
 
-def insert_user_activity(user_id, activity, weekID, monthID):
+def update_user_preferred_activities(user_id, selected_activities):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM UserActivity WHERE userID = %s", (user_id,))
+    for activity_name in selected_activities:
+        activity_id = get_activity_id(activity_name)
+        cursor.execute("INSERT INTO UserActivity (userID, activityID) VALUES (%s, %s)", (user_id, activity_id))
+    db.commit()
+    close_connection(db)
+
+def get_user_activity_count(user_id, activity_id):
+    db = get_connection()
+    cursor = db.cursor()
+    week_number = get_current_week_number()
+    cursor.execute("""
+        SELECT 
+            COALESCE(SUM(CASE WHEN ec.positive_activity = TRUE THEN 1 ELSE -1 END), 0) as count
+        FROM EcoCounter ec 
+        WHERE ec.userID = %s AND ec.activityID = %s AND ec.weekID = %s
+    """, (user_id, activity_id, week_number))
+    count = cursor.fetchone()[0]
+    close_connection(db)
+    return count
+
+def get_user_activity_count_total(user_id):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT activityID, 
+            COALESCE(SUM(CASE WHEN ec.positive_activity = TRUE THEN 1 ELSE -1 END), 0) as count
+        FROM EcoCounter ec 
+        WHERE ec.userID = %s
+        GROUP BY activityID
+    """, (user_id,))
+    count_data = cursor.fetchall()
+    close_connection(db)
+    converted_data = [(activity_id, int(count)) for activity_id, count in count_data]
+    return converted_data
+
+def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("""
         INSERT INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity)
         VALUES (%s, %s, %s, %s, %s)
-    """, (user_id, weekID, monthID, activity, True))
+    """, (user_id, weekID, monthID, activity, positive_activity))
     db.commit()
     close_connection(db)
