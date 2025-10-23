@@ -3,10 +3,11 @@ import { Button } from "../components/Button";
 import { Card, CardContent } from "../components/Card";
 import FooterBanner from "../components/FooterBanner";
 import HeaderBanner from "../components/HeaderBanner";
-import { Label } from "../components/Label";
+import Label from "../components/Label";
 import { RadioGroup, RadioGroupItem } from "../components/RadioGroup";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import RadioQuestion from "../components/RadioQuestion";
 
 const Questionnaire = () => {
   const [transportMethod, setTransportMethod] = useState(0);
@@ -108,32 +109,6 @@ const Questionnaire = () => {
           </CardContent>
         </Card>
 
-        {/* Question 1
-        <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
-          <CardContent className="p-6">
-            <h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
-              Question 1: How do you get to work?
-            </h2>
-            <RadioGroup
-              value={transportMethod}
-              onValueChange={setTransportMethod}
-              className={
-                "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
-                "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
-              }>
-              {transportOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-                  <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
-                  <RadioGroupItem
-                    value={option.value}
-                    id={option.value}
-                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
-                  />
-                </div>
-              ))}
-            </RadioGroup>
-          </CardContent>
-        </Card> */}
 
         {/* Question 1 */}
         <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
@@ -161,6 +136,8 @@ const Questionnaire = () => {
             </RadioGroup>
           </CardContent>
         </Card>
+
+        <RadioQuestion options={transportOptions} current={transportMethod} setCurrent={setTransportMethod} question={"Question 1: How do you usually commute to work?"}/>
 
         {/* Question 2
         <Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
