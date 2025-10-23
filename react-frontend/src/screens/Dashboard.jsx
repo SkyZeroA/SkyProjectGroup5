@@ -179,7 +179,7 @@ const Dashboard = () => {
 									<ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
 
                   <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
-                    Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} kg Less</strong> than projected for this point in the year!
+                    Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round(projectedCarbon - currentCarbon)} kg Less</strong> than projected for this point in the year!
                   </p>
 								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">
