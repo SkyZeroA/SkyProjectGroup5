@@ -74,7 +74,7 @@ class Questionnaire:
             if activity_id == 1:
                 transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
             elif activity_id == 2:
-                heating_emissions -= heating_emissions * count
+                heating_emissions -= heating_hours * 0.2 * 10 * count
             elif activity_id == 3:
                 transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
             elif activity_id == 4:
@@ -85,7 +85,8 @@ class Questionnaire:
             elif activity_id == 6:
                 transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.5
             elif activity_id == 7:
-                diet_emissions -= meat_eaten[me_index] * count
+                if days_eating_meat > 0:
+                    diet_emissions -= meat_eaten[me_index] * count
             elif activity_id == 8:
                 transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.66
             elif activity_id == 9:
