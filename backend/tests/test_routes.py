@@ -157,11 +157,6 @@ class TestFlaskAPI(TestCase):
     #     self.assertEqual(response.status_code, 200)
     #     self.assertIn("Activity logged successfully", response.get_data(as_text=True))
 
-    from unittest import TestCase
-    from unittest.mock import patch
-    from backend import app
-
-
     @patch('backend.routes.insert_user_activity')
     @patch('backend.routes.get_activity_id')
     @patch('backend.routes.get_current_month_number')
@@ -192,7 +187,25 @@ class TestFlaskAPI(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.get_json(), list)
 
-    def test_dashboard(self):
+    @patch('backend.routes.get_username_from_db')
+    @patch('backend.routes.read_view_table_week')
+    @patch('backend.routes.read_view_table_month')
+    @patch('backend.routes.get_answers_from_questionnaire')
+    @patch('backend.routes.Questionnaire')
+    def test_dashboard(self, mock_questionnaire_class, mock_get_answers, mock_month, mock_week, mock_get_username):
+        mock_get_username.return_value = "Harry"
+        mock_week.return_value = [{"rank": 1, "username": "Harry", "score": 100}]
+        mock_month.return_value = [{"rank": 1, "username": "Harry", "score": 400}]
+        mock_get_answers.return_value = (["Yes", "No", "Sometimes"], 1)
+
+        # Mock Questionnaire instance and its method
+        mock_questionnaire_instance = MagicMock()
+        mock_questionnaire_instance.calculate_projected_carbon_footprint.return_value = {
+            "annual_total": 1200,
+            "current_to_date": 300
+        }
+        mock_questionnaire_class.return_value = mock_questionnaire_instance
+
         with self.app.session_transaction() as sess:
             sess['email'] = "harry@example.com"
 
@@ -202,7 +215,9 @@ class TestFlaskAPI(TestCase):
         self.assertIn("weekLeaderboard", data)
         self.assertIn("monthLeaderboard", data)
         self.assertIn("username", data)
-
+        self.assertEqual(data["username"], "Harry")
+        self.assertEqual(data["projectedCarbon"], 1200)
+        self.assertEqual(data["currentCarbon"], 300)
 
 # if __name__ == '__main__':
 #     unittest.main()
