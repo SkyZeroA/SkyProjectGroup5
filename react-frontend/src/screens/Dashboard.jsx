@@ -18,7 +18,7 @@ const Dashboard = () => {
 	const [monthData, setMonthData] = useState([]);
 	const [username, setUsername] = useState([]);
   const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
-  const [currentCarbon, setCurrentCarbon] = useState([]);
+  const [projectedCarbon, setProjectedCarbon] = useState([]);
 	const [isOn, setIsOn] = useState(false);
   const [allQuestions, setAllQuestions] = useState([]);
 
@@ -51,8 +51,8 @@ const Dashboard = () => {
         setWeekData(response.data.weekLeaderboard);
 				setMonthData(response.data.monthLeaderboard);
 				setUsername(response.data.username);
-        setTotalProjectedCarbon(response.data.projectedCarbon)
-        setCurrentCarbon(response.data.currentCarbon)
+        setTotalProjectedCarbon(response.data.totalProjectedCarbon)
+        setProjectedCarbon(response.data.projectedCarbon)
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
       });
@@ -64,7 +64,7 @@ const Dashboard = () => {
     fetchData();
   }, [isFormOpen]);
 
-  const projectedCarbon = Math.round(1.1 * currentCarbon * 100) / 100;
+  const currentCarbon = Math.round(0.9 * projectedCarbon);
 
 	const current = isOn ? weekData : monthData;
   const leaderboardData = current

@@ -8,18 +8,18 @@ const ProgressBar = ({ current, projected, totalProjected}) => {
     <div className="bg-white p-5 rounded-md w-full flex flex-col gap-3">
       {/* Progress Bar */}
       <div className="relative bg-gray-200 h-[120px] rounded-md overflow-hidden">
-        {/* Projected marker */}
+
+                {/* Projected progress fill */}
         <div
-          className="absolute top-0 bottom-0 w-[2px] bg-green-500"
+          className="absolute top-0 bottom-0 left-0 bg-green-500"
           style={{ width: `${percentProjected}%` }}
         />
-        
-        {/* Current progress fill */}
+        {/* Current marker */}
         <div
-          className="absolute top-0 bottom-0 left-0 bg-[#d9ed92]"
+          className="absolute top-0 bottom-0 w-[2px] bg-[#d9ed92]"
           style={{ width: `${percentCurrent}%` }}
         />
-      </div>
+       </div>
 
       {/* Labels below the bar */}
       <div className="relative h-6 w-full text-gray-600 text-sm">
