@@ -174,12 +174,12 @@ const Dashboard = () => {
             <CardContent>
 								<div className="p-4">
 									<h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
-									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} Tons</span> of CO2</p>
+									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} kg</span> of CO2</p>
 
 									<ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
 
                   <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
-                    Currently, you have produced <strong>{currentCarbon} Tons</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} Tons Less</strong> than projected for this point in the year!
+                    Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} kg Less</strong> than projected for this point in the year!
                   </p>
 								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">

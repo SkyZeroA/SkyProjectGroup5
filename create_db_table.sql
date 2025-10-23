@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS QuestionnaireResponse (
     question_one INT NOT NULL,
     question_two INT NOT NULL,
     question_three INT NOT NULL,
+    question_four INT NOT NULL,
+    question_five INT NOT NULL,
+    question_six INT NOT NULL,
     FOREIGN KEY(userID) REFERENCES User(userID)
 );
 

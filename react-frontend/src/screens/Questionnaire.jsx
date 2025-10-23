@@ -7,14 +7,13 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import RadioQuestion from "../components/RadioQuestion";
 import SliderQuestion from "../components/SliderQuestion";
-import MultipleRadioQuestion from "../components/MultipleRadioQuestion";
 
 const Questionnaire = () => {
   const [transportMethod, setTransportMethod] = useState(0);
   const [travelDistance, setTravelDistance] = useState(0);
   const [officeDays, setOfficeDays] = useState(0);
   const [dietDays, setDietDays] = useState(0);
-  const [meats, setMeats] = useState([]);
+  const [meats, setMeats] = useState(0);
   const [heatingHours, setHeatingHours] = useState(0);
 
   // Keeps track of current question
@@ -72,11 +71,10 @@ const Questionnaire = () => {
         <RadioQuestion
           options={[
             { value: 0, label: "Work from Home" },
-            { value: 1, label: "Walk" },
-            { value: 2, label: "Cycle" },
-            { value: 3, label: "Public Transport (Bus/Train)" },
-            { value: 4, label: "Car (Petrol/Diesel)" },
-            { value: 5, label: "Car (Electric)" },
+            { value: 1, label: "Walk/Cycle" },
+            { value: 2, label: "Public Transport (Bus/Train)" },
+            { value: 3, label: "Car (Petrol/Diesel)" },
+            { value: 4, label: "Car (Electric)" },
           ]}
           current={transportMethod}
           setCurrent={setTransportMethod}
@@ -116,7 +114,7 @@ const Questionnaire = () => {
         />
 
         { dietDays !== 0 && (
-          <MultipleRadioQuestion
+          <RadioQuestion
             options={[
               { value: 0, label: "Beef" },
               { value: 1, label: "Lamb" },
@@ -127,7 +125,7 @@ const Questionnaire = () => {
             ]}
             current={meats}
             setCurrent={setMeats}
-            question={`Question ${questionNumber++}: Which meats do you eat consistently?`}
+            question={`Question ${questionNumber++}: Which meat do you eat most?`}
           />
         )}
 
