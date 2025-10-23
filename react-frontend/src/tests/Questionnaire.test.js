@@ -36,7 +36,7 @@ test("renders all questions and submit button", () => {
     expect(
       screen.getByRole("button", { name: /Continue/i })
     ).toBeInTheDocument();
-  });
+});
 
 
 test("allows selecting transport, diet, and home efficiency options", () => {
@@ -56,7 +56,7 @@ test("allows selecting transport, diet, and home efficiency options", () => {
     expect(transportOption).toBeChecked();
     expect(dietOption).toBeChecked();
     expect(homeOption).toBeChecked();
-  });
+});
 
 
 test("submits questionnaire successfully and navigates to /dashboard", async () => {
@@ -86,4 +86,25 @@ test("submits questionnaire successfully and navigates to /dashboard", async () 
       );
       expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
     });
-  });
+});
+
+
+test("handles submission error gracefully", async () => {
+    mockedAxios.post.mockRejectedValueOnce(new Error("Network Error"));
+
+    render(<Questionnaire />);
+
+    // Select one option from each question
+    fireEvent.click(screen.getByLabelText(/Car \(Electric\)/i));
+    fireEvent.click(screen.getByLabelText(/Vegan/i));
+    fireEvent.click(screen.getByLabelText(/Moderately Efficient/i));
+
+    // Click the Continue button
+    fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalled();
+      // Ensure navigation does not occur on error
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+});
