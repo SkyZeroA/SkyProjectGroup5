@@ -11,12 +11,12 @@ const ProgressBar = ({ current, projected, totalProjected}) => {
 
                 {/* Projected progress fill */}
         <div
-          className="absolute top-0 bottom-0 left-0 bg-green-500"
+          className="absolute top-0 bottom-0 left-0 bg-[#4BAD31]"
           style={{ width: `${percentProjected}%` }}
         />
         {/* Current marker */}
         <div
-          className="absolute top-0 bottom-0 w-[2px] bg-[#d9ed92]"
+          className="absolute top-0 bottom-0 w-[2px] bg-[#454955]"
           style={{ width: `${percentCurrent}%` }}
         />
        </div>
