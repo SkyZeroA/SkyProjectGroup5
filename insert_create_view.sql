@@ -23,27 +23,36 @@ VALUES
 ('Steve', 'steve_rocks', 'steve@example.com', 'pass19'),
 ('Tina', 'tina_b', 'tina@example.com', 'pass20');
 
-INSERT IGNORE INTO QuestionnaireResponse (userID, question_one, question_two, question_three) VALUES
-(1, 2, 1, 2),
-(2, 4, 0, 0),
-(3, 3, 2, 0),
-(4, 0, 3, 1),
-(5, 1, 1, 0),
-(6, 4, 2, 2),
-(7, 2, 0, 1),
-(8, 3, 1, 2),
-(9, 0, 3, 1),
-(10, 1, 2, 0),
-(11, 4, 3, 1),
-(12, 3, 0, 2),
-(13, 2, 2, 0),
-(14, 1, 3, 2),
-(15, 0, 1, 1),
-(16, 4, 0, 0),
-(17, 3, 1, 2),
-(18, 2, 3, 1),
-(19, 1, 2, 2),
-(20, 0, 0, 0);
+INSERT IGNORE INTO QuestionnaireResponse (
+    userID, 
+    question_one, 
+    question_two, 
+    question_three, 
+    question_four, 
+    question_five, 
+    question_six
+) VALUES
+(1, 2, 4, 6, 3, 2, 14),
+(2, 4, 2, 5, 0, 0, 9),
+(3, 3, 1, 3, 4, 3, 11),
+(4, 0, 0, 0, 2, 1, 6),
+(5, 1, 2, 1, 3, 5, 18),
+(6, 4, 3, 2, 7, 5, 22),
+(7, 2, 0, 1, 5, 4, 10),
+(8, 3, 5, 4, 0, 0, 8),
+(9, 0, 0, 0, 3, 2, 4),
+(10, 1, 3, 2, 4, 5, 13),
+(11, 4, 5, 7, 6, 4, 20),
+(12, 3, 2, 5, 2, 1, 16),
+(13, 2, 3, 6, 5, 2, 17),
+(14, 1, 2, 4, 0, 0, 7),
+(15, 0, 0, 0, 1, 2, 5),
+(16, 4, 4, 5, 3, 1, 23),
+(17, 3, 2, 3, 7, 4, 19),
+(18, 2, 1, 2, 0, 0, 10),
+(19, 1, 5, 7, 2, 3, 12),
+(20, 0, 0, 0, 0, 0, 3);
+
 
 
 INSERT IGNORE INTO Week (weekID, week_start, week_end) VALUES
@@ -92,25 +101,14 @@ INSERT IGNORE INTO Month (monthID, month_start, month_end) VALUES
 
 INSERT IGNORE INTO ActivityKey (activityID, activity_name, value_points) VALUES
 (1, 'Bike to work', 10),
-(2, 'Recycle plastic', 5),
-(3, 'Use reusable bag', 3),
+(2, 'Day Without heating on', 5),
+(3, 'Walk to work', 10),
 (4, 'Public transport', 7),
-(5, 'Plant a tree', 15),
-(6, 'Carpool', 6),
+(5, 'Extra WFH day', 10),
+(6, 'Carpool w 1 other', 1),
 (7, 'Avoid meat', 8),
-(8, 'Use solar panel', 20),
-(9, 'Compost', 4),
-(10, 'Pick up litter', 6),
-(11, 'Eco shower', 2),
-(12, 'Eco laundry', 3),
-(13, 'Use LED lights', 5),
-(14, 'Donate clothes', 6),
-(15, 'Paperless billing', 4),
-(16, 'No plastic bottles', 5),
-(17, 'Home insulation', 12),
-(18, 'Energy audit', 10),
-(19, 'Eco-friendly commute', 7),
-(20, 'Grow vegetables', 9);
+(8, 'Carpool w 2 others', 2),
+(9, 'Carpool w 3 others', 3);
 
 INSERT IGNORE INTO UserActivity (userID, activityID) VALUES
 (1, 1),

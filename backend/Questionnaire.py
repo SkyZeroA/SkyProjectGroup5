@@ -73,8 +73,23 @@ class Questionnaire:
         for (activity_id, count) in counts:
             if activity_id == 1:
                 transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 2:
+                heating_emissions -= heating_emissions * count
+            elif activity_id == 3:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 4:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count 
+                transport_emissions += transport_emission_factors[2] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 5:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count      
+            elif activity_id == 6:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.5
             elif activity_id == 7:
                 diet_emissions -= meat_eaten[me_index] * count
+            elif activity_id == 8:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.66
+            elif activity_id == 9:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.75
 
         current = (transport_emissions + diet_emissions + heating_emissions) * year_progress
 
