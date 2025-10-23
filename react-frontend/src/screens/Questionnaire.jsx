@@ -17,6 +17,10 @@ const Questionnaire = () => {
   const [meats, setMeats] = useState([]);
   const [heatingHours, setHeatingHours] = useState(0);
 
+  // Keeps track of current question
+  // Used to make numbers consistent with conditionally displayed questions
+  let questionNumber = 1;
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -76,7 +80,7 @@ const Questionnaire = () => {
           ]}
           current={transportMethod}
           setCurrent={setTransportMethod}
-          question={"Question 1: How do you usually commute to work?"}
+          question={`Question ${questionNumber++}: How do you usually commute to work?`}
         />
 
         { transportMethod !== 0 && (
@@ -92,14 +96,14 @@ const Questionnaire = () => {
             ]}
             current={travelDistance}
             setCurrent={setTravelDistance}
-            question={"Question 2: How far do you travel to get to work? (in miles)"}
+            question={`Question ${questionNumber++}: How far do you travel to get to work? (in miles)`}
           />
 
           <SliderQuestion
             max={7}
             current={officeDays}
             setCurrent={setOfficeDays}
-            question={"Question 3: How many days a week are you in the office?"}
+            question={`Question ${questionNumber++}: How many days a week are you in the office?`}
           />
         </>
         )}
@@ -108,23 +112,23 @@ const Questionnaire = () => {
           max={7}
           current={dietDays}
           setCurrent={setDietDays}
-          question={"Question 4: How many days a week do you eat meat?"}
+          question={`Question ${questionNumber++}: How many days a week do you eat meat?`}
         />
 
         { dietDays !== 0 && (
-        <MultipleRadioQuestion
-          options={[
-            { value: 0, label: "Beef" },
-            { value: 1, label: "Lamb" },
-            { value: 2, label: "Pork" },
-            { value: 3, label: "Chicken" },
-            { value: 4, label: "Turkey" },
-            { value: 5, label: "Fish" },
-          ]}
-          current={meats}
-          setCurrent={setMeats}
-          question={"Question 5: Which meats do you eat consistently?"}
-        />
+          <MultipleRadioQuestion
+            options={[
+              { value: 0, label: "Beef" },
+              { value: 1, label: "Lamb" },
+              { value: 2, label: "Pork" },
+              { value: 3, label: "Chicken" },
+              { value: 4, label: "Turkey" },
+              { value: 5, label: "Fish" },
+            ]}
+            current={meats}
+            setCurrent={setMeats}
+            question={`Question ${questionNumber++}: Which meats do you eat consistently?`}
+          />
         )}
 
         <SliderQuestion
@@ -132,7 +136,7 @@ const Questionnaire = () => {
         jump={2}
         current={heatingHours}
         setCurrent={setHeatingHours}
-        question={"Question 6: How many hours per day do you have your heating on in winter?"}
+        question={`Question ${questionNumber++}: How many hours per day do you have your heating on in winter?`}
         />
 
 
