@@ -24,6 +24,7 @@ const Input = ({ className, type, label, errorMessage, showError, ...props }, re
         <div className="relative">
           {label && (
             <label
+              htmlFor={props.id}
               className={
                 `absolute left-3 bg-white px-2 transition-all duration-200 pointer-events-none
                 [font-family:'Sky_Text',Helvetica] font-normal text-[15px] leading-[22.5px]"
