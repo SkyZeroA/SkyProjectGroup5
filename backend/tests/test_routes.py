@@ -203,5 +203,6 @@ class TestFlaskAPI(TestCase):
         self.assertIn("monthLeaderboard", data)
         self.assertIn("username", data)
 
+
 # if __name__ == '__main__':
 #     unittest.main()
