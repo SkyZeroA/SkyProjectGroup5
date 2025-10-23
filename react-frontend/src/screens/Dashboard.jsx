@@ -2,49 +2,123 @@ import { Avatar, AvatarFallback } from "../components/Avatar";
 import { Card, CardContent } from "../components/Card";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
+import ProgressBar from "../components/ProgressBar";
 import Switch from "../components/Switch"
-import { React, useState, useEffect } from "react";
+import { Button } from "../components/Button";
+import Popup from "../components/PopUp";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+
 
 const Dashboard = () => {
-  const [weekData, setWeekData] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [questions, setQuestions] = useState([]);
+	const [weekData, setWeekData] = useState([]);
 	const [monthData, setMonthData] = useState([]);
 	const [username, setUsername] = useState([]);
+  const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
+  const [currentCarbon, setCurrentCarbon] = useState([]);
 	const [isOn, setIsOn] = useState(false);
 
-	useEffect(() => {
-		const fetchLeaderboard = async () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
+        setQuestions(response.data);
+      } catch (error) {
+        console.error("Error fetching activity questions:", error);
+      }
+    };
+    fetchQuestions();
+  }, []);
+
+  // Will replace above and be used later when we add preferences for user activities
+  // const [userActivities, setUserActivities] = useState([]);
+  // useEffect(() => {
+  //   const fetchUserActivities = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:9099/api/user-activities");
+  //       setUserActivities(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching user activities:", error);
+  //     }
+  //   };
+  //   fetchUserActivities();
+  // }, []);
+
+	const fetchData = async () => {
 			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
 			.then(response => {
         setWeekData(response.data.weekLeaderboard);
 				setMonthData(response.data.monthLeaderboard);
 				setUsername(response.data.username);
+        setTotalProjectedCarbon(response.data.projectedCarbon)
+        setCurrentCarbon(response.data.currentCarbon)
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
       });
     };
-		fetchLeaderboard();
-	}, []);
-	console.log(weekData);
-	console.log(monthData);
+	
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const projectedCarbon = Math.round(1.1 * currentCarbon * 100) / 100;
 
 	const current = isOn ? weekData : monthData;
-
-	console.log(current);
-
   const leaderboardData = current
     .sort((a, b) => b.score - a.score)
     .map((user) => ({
       ...user,
       isCurrentUser: user.name === username,
     }));
+  
+
+  const handleFormSubmit = async (answers) => {
+    console.log("Form submitted with answers:", answers);
+    try {
+      const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
+      await fetchData();
+      console.log("Server response:", response.data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  }
+  
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
       {/* Sticky Header */}
       <div className="top-0 z-10 bg-white">
-        <HeaderBanner />
-      </div>
+        <HeaderBanner
+          logoAlign="left"
+          navbar={
+            <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
+              {/* Left content */}
+              <div>
+                <Button 
+                  variant="link"
+                  className="bg-green-500 text-white" 
+                  onClick={() => setIsFormOpen(true)}>
+                  Form
+                </Button>
+              </div>
+
+              {/* Right content */}
+              <div className="ml-auto">
+                <Button 
+                  variant="link"
+                  onClick={() => navigate("/")}>
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          }
+        />
+    </div>
 
       {/* Main Content */}
       <main className="flex flex-1 px-6 py-6 gap-6">
@@ -98,6 +172,16 @@ const Dashboard = () => {
         <div className="w-2/3">
           <Card className="h-full bg-white rounded-lg shadow">
             <CardContent>
+								<div className="p-4">
+									<h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
+									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} Tons</span> of CO2</p>
+
+									<ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
+
+                  <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
+                    Currently, you have produced <strong>{currentCarbon} Tons</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} Tons Less</strong> than projected for this point in the year!
+                  </p>
+								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">
                 Tips to reduce your Carbon Footprint
               </h2>
@@ -123,11 +207,17 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
+      {/* Will be used later when we add preferences for user activities
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={userActivities} onSubmit={handleFormSubmit} />
+      */}
+
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} onSubmit={handleFormSubmit} />
 
       {/* Footer */}
       <FooterBanner />
     </div>
   );
 };
+
 
 export default Dashboard;

@@ -55,6 +55,5 @@ CREATE TABLE IF NOT EXISTS EcoCounter (
     FOREIGN KEY (userID) REFERENCES User(userID), 
     FOREIGN KEY (weekID) REFERENCES Week(weekID), 
 	FOREIGN KEY (monthID) REFERENCES Month(monthID), 
-    FOREIGN KEY (activityID) REFERENCES ActivityKey(activityID),
-    UNIQUE KEY unique_entry (userID, weekID, monthID, activityID)
+    FOREIGN KEY (activityID) REFERENCES ActivityKey(activityID)
 );

@@ -73,6 +73,32 @@ def questionnaire():
     return jsonify({"message": "Questionnaire submitted successfully"}), 200
 
 
+@app.route('/api/user-activities', methods=['GET'])
+def user_activities():
+    user_id = get_user_id_from_db(session['email'])
+    activities = get_users_preferred_activities(user_id)
+    return jsonify(activities), 200
+
+
+@app.route('/api/log-activity', methods=['POST'])
+def log_activity():
+    data = request.get_json()
+    user_id = get_user_id_from_db(session['email'])
+    week_number = get_current_week_number()
+    month_number = get_current_month_number()
+    for activity_name, value in data.items():
+       activity_id = get_activity_id(activity_name)
+       for _ in range(value):
+              insert_user_activity(user_id, activity_id, week_number, month_number)
+    return jsonify({"message": "Activity logged successfully"}), 200
+
+
+@app.route('/api/fetch-questions', methods=['GET'])
+def fetch_questions():
+    print("Fetching activity questions...")
+    questions = get_all_activity_names()
+    return jsonify(questions), 200
+
 
 @app.route('/api/dashboard', methods=['GET'])
 def dashboard():
@@ -80,10 +106,18 @@ def dashboard():
     username = get_username_from_db(email)
     week_leaderboard = read_view_table_week()
     month_leaderboard = read_view_table_month()
+    answers, user_id = get_answers_from_questionnaire(email)
+    questionnaire_answers = Questionnaire(answers, user_id)
+    print(questionnaire_answers)
+    projected_carbon_dict = questionnaire_answers.calculate_projected_carbon_footprint()
+    projected = projected_carbon_dict["annual_total"]
+    current = projected_carbon_dict["current_to_date"]
     print(week_leaderboard)
     print(month_leaderboard)
     return jsonify({"message": "Leaderboard send successful",
                    "weekLeaderboard": week_leaderboard,
                    "monthLeaderboard": month_leaderboard,
+                   "projectedCarbon": projected,
+                   "currentCarbon": current,
                    "username": username}), 200
 
