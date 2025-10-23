@@ -6,7 +6,7 @@ import ProgressBar from "../components/ProgressBar";
 import Switch from "../components/Switch"
 import { Button } from "../components/Button";
 import Popup from "../components/PopUp";
-import axios, { all } from "axios";
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
@@ -19,13 +19,14 @@ const Dashboard = () => {
 	const [username, setUsername] = useState([]);
   const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
   const [projectedCarbon, setProjectedCarbon] = useState([]);
+  const [currentCarbon, setCurrentCarbon] = useState([])
 	const [isOn, setIsOn] = useState(false);
   const [allQuestions, setAllQuestions] = useState([]);
 
   const navigate = useNavigate();
 
   const fetchAllQuestions = async () => {
-      const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true })
+      await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true })
       .then(response => {
         setAllQuestions(response.data);
       })
@@ -36,7 +37,7 @@ const Dashboard = () => {
 
   //Will replace above and be used later when we add preferences for user activities
   const fetchUserActivities = async () => {
-      const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true })
+      await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true })
       .then(response => {
         setQuestions(response.data);
       })
@@ -53,6 +54,7 @@ const Dashboard = () => {
 				setUsername(response.data.username);
         setTotalProjectedCarbon(response.data.totalProjectedCarbon)
         setProjectedCarbon(response.data.projectedCarbon)
+        setCurrentCarbon(response.data.currentCarbon)
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
       });
@@ -63,8 +65,6 @@ const Dashboard = () => {
     fetchAllQuestions();
     fetchData();
   }, [isFormOpen]);
-
-  const currentCarbon = Math.round(0.9 * projectedCarbon);
 
 	const current = isOn ? weekData : monthData;
   const leaderboardData = current

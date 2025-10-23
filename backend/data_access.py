@@ -252,6 +252,21 @@ def get_user_activity_count(user_id, activity_id):
     close_connection(db)
     return count
 
+def get_user_activity_count_total(user_id):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT activityID, 
+            COALESCE(SUM(CASE WHEN ec.positive_activity = TRUE THEN 1 ELSE -1 END), 0) as count
+        FROM EcoCounter ec 
+        WHERE ec.userID = %s
+        GROUP BY activityID
+    """, (user_id,))
+    count_data = cursor.fetchall()
+    close_connection(db)
+    converted_data = [(activity_id, int(count)) for activity_id, count in count_data]
+    return converted_data
+
 def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
     db = get_connection()
     cursor = db.cursor()

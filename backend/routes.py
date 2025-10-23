@@ -143,7 +143,9 @@ def dashboard():
     # print(questionnaire_answers)
     projected_carbon_dict = questionnaire_answers.calculate_projected_carbon_footprint()
     total_projected = projected_carbon_dict["annual_total"]
-    projected = projected_carbon_dict["current_to_date"]
+    projected = projected_carbon_dict["projected"]
+    current = projected_carbon_dict["current"]
+    print(projected_carbon_dict)
     # print(week_leaderboard)
     # print(month_leaderboard)
     return jsonify({"message": "Leaderboard send successful",
@@ -151,5 +153,6 @@ def dashboard():
                    "monthLeaderboard": month_leaderboard,
                    "totalProjectedCarbon": total_projected,
                    "projectedCarbon": projected,
+                   "currentCarbon": current,
                    "username": username}), 200
 

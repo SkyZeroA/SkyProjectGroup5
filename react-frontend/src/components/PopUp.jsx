@@ -2,25 +2,12 @@
 
 import React, {useState, useEffect} from "react";
 import { Card, CardContent } from "./Card";
-import { Button } from "./Button";
-import axios, { all } from "axios";
+import axios from "axios";
 
 const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave }) => {
     const [answers, setAnswers] = useState({});
     const [selectedActivities, setSelectedActivities] = useState([]);
     const [isEditingActivities, setIsEditingActivities] = useState(false);
-
-    // useEffect(() => {
-    //     if (isOpen) {
-    //     const initialAnswers = questions.reduce((acc, q) => {
-    //         acc[q] = 0;
-    //         return acc;
-    //     }, {});
-    //     setAnswers(initialAnswers);
-    //     }
-    // }, [isOpen, questions]);
-
-    // if (!isOpen) {return null; }
 
     useEffect(() => {
       const fetchActivityCounts = async () => {
@@ -52,11 +39,6 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
         }));
     };
 
-  //   const handleSubmit = (e) => {
-  //       e.preventDefault();
-  //       onSubmit(answers);
-  //       onClose();
-  // };
   const handleSubmit = async (question, isPositive) => {
     try {
       const response = await axios.post("http://localhost:9099/api/log-activity", {question, isPositive}, { withCredentials: true });

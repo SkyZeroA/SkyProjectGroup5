@@ -1,4 +1,5 @@
 from datetime import datetime
+from backend.data_access import *
 
 class Questionnaire:
     def __init__(self, answers, user_id):
@@ -61,10 +62,24 @@ class Questionnaire:
 
         # Calculate year progress
         year_progress = day_of_year / days_in_year
-        current_value = total * year_progress
+        projected = total * year_progress
+
+        counts = get_user_activity_count_total(self._id)
+
+        # ----------- Activity Key --------------
+        # 1: Ride Bike
+        # 7: Avoid meat
+        
+        for (activity_id, count) in counts:
+            if activity_id == 1:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 7:
+                diet_emissions -= meat_eaten[me_index] * count
+
+        current = (transport_emissions + diet_emissions + heating_emissions) * year_progress
 
         return {
             "annual_total": round(total),
-            "current_to_date": round(current_value),
-            "year_progress_percent": round(year_progress * 100)
+            "projected": round(projected),
+            "current": round(current)
         }
