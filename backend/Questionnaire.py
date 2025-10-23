@@ -21,12 +21,13 @@ class Questionnaire:
 
         # Emission factors (tonnes CO₂ per year)
 
+        # "Work from home": 0.3
         # "Walk / Cycle": 0.2,
         # "Public Transport": 0.8,
         # "Car (Petrol/Diesel)": 2.4,
         # "Car (Electric)": 1.2,
-        # "Work from home": 0.3
-        transport_emissions = [0.2, 0.8, 2.4, 1.2, 0.3]
+
+        transport_emissions = [0.3, 0.2, 0.8, 2.4, 1.2]
 
         # "Meat-based": 2.5,
         # "Mixed": 1.7,

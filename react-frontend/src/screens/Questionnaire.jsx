@@ -7,42 +7,17 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import RadioQuestion from "../components/RadioQuestion";
 import SliderQuestion from "../components/SliderQuestion";
+import MultipleRadioQuestion from "../components/MultipleRadioQuestion";
 
 const Questionnaire = () => {
   const [transportMethod, setTransportMethod] = useState(0);
   const [travelDistance, setTravelDistance] = useState(0);
   const [officeDays, setOfficeDays] = useState(0);
   const [dietDays, setDietDays] = useState(0);
-  const [meats, setMeats] = useState(0);
+  const [meats, setMeats] = useState([]);
   const [heatingHours, setHeatingHours] = useState(0);
 
   const navigate = useNavigate();
-
-  const transportOptions = [
-    { value: 0, label: "Walk/Cycle" },
-    { value: 1, label: "Public Transport (Bus/Train)" },
-    { value: 2, label: "Car (Petrol/Diesel)" },
-    { value: 3, label: "Car (Electric)" },
-    { value: 4, label: "Work from Home" },
-  ];
-
-  const distanceOptions = [
-    { value: 0, label: "0-5" },
-    { value: 1, label: "5-10" },
-    { value: 2, label: "10-15" },
-    { value: 3, label: "15-20" },
-    { value: 4, label: "20-30" },
-    { value: 5, label: "30+" },
-  ];
-
-  const meatOptions =[
-    { value: 0, label: "Beef" },
-    { value: 1, label: "Lamb" },
-    { value: 2, label: "Pork" },
-    { value: 3, label: "Chicken" },
-    { value: 4, label: "Turkey" },
-    { value: 5, label: "Fish" },
-  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,25 +66,43 @@ const Questionnaire = () => {
 
         {/* Questions */}
         <RadioQuestion
-          options={transportOptions}
+          options={[
+            { value: 0, label: "Work from Home" },
+            { value: 1, label: "Walk" },
+            { value: 2, label: "Cycle" },
+            { value: 3, label: "Public Transport (Bus/Train)" },
+            { value: 4, label: "Car (Petrol/Diesel)" },
+            { value: 5, label: "Car (Electric)" },
+          ]}
           current={transportMethod}
           setCurrent={setTransportMethod}
           question={"Question 1: How do you usually commute to work?"}
         />
 
-        <RadioQuestion
-          options={distanceOptions}
-          current={travelDistance}
-          setCurrent={setTravelDistance}
-          question={"Question 2: How far do you travel to get to work? (in miles)"}
-        />
+        { transportMethod !== 0 && (
+        <>
+          <RadioQuestion
+            options={[
+              { value: 0, label: "0-5" },
+              { value: 1, label: "5-10" },
+              { value: 2, label: "10-15" },
+              { value: 3, label: "15-20" },
+              { value: 4, label: "20-30" },
+              { value: 5, label: "30+" },
+            ]}
+            current={travelDistance}
+            setCurrent={setTravelDistance}
+            question={"Question 2: How far do you travel to get to work? (in miles)"}
+          />
 
-        <SliderQuestion
-          max={7}
-          current={officeDays}
-          setCurrent={setOfficeDays}
-          question={"Question 3: How many days a week are you in the office?"}
-        />
+          <SliderQuestion
+            max={7}
+            current={officeDays}
+            setCurrent={setOfficeDays}
+            question={"Question 3: How many days a week are you in the office?"}
+          />
+        </>
+        )}
 
         <SliderQuestion
           max={7}
@@ -118,12 +111,21 @@ const Questionnaire = () => {
           question={"Question 4: How many days a week do you eat meat?"}
         />
 
-        <RadioQuestion
-          options={meatOptions}
+        { dietDays !== 0 && (
+        <MultipleRadioQuestion
+          options={[
+            { value: 0, label: "Beef" },
+            { value: 1, label: "Lamb" },
+            { value: 2, label: "Pork" },
+            { value: 3, label: "Chicken" },
+            { value: 4, label: "Turkey" },
+            { value: 5, label: "Fish" },
+          ]}
           current={meats}
           setCurrent={setMeats}
           question={"Question 5: Which meats do you eat consistently?"}
         />
+        )}
 
         <SliderQuestion
         max={24}

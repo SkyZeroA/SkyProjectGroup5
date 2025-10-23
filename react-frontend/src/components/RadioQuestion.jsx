@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardContent } from "./Card";
 import { RadioGroup, RadioGroupItem } from "./RadioGroup";
-import Label from "./Label";
 
 const RadioQuestion = ({options, current, setCurrent, question}) => {
 	return (
@@ -19,7 +18,9 @@ const RadioQuestion = ({options, current, setCurrent, question}) => {
 					}>
 					{options.map((option) => (
 						<div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-							<Label className="text-sm md:text-base cursor-pointer [font-family:'Sky_Text',Helvetica] font-normal">{option.label}</Label>
+							<span className="text-sm md:text-base cursor-pointer [font-family:'Sky_Text',Helvetica] font-normal">
+								{option.label}
+							</span>
 							<RadioGroupItem
 								value={option.value}
 								id={option.value}
