@@ -7,7 +7,7 @@ const RadioQuestion = ({options, current, setCurrent, question}) => {
 	return (
 		<Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
 			<CardContent className="p-6">
-				<h2 className="text-lg md:text-2xl font-medium text-gray-900 text-center">
+				<h2 className="text-lg md:text-2xl [font-family:'Sky_Text',Helvetica] font-normal text-gray-900 p-2">
 					{question}
 				</h2>
 				<RadioGroup
@@ -19,7 +19,7 @@ const RadioQuestion = ({options, current, setCurrent, question}) => {
 					}>
 					{options.map((option) => (
 						<div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-							<Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
+							<Label className="text-sm md:text-base cursor-pointer [font-family:'Sky_Text',Helvetica] font-normal">{option.label}</Label>
 							<RadioGroupItem
 								value={option.value}
 								id={option.value}
