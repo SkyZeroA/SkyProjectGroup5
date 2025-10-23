@@ -67,3 +67,44 @@ test('submits form and navigates on successful sign-in', async () => {
       expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
 });
+
+test('handles incorrect username or password error', async () => {
+  mockedAxios.post.mockRejectedValueOnce({
+    response: {
+      data: {
+        error: 'Incorrect username or password',
+      },
+    },
+  });
+
+  render(<SignIn />);
+
+  fireEvent.change(screen.getByLabelText(/Email/i), {
+    target: { value: 'wrong@example.com' },
+  });
+  fireEvent.change(screen.getByLabelText(/Password/i), {
+    target: { value: 'wrongpassword' },
+  });
+
+  fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
+
+  await waitFor(() => {
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'http://localhost:9099/api/sign-in',
+      { email: 'wrong@example.com', password: 'wrongpassword' },
+      { withCredentials: true }
+    );
+
+    // You can also assert side effects like clearing the password field
+    expect(screen.getByLabelText(/Password/i).value).toBe('');
+  });
+});
+
+test('navigates to sign-up page when "Create a new account" button is clicked', () => {
+  render(<SignIn />); // Assuming SignIn contains the button
+
+  const createAccountButton = screen.getByText(/Create a new account/i);
+  fireEvent.click(createAccountButton);
+
+  expect(mockNavigate).toHaveBeenCalledWith('/sign-up');
+});
