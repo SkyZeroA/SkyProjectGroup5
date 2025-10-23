@@ -148,7 +148,7 @@ const Questionnaire = () => {
                 "flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
                 "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
               }>
-              {transportOptions.map((option) => (
+              {/* {transportOptions.map((option) => (
                 <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
                   <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
                   <RadioGroupItem
@@ -157,7 +157,20 @@ const Questionnaire = () => {
                     className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
                   />
                 </div>
-              ))}
+              ))} */}
+            {transportOptions.map((option) => (
+            <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
+            <Label htmlFor={`transport-${option.value}`}  // ✅ Link label to radio
+              className="text-sm md:text-base cursor-pointer"
+            >
+              {option.label}
+            </Label>
+            <RadioGroupItem value={option.value}
+              id={`transport-${option.value}`}        // ✅ Matching ID
+              className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
+            />
+          </div>
+        ))}
             </RadioGroup>
           </CardContent>
         </Card>
@@ -206,12 +219,26 @@ const Questionnaire = () => {
                 "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
               }
             >
-              {dietOptions.map((option) => (
+              {/* {dietOptions.map((option) => (
                 <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
                   <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
                   <RadioGroupItem
                     value={option.value}
                     id={`diet-${option.value}`}
+                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
+                  />
+                </div>
+              ))} */}
+              {dietOptions.map((option) => (
+                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
+                  <Label
+                    htmlFor={`diet-${option.value}`}        // ✅ Link label to radio
+                    className="text-sm md:text-base cursor-pointer"
+                  >
+                    {option.label}
+                  </Label>
+                  <RadioGroupItem value={option.value}
+                    id={`diet-${option.value}`}             // ✅ Matching ID
                     className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
                   />
                 </div>
@@ -249,12 +276,25 @@ const Questionnaire = () => {
                 "[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
               }
             >
-              {energyEfficiencyOptions.map((option) => (
+              {/* {energyEfficiencyOptions.map((option) => (
                 <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
                   <Label className="text-sm md:text-base cursor-pointer">{option.label}</Label>
                   <RadioGroupItem
                     value={option.value}
                     id={`energy-efficiency-${option.value}`}
+                    className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
+                  />
+                </div>
+              ))} */}
+              {energyEfficiencyOptions.map((option) => (
+                <div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
+                  <Label htmlFor={`energy-efficiency-${option.value}`} // ✅ Link label to radio
+                    className="text-sm md:text-base cursor-pointer"
+                  >
+                    {option.label}
+                  </Label>
+                  <RadioGroupItem value={option.value}
+                    id={`energy-efficiency-${option.value}`}       // ✅ Matching ID
                     className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
                   />
                 </div>

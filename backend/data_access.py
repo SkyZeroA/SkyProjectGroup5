@@ -8,6 +8,7 @@ def get_connection():
 def close_connection(connection):
     connection.close()
 
+
 def init_db():
     # Locate the SQL script in the repository root
     repo_root = Path(__file__).resolve().parents[1]
@@ -48,6 +49,7 @@ def init_db():
         except Exception:
             pass
 
+
 def init_insert():
     # Locate the SQL script in the repository root
     repo_root = Path(__file__).resolve().parents[1]
@@ -82,6 +84,7 @@ def init_insert():
         except Exception:
             pass
 
+
 def check_password(email, password_hash):
     db = get_connection()
     cursor = db.cursor()
@@ -93,6 +96,7 @@ def check_password(email, password_hash):
     else:
         return password_hash == correct_password_hash[0]
 
+
 def insert_into_questionnaire(questionnaire):
     db = get_connection()
     cursor = db.cursor()
@@ -100,6 +104,21 @@ def insert_into_questionnaire(questionnaire):
     cursor.execute("INSERT INTO QuestionnaireResponse VALUES (%s, %s, %s, %s)", questionnaire)
     db.commit()
     close_connection(db)
+
+
+def get_answers_from_questionnaire(email):
+    db = get_connection()
+    cursor = db.cursor()
+    user_id = get_user_id_from_db(email)
+    cursor.execute("SELECT question_one, question_two, question_three FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
+    response = cursor.fetchone()
+    close_connection(db)
+    if response is None:
+        return []
+    else:
+        response = {"question_one": response[0], "question_two": response[1], "question_three": response[2]}
+        return response, user_id
+
 
 def read_user_table():
     user_list = []
@@ -114,6 +133,7 @@ def read_user_table():
     close_connection(db)
     return user_list, email_list
 
+
 def get_user_id_from_db(email):
     db = get_connection()
     cursor = db.cursor()
@@ -121,6 +141,7 @@ def get_user_id_from_db(email):
     user_id = cursor.fetchone()[0]
     close_connection(db)
     return user_id
+
 
 def get_username_from_db(email):
     db = get_connection()
@@ -130,12 +151,14 @@ def get_username_from_db(email):
     close_connection(db)
     return username
 
+
 def insert_new_user(email, first_name, username, password):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("INSERT INTO User(firstName, username, email, encrypted_password) VALUES (%s, %s, %s, %s)", (first_name, username, email, password))
     db.commit()
     close_connection(db)
+
 
 def read_view_table_week():
     db = get_connection()
@@ -146,6 +169,7 @@ def read_view_table_week():
     converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
     return converted_data
 
+
 def read_view_table_month():
     db = get_connection()
     cursor = db.cursor()
@@ -154,6 +178,7 @@ def read_view_table_month():
     close_connection(db)
     converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
     return converted_data
+
 
 def get_current_week_number():
     today = date.today()
@@ -164,6 +189,7 @@ def get_current_week_number():
     close_connection(db)
     return week_number
 
+
 def get_current_month_number():
     today = date.today()
     db = get_connection()
@@ -173,6 +199,7 @@ def get_current_month_number():
     close_connection(db)
     return month_number
 
+
 def get_users_preferred_activities(user_id):
     db = get_connection()
     cursor = db.cursor()
@@ -181,6 +208,7 @@ def get_users_preferred_activities(user_id):
     close_connection(db)
     return activities
 
+
 def get_all_activity_names():
     db = get_connection()
     cursor = db.cursor()
@@ -188,6 +216,7 @@ def get_all_activity_names():
     activities = [row[0] for row in cursor.fetchall()]
     close_connection(db)
     return activities
+
 
 def get_activity_id(activity_name):
     db = get_connection()

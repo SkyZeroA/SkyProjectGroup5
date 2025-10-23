@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Questionnaire:
     def __init__(self, answers, user_id):
         self._questionnaire = answers
@@ -37,7 +39,7 @@ class Questionnaire:
         # "Not very efficient (older building or appliances)": 2.5
         energy_efficiency_emissions = [0.8, 1.5, 2.5]
 
-        transport, diet, efficiency = self._questionnaire.values();
+        transport, diet, efficiency = self._questionnaire.values()
 
         # Calculate footprint
         total = (
@@ -46,4 +48,21 @@ class Questionnaire:
             energy_efficiency_emissions[efficiency]
         )
 
-        return round(total, 2)
+         # Get current date
+        today = datetime.today()
+        day_of_year = today.timetuple().tm_yday
+
+        # Determine if current year is a leap year
+        year = today.year
+        is_leap = (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0))
+        days_in_year = 366 if is_leap else 365
+
+        # Calculate year progress
+        year_progress = day_of_year / days_in_year
+        current_value = total * year_progress
+
+        return {
+            "annual_total": round(total, 2),
+            "current_to_date": round(current_value, 2),
+            "year_progress_percent": round(year_progress * 100, 2)
+        }

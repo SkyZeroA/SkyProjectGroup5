@@ -1,52 +1,60 @@
 import React from 'react';
 
-const ProgressBar = ({ current = 200, mid = 91, projected = 203 }) => {
-  const pct = (current / projected) * 100;
-  const midPct = (mid / projected) * 100;
-
-//  const pct = 0
-//  const midPct =0
+const ProgressBar = ({ current, projected, totalProjected}) => {
+  const percentCurrent = (current / totalProjected) * 100;
+  const percentProjected = (projected / totalProjected) * 100;
 
   return (
-    <div style={{ background: '#fff', padding: 20, borderRadius: 6, width: '65%' }}>
-      <h2>Projected Carbon Footprint</h2>
-      <p style={{ color: '#666' }}><small>In 2025, you are projected to be responsible for <strong>{projected} Tons</strong> of CO2</small></p>
-
-      <div style={{
-        background: '#f3f6f4',
-        height: 40,
-        borderRadius: 6,
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: `${pct}%`,
-          background: 'linear-gradient(90deg, #c8f3cf, #7e8d84ff)'
-        }} />
-        <div style={{
-          position: 'absolute',
-          left: `${midPct}%`,
-          top: 0,
-          bottom: 0,
-          width: 6,
-          background: '#2f8f3f'
-        }} />
+    <div className="bg-white p-5 rounded-md w-full flex flex-col gap-3">
+      {/* Progress Bar */}
+      <div className="relative bg-gray-200 h-[120px] rounded-md overflow-hidden">
+        {/* Projected marker */}
+        <div
+          className="absolute top-0 bottom-0 w-[2px] bg-green-500"
+          style={{ width: `${percentProjected}%` }}
+        />
+        
+        {/* Current progress fill */}
+        <div
+          className="absolute top-0 bottom-0 left-0 bg-[#d9ed92]"
+          style={{ width: `${percentCurrent}%` }}
+        />
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, color: '#666' }}>
-        <span>0</span>
-        <span>{current}</span>
-        <span>{mid}</span>
-        <span>{projected}</span>
-      </div>
+      {/* Labels below the bar */}
+      <div className="relative h-6 w-full text-gray-600 text-sm">
+        {/* 0 */}
+        <span
+          className="absolute"
+          style={{ left: '0%', transform: 'translateX(-50%)' }}
+        >
+          0
+        </span>
 
-      <p style={{ marginTop: 12, color: '#444' }}>
-        Currently, you have produced <strong>{current} Tons</strong> of CO2 so far, which is <strong>{projected - current} Tons Less</strong> than projected for this point in the year!
-      </p>
+        {/* Current */}
+        <span
+          className="absolute"
+          style={{ left: `${percentCurrent}%`, transform: 'translateX(-50%)' }}
+        >
+          {current}
+        </span>
+
+        {/* Projected */}
+        <span
+          className="absolute"
+          style={{ left: `${percentProjected}%`, transform: 'translateX(-50%)' }}
+        >
+          {projected}
+        </span>
+
+        {/* Total */}
+        <span
+          className="absolute"
+          style={{ left: '100%', transform: 'translateX(-50%)' }}
+        >
+          {totalProjected}
+        </span>
+      </div>
     </div>
   );
 };
