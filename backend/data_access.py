@@ -5,7 +5,6 @@ from datetime import date
 def get_connection():
     return mysql.connect(user="root", passwd="", host="localhost", database="SkyZeroDB")
 
-
 def close_connection(connection):
     connection.close()
 
@@ -102,7 +101,9 @@ def insert_into_questionnaire(questionnaire):
     db = get_connection()
     cursor = db.cursor()
     # Needs %s for each question, first %s is for the userID
-    cursor.execute("INSERT INTO QuestionnaireResponse VALUES (%s, %s, %s, %s)", questionnaire)
+    answers = len(questionnaire)
+    placeholders = ", ".join(["%s"] * answers)
+    cursor.execute(f"INSERT INTO QuestionnaireResponse VALUES ({placeholders})", questionnaire)
     db.commit()
     close_connection(db)
 
@@ -111,13 +112,13 @@ def get_answers_from_questionnaire(email):
     db = get_connection()
     cursor = db.cursor()
     user_id = get_user_id_from_db(email)
-    cursor.execute("SELECT question_one, question_two, question_three FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
+    cursor.execute("SELECT question_one, question_two, question_three, question_four, question_five, question_six FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
     response = cursor.fetchone()
     close_connection(db)
     if response is None:
         return []
     else:
-        response = {"question_one": response[0], "question_two": response[1], "question_three": response[2]}
+        response = {"q1": response[0], "q2": response[1], "q3": response[2], "q4": response[3], "q5": response[4], "q6": response[5]}
         return response, user_id
 
 

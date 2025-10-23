@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import Popup from "../components/PopUp";
 import axios, { all } from "axios";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 
 const Dashboard = () => {
@@ -21,6 +22,7 @@ const Dashboard = () => {
 	const [isOn, setIsOn] = useState(false);
   const [allQuestions, setAllQuestions] = useState([]);
 
+  const navigate = useNavigate();
 
   const fetchAllQuestions = async () => {
       const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true })
@@ -99,10 +101,32 @@ const Dashboard = () => {
     <div className="flex flex-col min-h-screen bg-neutral-50">
       {/* Sticky Header */}
       <div className="top-0 z-10 bg-white">
-        <HeaderBanner logoAlign="left" navbar={<Button variant="link"
-                    className="h-auto p-0 [font-family:'Sky_Text',Helvetica]  text-[#000ef5] text-[16.5px] leading-[24.8px] bg-green-500 text-white px-4 py-2 rounded" 
-                    onClick={() => setIsFormOpen(true)}>Form</Button>} />
-      </div>
+        <HeaderBanner
+          logoAlign="left"
+          navbar={
+            <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
+              {/* Left content */}
+              <div>
+                <Button 
+                  variant="link"
+                  className="bg-green-500 text-white" 
+                  onClick={() => setIsFormOpen(true)}>
+                  Form
+                </Button>
+              </div>
+
+              {/* Right content */}
+              <div className="ml-auto">
+                <Button 
+                  variant="link"
+                  onClick={() => navigate("/")}>
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+          }
+        />
+    </div>
 
       {/* Main Content */}
       <main className="flex flex-1 px-6 py-6 gap-6">
@@ -158,12 +182,12 @@ const Dashboard = () => {
             <CardContent>
 								<div className="p-4">
 									<h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
-									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} Tons</span> of CO2</p>
+									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} kg</span> of CO2</p>
 
 									<ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
 
                   <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
-                    Currently, you have produced <strong>{currentCarbon} Tons</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} Tons Less</strong> than projected for this point in the year!
+                    Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} kg Less</strong> than projected for this point in the year!
                   </p>
 								</div>
               <h2 className="text-2xl font-bold text-center text-gray-900">

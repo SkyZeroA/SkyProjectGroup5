@@ -42,7 +42,7 @@ const value = isControlled ? controlledValue : internalValue;
 
         <div className="absolute left-0 right-0 flex justify-between mt-6 w-full text-center text-xs md:text-sm text-gray-700">
           {dayLabels.map((day, index) => (
-            <div key={index} className="flex justify-between">
+            <div key={index} className="flex justify-between [font-family:'Sky_Text',Helvetica] font-normal">
               {day.label}
             </div>
                 ))}

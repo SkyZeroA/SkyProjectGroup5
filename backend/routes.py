@@ -137,6 +137,7 @@ def dashboard():
     username = get_username_from_db(email)
     week_leaderboard = read_view_table_week()
     month_leaderboard = read_view_table_month()
+    
     answers, user_id = get_answers_from_questionnaire(email)
     questionnaire_answers = Questionnaire(answers, user_id)
     # print(questionnaire_answers)
