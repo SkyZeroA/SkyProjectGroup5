@@ -22,7 +22,7 @@ class Questionnaire:
 
         # Emission factors (tonnes CO₂ per year)
 
-        # Transport options g CO2 / km
+        # Transport options kg CO2 / km
         # Work from home, Walk/Cycle, Public Transport (Bus/Train), Car (Petrol/Deisel), Car (Electic)
         transport_emission_factors = [0.0, 0.0, 0.05, 0.25, 0.05]
 
@@ -30,7 +30,7 @@ class Questionnaire:
         # 0-5, 5-10, 10-15, 15-20, 20-30, 30+
         travel_distance = [2.5, 7.5, 12.5, 17.5, 25, 40]
         
-        # Meats eaten g Co2 (Assumes 200g eaten)
+        # Meats eaten kg Co2 (Assumes 200g eaten)
         # Beef, Lamb, Pork, Chicken, Turkey, Fish
         meat_eaten = [10.0, 8.0, 2.0, 1.6, 2.4, 1.4]
 
@@ -45,7 +45,7 @@ class Questionnaire:
         diet_emissions = days_eating_meat * meat_eaten[me_index] * 52 # kg CO2 / year
 
         # Assumes 10 kWh/hour boiler
-        # 0.2 is the heating emission factor g CO2 / hour
+        # 0.2 is the heating emission factor kg CO2 / hour
         # Assumes heating on for winter months only = 90 days
         heating_emissions = heating_hours * 0.2 * 10 * 90 # kg CO2 / year
 
@@ -69,7 +69,7 @@ class Questionnaire:
         # ----------- Activity Key --------------
         # 1: Ride Bike
         # 7: Avoid meat
-        
+
         for (activity_id, count) in counts:
             if activity_id == 1:
                 transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
