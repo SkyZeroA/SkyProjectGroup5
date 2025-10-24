@@ -68,13 +68,45 @@ class Questionnaire:
 
         # ----------- Activity Key --------------
         # 1: Ride Bike
+        # 2: Day without Heating
+        # 3: Walk to Work
+        # 4: Use Public Transport
+        # 5: Extra WFH Day
+        # 6: Carpooling with 1 other person
         # 7: Avoid meat
+        # 8: Carpooling with 2 other people
+        # 9: Carpooling with 3 other people
+        # ---------------------------------------
+
+        # What do we want to do in the case that a person who usually bikes to work ticks an activity that involves driving/public transport?
+        # 1) Have it in the code that it will not increase their good green part of the bar (what i implemented)
+        # 2) Have it reduce their green part of the bar
 
         for (activity_id, count) in counts:
             if activity_id == 1:
                 transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 2:
+                heating_emissions -= heating_hours * 0.2 * 10 * count
+            elif activity_id == 3:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 4:
+                if tef_index == 3: # If they usually drive a diesel car as that is the only one worse than public transport
+                    transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count 
+                    transport_emissions += transport_emission_factors[2] * (travel_distance[td_index] * 2) * count
+            elif activity_id == 5:
+                transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count      
+            elif activity_id == 6:
+                if tef_index == 3: # If they usually drive a diesel car as that is the only one worse than carpooling with 1 other person
+                    transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.5
             elif activity_id == 7:
-                diet_emissions -= meat_eaten[me_index] * count
+                if days_eating_meat > 0:
+                    diet_emissions -= meat_eaten[me_index] * count
+            elif activity_id == 8:
+                if tef_index == 3: # If they usually drive a diesel car as that is the only one worse than carpooling with 2 other people
+                    transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.66
+            elif activity_id == 9:
+                if tef_index == 3: # If they usually drive a diesel car as that is the only one worse than carpooling with 3 other people
+                    transport_emissions -= transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count * 0.75
 
         current = (transport_emissions + diet_emissions + heating_emissions) * year_progress
 

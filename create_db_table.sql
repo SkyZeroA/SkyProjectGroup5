@@ -11,12 +11,12 @@ CREATE TABLE IF NOT EXISTS User (
 
 CREATE TABLE IF NOT EXISTS QuestionnaireResponse (
 	userID INT NOT NULL PRIMARY KEY,
-    question_one INT NOT NULL,
-    question_two INT NOT NULL,
-    question_three INT NOT NULL,
-    question_four INT NOT NULL,
-    question_five INT NOT NULL,
-    question_six INT NOT NULL,
+    q1 INT NOT NULL,
+    q2 INT NOT NULL,
+    q3 INT NOT NULL,
+    q4 INT NOT NULL,
+    q5 INT NOT NULL,
+    q6 INT NOT NULL,
     FOREIGN KEY(userID) REFERENCES User(userID)
 );
 

@@ -112,7 +112,7 @@ def get_answers_from_questionnaire(email):
     db = get_connection()
     cursor = db.cursor()
     user_id = get_user_id_from_db(email)
-    cursor.execute("SELECT question_one, question_two, question_three, question_four, question_five, question_six FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
+    cursor.execute("SELECT q1, q2, q3, q4, q5, q6 FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
     response = cursor.fetchone()
     close_connection(db)
     if response is None:
