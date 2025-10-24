@@ -167,20 +167,27 @@ class TestFlaskAPI(TestCase):
         mock_get_user_id.return_value = 1
         mock_get_week.return_value = 42
         mock_get_month.return_value = 10
-        mock_get_activity_id.side_effect = lambda name: {"Cycling": 101, "Walking": 102}[name]
+        # mock_get_activity_id.side_effect = lambda name: {"Cycling": 101, "Walking": 102}[name]
+        mock_get_activity_id.return_value = 101  # Assuming "Cycling" maps to 101
         mock_insert_activity.return_value = None
 
         with self.app.session_transaction() as sess:
             sess['email'] = "harry@example.com"
 
+        # response = self.app.post('/api/log-activity', json={
+        #     "Cycling": 2,
+        #     "Walking": 1
+        # })
+
         response = self.app.post('/api/log-activity', json={
-            "Cycling": 2,
-            "Walking": 1
+            "question": "Cycling",
+            "isPositive": True
         })
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Activity logged successfully", response.get_data(as_text=True))
-        self.assertEqual(mock_insert_activity.call_count, 3)  # 2 Cycling + 1 Walking
+        # self.assertEqual(mock_insert_activity.call_count, 3)  # 2 Cycling + 1 Walking
+        mock_insert_activity.assert_called_once_with(1, 101, 42, 10, True)
 
     def test_fetch_questions(self):
         response = self.app.get('/api/fetch-questions')
@@ -200,10 +207,17 @@ class TestFlaskAPI(TestCase):
 
         # Mock Questionnaire instance and its method
         mock_questionnaire_instance = MagicMock()
+        # mock_questionnaire_instance.calculate_projected_carbon_footprint.return_value = {
+        #     "annual_total": 1200,
+        #     "current_to_date": 300
+        # }
+
         mock_questionnaire_instance.calculate_projected_carbon_footprint.return_value = {
             "annual_total": 1200,
-            "current_to_date": 300
+            "projected": 1200,
+            "current": 300
         }
+
         mock_questionnaire_class.return_value = mock_questionnaire_instance
 
         with self.app.session_transaction() as sess:
@@ -211,11 +225,19 @@ class TestFlaskAPI(TestCase):
 
         response = self.app.get('/api/dashboard')
         self.assertEqual(response.status_code, 200)
+
         data = response.get_json()
         self.assertIn("weekLeaderboard", data)
         self.assertIn("monthLeaderboard", data)
         self.assertIn("username", data)
+        self.assertIn("totalProjectedCarbon", data)
+        self.assertIn("projectedCarbon", data)
+        self.assertIn("currentCarbon", data)
+
         self.assertEqual(data["username"], "Harry")
+        self.assertEqual(data["weekLeaderboard"], [{"rank": 1, "username": "Harry", "score": 100}])
+        self.assertEqual(data["monthLeaderboard"], [{"rank": 1, "username": "Harry", "score": 400}])
+        self.assertEqual(data["totalProjectedCarbon"], 1200)
         self.assertEqual(data["projectedCarbon"], 1200)
         self.assertEqual(data["currentCarbon"], 300)
 
