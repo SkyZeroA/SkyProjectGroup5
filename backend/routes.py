@@ -145,7 +145,10 @@ def dashboard():
     total_projected = projected_carbon_dict["annual_total"]
     projected = projected_carbon_dict["projected"]
     current = projected_carbon_dict["current"]
-    print(projected_carbon_dict)
+    transport_emissions = projected_carbon_dict["transport_emissions"]
+    diet_emissions = projected_carbon_dict["diet_emissions"]
+    heating_emissions = projected_carbon_dict["heating_emissions"]
+    # print(projected_carbon_dict)
     # print(week_leaderboard)
     # print(month_leaderboard)
     return jsonify({"message": "Leaderboard send successful",
@@ -154,5 +157,8 @@ def dashboard():
                    "totalProjectedCarbon": total_projected,
                    "projectedCarbon": projected,
                    "currentCarbon": current,
-                   "username": username}), 200
-
+                   "username": username,
+                   "transportEmissions": transport_emissions,
+                   "dietEmissions": diet_emissions,
+                   "heatingEmissions": heating_emissions
+                   }), 200

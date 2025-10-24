@@ -111,6 +111,9 @@ class Questionnaire:
         current = (transport_emissions + diet_emissions + heating_emissions) * year_progress
 
         return {
+            "transport_emissions": round(transport_emissions),
+            "diet_emissions": round(diet_emissions),
+            "heating_emissions": round(heating_emissions),
             "annual_total": round(total),
             "projected": round(projected),
             "current": round(current)
