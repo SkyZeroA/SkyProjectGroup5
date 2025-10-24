@@ -46,9 +46,9 @@ cd your-repo-name
 While inside the main project folder, run the backend using Python:
 
 ```bash
-python -m backend.py
+python3 -m backend.app
 
-⚠️ Ensure you are in the main project directory (where backend.py is located) before running this command.
+⚠️ Ensure you are in the main project directory before running this command.
 This will start the backend server on your local machine.
 
 
