@@ -95,7 +95,7 @@ password: password
 
 ________________________________________________________________
 ### 7. Please fill out the google form and leave us any feedback
-https://teams.microsoft.com/l/message/19:meeting_Nzc0OGZlZTEtODFjNC00OWZjLTg0ODctYTU5MTc4OTc5ZWE2@thread.v2/1761304235012?context=%7B%22contextType%22%3A%22chat%22%7D
+https://forms.office.com/Pages/ResponsePage.aspx?id=1WW4aBjPK0uCpKTt25xSN7HHXHnQtSNGmoixXNUHhnZURDJLVllKT01YTEg4T1pVOE9YODlMMFY4Ry4u
 
 _________
 ### Notes
