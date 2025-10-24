@@ -102,20 +102,20 @@ INSERT IGNORE INTO Month (monthID, month_start, month_end) VALUES
 /* Activities Points Breakdown 
 
 Assumptions:
-- Avg commute distance: 20 miles https://mobilityways.com/cost-of-living-and-commuter-trends/
-- Avoiding meat will use an avg of all the meat options from the questionnaire
+- Avg commute distance: 20 km https://mobilityways.com/cost-of-living-and-commuter-trends/
+- Avoiding meat uses an avg of all the meat options from the questionnaire
   10.0, 8.0, 2.0, 1.6, 2.4, 1.4 = 25.4 / 6 = ~4.23 kg CO2 saved per day
 - Avg hours of heating saved per day when turning off heating: 5hrs https://heatable.co.uk/boiler-advice/how-many-hours-a-day-should-heating-be-on
 
 Bike to work: 0.25 kg/km * 20 km = 5 kg/day -> 10 points             
 Day Without heating on: 2 kg/hr * 5 hrs = 10 kg/day -> 20 points
 Walk to work: 0.25 kg/km * 20 km = 5 kg/day -> 10 points
-Public transport: (0.25 - 0.05) * 20 km = 4 kg/day -> 8 points
-Extra WFH day: 0.25 kg/km * 20 km = 5 kg/day -> 10 points
-Carpool w 1 other: 0.25 * 20 * 0.5 = 2.5 kg/day -> 5 points
+Public transport: (0.25 - 0.05) * 32 km = 6.4 kg/day -> 13 points
+Extra WFH day: 0.25 kg/km * 32 km = 8 kg/day -> 16 points
+Carpool w 1 other: 0.25 * 32 km * 0.5 = 4 kg/day -> 8 points
 Avoid meat: 4.23 kg/day -> 8 points
-Carpool w 2 others: 0.25 * 20 * 0.66 = 3.3 kg/day -> 7 points
-Carpool w 3 others: 0.25 * 20 * 0.75 = 3.75 kg/day -> 8 points
+Carpool w 2 others: 0.25 * 32 km * 0.66 = 5.2 kg/day -> 11 points
+Carpool w 3 others: 0.25 * 32 km * 0.75 = 6 kg/day -> 12 points
 
 */
 
@@ -123,12 +123,12 @@ INSERT IGNORE INTO ActivityKey (activityID, activity_name, value_points) VALUES
 (1, 'Bike to work', 10),
 (2, 'Day Without heating on', 20),
 (3, 'Walk to work', 10),
-(4, 'Public transport', 8),
-(5, 'Extra WFH day', 10),
-(6, 'Carpool w 1 other', 5),
+(4, 'Public transport', 13),
+(5, 'Extra WFH day', 16),
+(6, 'Carpool w 1 other', 8),
 (7, 'Avoid meat', 8),
-(8, 'Carpool w 2 others', 7),
-(9, 'Carpool w 3 others', 8);
+(8, 'Carpool w 2 others', 11),
+(9, 'Carpool w 3 others', 12);
 
 INSERT IGNORE INTO UserActivity (userID, activityID) VALUES
 (1, 1),
