@@ -190,10 +190,10 @@ const Dashboard = () => {
                     Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round(projectedCarbon - currentCarbon)} kg Less</strong> than projected for this point in the year!
                   </p>
 								</div>
-              <h2 className="text-2xl font-bold text-center text-gray-900">
+              <h2 className="text-[38px] [font-family:'Sky_Text',Helvetica] font-normal text-gray-900">
                 Tips to reduce your Carbon Footprint
               </h2>
-              <ul className="mt-4 space-y-4 text-gray-700">
+              <ul className="mt-4 space-y-4 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
                 <li>
                   <strong>Streamline your digital life:</strong> Delete unused
                   files and emails to reduce cloud storage energy use. Turn off
