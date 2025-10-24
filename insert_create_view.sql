@@ -114,17 +114,9 @@ INSERT IGNORE INTO Month (monthID, month_start, month_end) VALUES
 (9, '2025-09-01', '2025-09-30'),
 (10, '2025-10-01', '2025-10-31'),
 (11, '2025-11-01', '2025-11-30'),
-(12, '2025-12-01', '2025-12-31'),
-(13, '2026-01-01', '2026-01-31'),
-(14, '2026-02-01', '2026-02-28'),
-(15, '2026-03-01', '2026-03-31'),
-(16, '2026-04-01', '2026-04-30'),
-(17, '2026-05-01', '2026-05-31'),
-(18, '2026-06-01', '2026-06-30'),
-(19, '2026-07-01', '2026-07-31'),
-(20, '2026-08-01', '2026-08-31');
+(12, '2025-12-01', '2025-12-31');
 
-/* Activities Points Breakdown 
+/* Activities Points Breakdown
 
 Assumptions:
 - Avg commute distance: 20 km https://mobilityways.com/cost-of-living-and-commuter-trends/
@@ -143,7 +135,6 @@ Carpool w 2 others: 0.25 * 32 km * 0.66 = 5.2 kg/day -> 11 points
 Carpool w 3 others: 0.25 * 32 km * 0.75 = 6 kg/day -> 12 points
 
 */
-(12, '2025-12-01', '2025-12-31');
 
 
 INSERT IGNORE INTO ActivityKey (activityID, activity_name, value_points) VALUES
@@ -154,20 +145,8 @@ INSERT IGNORE INTO ActivityKey (activityID, activity_name, value_points) VALUES
 (5, 'Extra WFH day', 16),
 (6, 'Carpool w 1 other', 8),
 (7, 'Avoid meat', 8),
-(8, 'Use solar panel', 20),
-(9, 'Compost', 4),
-(10, 'Pick up litter', 6),
-(11, 'Eco shower', 2),
-(12, 'Eco laundry', 3),
-(13, 'Use LED lights', 5),
-(14, 'Donate clothes', 6),
-(15, 'Paperless billing', 4),
-(16, 'No plastic bottles', 5),
-(17, 'Home insulation', 12),
-(18, 'Energy audit', 10),
-(19, 'Eco-friendly commute', 7),
-(20, 'Grow vegetables', 9);
-
+(8, 'Carpool w 2 others', 11),
+(9, 'Carpool w 3 others', 12);
 
 -- INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity) VALUES
 -- (1, 41, 10, 5, TRUE),
