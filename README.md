@@ -61,7 +61,13 @@ This will start the backend server on your local machine.
 
 ___________________________________________
 ### 5. Open a new terminal for the frontend
-With the backend now running, open another terminal window or tab, then navigate to the frontend folder:
+With the backend now running, open another terminal window or tab - making sure you are still in the venv (run the activate command again if not) - then navigate to the frontend folder:
+
+if needed
+```bash
+source venv/bin/activate
+```
+
 
 ```bash
 cd react-frontend
