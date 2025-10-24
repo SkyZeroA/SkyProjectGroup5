@@ -73,6 +73,9 @@ This will launch the website on your local browser, usually at:
 
 http://localhost:3000
 
+________________________________________________________________
+### 7. Please fill out the google form and leave us any feedback
+https://forms.office.com/Pages/ShareFormPage.aspx?id=1WW4aBjPK0uCpKTt25xSN5Wj_5FISgFJvcncuYmMY6NUOUNMR01ZRExaRllUNEowWUhaN0o5TVJLQS4u&sharetoken=PvVw2m638pHpAWSTSQ4u
 
 _________
 ### Notes
