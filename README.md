@@ -1,7 +1,14 @@
 ### 🌍 ClearSky — Local Setup Guide
+_______________
+### Description
+ClearSky is a web application where users can track, understand, and reduce their carbon impact! 
+Our carbon footprint tracking platform helps employees of Sky measure their emissions, discover sustainable choices, and take meaningful steps towards a greener future.
+
+Currently the features include a leaderboard where you can compete with others (fake employees atm) to have the greenest week and month
+You will also be presented with a lifestyle questionnaire upon sign up, where answering these questions will give an estimate to your yearly carbon footprint
+
 
 This README will guide you through setting up the **ClearSky** website on your local machine for testing.
-
 ____________________
 ### ⚙️ Prerequisites
 
@@ -73,9 +80,16 @@ This will launch the website on your local browser, usually at:
 
 http://localhost:3000
 
+
+Please try signing up as a new user - filling out the questionnaire - and navgating the dashboard
+Also please try signing in as an existing user with the following details:
+
+email: test@example.com
+password: password
+
 ________________________________________________________________
 ### 7. Please fill out the google form and leave us any feedback
-https://forms.office.com/Pages/ShareFormPage.aspx?id=1WW4aBjPK0uCpKTt25xSN5Wj_5FISgFJvcncuYmMY6NUOUNMR01ZRExaRllUNEowWUhaN0o5TVJLQS4u&sharetoken=PvVw2m638pHpAWSTSQ4u
+https://teams.microsoft.com/l/message/19:meeting_Nzc0OGZlZTEtODFjNC00OWZjLTg0ODctYTU5MTc4OTc5ZWE2@thread.v2/1761304235012?context=%7B%22contextType%22%3A%22chat%22%7D
 
 _________
 ### Notes
