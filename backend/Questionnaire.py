@@ -49,6 +49,9 @@ class Questionnaire:
         # Assumes heating on for winter months only = 90 days
         heating_emissions = heating_hours * 0.2 * 10 * 90 # kg CO2 / year
 
+        transport = transport_emissions
+        diet = diet_emissions
+        heating = heating_emissions
         total = transport_emissions + diet_emissions + heating_emissions
 
         # Get current date
@@ -111,9 +114,9 @@ class Questionnaire:
         current = (transport_emissions + diet_emissions + heating_emissions) * year_progress
 
         return {
-            "transport_emissions": round(transport_emissions),
-            "diet_emissions": round(diet_emissions),
-            "heating_emissions": round(heating_emissions),
+            "transport_emissions": round(transport),
+            "diet_emissions": round(diet),
+            "heating_emissions": round(heating),
             "annual_total": round(total),
             "projected": round(projected),
             "current": round(current)

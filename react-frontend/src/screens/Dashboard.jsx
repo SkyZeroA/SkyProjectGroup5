@@ -218,7 +218,7 @@ const data = {
             <Card className="flex-1 bg-white border rounded-lg flex-shrink-0 overflow-auto">
               <CardContent className="p-6">
                 <h2 className="[font-family:'Sky_Text',Helvetica] text-2xl font-bold text-center text-gray-900">
-                  Emissions Breakdown
+                  Projected Emissions Breakdown
                 </h2>
                 <div className="flex items-center justify-center">
                   <MyPieChart transportEmissions={transportEmissions} dietEmissions={dietEmissions} heatingEmissions={heatingEmissions} />
