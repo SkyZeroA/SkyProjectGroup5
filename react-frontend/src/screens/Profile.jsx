@@ -28,6 +28,11 @@ const Profile = () => {
       });
   };
 
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [avatar])
+
   // Allows the user to change their profile picture
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
@@ -52,11 +57,6 @@ const Profile = () => {
     }
   };
 
-
-
-  useEffect(() => {
-    fetchUserInfo();
-  }, [avatar])
 
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">

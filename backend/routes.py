@@ -96,11 +96,12 @@ def log_activity():
     insert_user_activity(user_id, activity_id, week_number, month_number, isPositive)
     return jsonify({"message": "Activity logged successfully"}), 200
 
-# The old way to get all questions in ActivityKey table
+
 @app.route('/api/fetch-questions', methods=['GET'])
 def fetch_questions():
     questions = get_all_activity_names()
     return jsonify(questions), 200
+
 
 @app.route('/api/update-user-activities', methods=['POST'])
 def update_user_activities():
