@@ -39,6 +39,7 @@ class Questionnaire:
         # Calculate footprint
         # Travel dist * 2 because return journey
         # Assumes 48 working weeks in the year
+        print(tef_index, td_index)
         transport_emissions = transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * office_days * 48 # kg CO2 / year
 
         # Assumes meat eating habits year round

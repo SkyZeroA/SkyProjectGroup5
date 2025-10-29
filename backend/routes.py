@@ -112,6 +112,7 @@ def update_user_activities():
     update_user_preferred_activities(user_id, selected_activities)
     return jsonify({"message": "User activities updated successfully"}), 200
 
+
 @app.route('/api/user-activity-counts', methods=['GET'])
 def user_activity_counts():
     user_id = get_user_id_from_db(session['email'])
@@ -157,7 +158,7 @@ def fetch_user_data():
     username = get_username_from_db(email)
     first_name = get_first_name_from_db(email)
     avatar_filename = get_avatar_from_db(email)
-    avatar = f"/uploads/{avatar_filename}"
+    avatar = f"/uploads/{avatar_filename}" if avatar_filename else None
     print(username, first_name)
     return jsonify({"message": "User data fetch successful",
                     "username": username,
@@ -189,3 +190,11 @@ def upload_avatar():
         return jsonify({"message": "Avatar uploaded successfully"}), 200
 
     return jsonify({"error": "Invalid file type"}), 400
+
+
+@app.route('/api/fetch-questionnaire-answers')
+def fetch_questionnaire_answers():
+    email = session["email"]
+    answers, _ = get_answers_from_questionnaire(email)
+    return jsonify({"message": "Fetching questionnaire answers",
+                    "answers": answers}), 200

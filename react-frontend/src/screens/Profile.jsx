@@ -11,26 +11,36 @@ const Profile = () => {
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [avatar, setAvatar] = useState(null);
-
+  const [answers, setAnswers] = useState()
 
   const navigate = useNavigate();
 
   // Gets the username and first name of the current user
-  const fetchUserInfo = async () => {
+  const fetchUserData = async () => {
     await axios.get("http://localhost:9099/api/fetch-user-data", { withCredentials: true })
       .then(response => {
         setUsername(response.data.username);
         setFirstName(response.data.firstName);
-        setAvatar(response.data.avatar)
+        setAvatar(response.data.avatar && response.data.avatar !== "None" ? response.data.avatar : null);
       })
       .catch(error => {
         console.error("Error fetching user data:", error);
       });
   };
 
+  const fetchQuestionnaireData = async () => {
+    await axios.get("http://localhost:9099/api/fetch-questionnaire-answers", { withCredentials: true })
+      .then(response => {
+        setAnswers(response.data.answers);
+      })
+      .catch(error => {
+        console.error("Error fetching questionnaire data:", error);
+      });
+  };
+
 
   useEffect(() => {
-    fetchUserInfo();
+    fetchUserData();
   }, [avatar])
 
   // Allows the user to change their profile picture
@@ -57,7 +67,7 @@ const Profile = () => {
     }
   };
 
-
+  console.log("avatar", avatar)
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <HeaderBanner
@@ -84,7 +94,7 @@ const Profile = () => {
               <div className="flex flex-col items-center justify-center py-10 space-y-4">
                 <div className="relative flex flex-col items-center">
                   <Avatar className="w-[250px] h-[250px] bg-gray-200 overflow-hidden">
-                    {avatar ? (
+                    {avatar && avatar !== 'None' ? (
                       <img
                         src={`http://localhost:9099${avatar}`}
                         alt="User avatar"

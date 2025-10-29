@@ -2,13 +2,13 @@ import React, {useState, useEffect } from 'react'
 import RadioQuestion from './RadioQuestion';
 import SliderQuestion from './SliderQuestion';
 
-const Questions = ({ onAnswersChange }) => {
-	const [transportMethod, setTransportMethod] = useState(0);
-	const [travelDistance, setTravelDistance] = useState(0);
-	const [officeDays, setOfficeDays] = useState(0);
-	const [dietDays, setDietDays] = useState(0);
-	const [meats, setMeats] = useState(0);
-	const [heatingHours, setHeatingHours] = useState(0);
+const Questions = ({ onAnswersChange, initialAnswers = {} }) => {
+  const [transportMethod, setTransportMethod] = useState(initialAnswers.transportMethod || 0);
+  const [travelDistance, setTravelDistance] = useState(initialAnswers.travelDistance || 0);
+  const [officeDays, setOfficeDays] = useState(initialAnswers.officeDays || 0);
+  const [dietDays, setDietDays] = useState(initialAnswers.dietDays || 0);
+  const [meats, setMeats] = useState(initialAnswers.meats || 0);
+  const [heatingHours, setHeatingHours] = useState(initialAnswers.heatingHours || 0);
 
 	// Keeps track of current question
   // Used to make numbers consistent with conditionally displayed questions

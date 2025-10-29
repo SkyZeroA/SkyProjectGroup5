@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Questions from "../components/Questions";
 
 const Questionnaire = () => {
-  const [answers, setAnswers] = useState();
+  const [answers, setAnswers] = useState({});
   const navigate = useNavigate();
 
   const handleSubmit = async () => {

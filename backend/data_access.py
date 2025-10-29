@@ -112,13 +112,21 @@ def get_answers_from_questionnaire(email):
     db = get_connection()
     cursor = db.cursor()
     user_id = get_user_id_from_db(email)
-    cursor.execute("SELECT q1, q2, q3, q4, q5, q6 FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
+    cursor.execute("""
+        SELECT
+        transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours FROM QuestionnaireResponse WHERE userID = %s
+        """, (user_id,))
     response = cursor.fetchone()
     close_connection(db)
     if response is None:
         return []
     else:
-        response = {"q1": response[0], "q2": response[1], "q3": response[2], "q4": response[3], "q5": response[4], "q6": response[5]}
+        response = {"transportMethod": response[0],
+                    "travelDistance": response[1], 
+                    "officeDays": response[2], 
+                    "dietDays": response[3],
+                    "meats": response[4],
+                    "heatingHours": response[5]}
         return response, user_id
 
 
@@ -246,6 +254,7 @@ def get_activity_id(activity_name):
     close_connection(db)
     return activity_id
 
+
 def update_user_preferred_activities(user_id, selected_activities):
     db = get_connection()
     cursor = db.cursor()
@@ -255,6 +264,7 @@ def update_user_preferred_activities(user_id, selected_activities):
         cursor.execute("INSERT INTO UserActivity (userID, activityID) VALUES (%s, %s)", (user_id, activity_id))
     db.commit()
     close_connection(db)
+
 
 def get_user_activity_count(user_id, activity_id):
     db = get_connection()
@@ -270,6 +280,7 @@ def get_user_activity_count(user_id, activity_id):
     close_connection(db)
     return count
 
+
 def get_user_activity_count_total(user_id):
     db = get_connection()
     cursor = db.cursor()
@@ -284,6 +295,7 @@ def get_user_activity_count_total(user_id):
     close_connection(db)
     converted_data = [(activity_id, int(count)) for activity_id, count in count_data]
     return converted_data
+
 
 def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
     db = get_connection()
