@@ -18,36 +18,33 @@ const Dashboard = () => {
 	const [monthData, setMonthData] = useState([]);
 	const [username, setUsername] = useState([]);
   const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
-  const [currentCarbon, setCurrentCarbon] = useState([]);
+  const [projectedCarbon, setProjectedCarbon] = useState([]);
+  const [currentCarbon, setCurrentCarbon] = useState([])
 	const [isOn, setIsOn] = useState(false);
+  const [allQuestions, setAllQuestions] = useState([]);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-        setQuestions(response.data);
-      } catch (error) {
+  const fetchAllQuestions = async () => {
+      await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true })
+      .then(response => {
+        setAllQuestions(response.data);
+      })
+      .catch(error => {
         console.error("Error fetching activity questions:", error);
-      }
-    };
-    fetchQuestions();
-  }, []);
+      });
+  };
 
-  // Will replace above and be used later when we add preferences for user activities
-  // const [userActivities, setUserActivities] = useState([]);
-  // useEffect(() => {
-  //   const fetchUserActivities = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:9099/api/user-activities");
-  //       setUserActivities(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching user activities:", error);
-  //     }
-  //   };
-  //   fetchUserActivities();
-  // }, []);
+  //Will replace above and be used later when we add preferences for user activities
+  const fetchUserActivities = async () => {
+      await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true })
+      .then(response => {
+        setQuestions(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching user activities:", error);
+      });
+  };
 
 	const fetchData = async () => {
 			await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
@@ -55,7 +52,8 @@ const Dashboard = () => {
         setWeekData(response.data.weekLeaderboard);
 				setMonthData(response.data.monthLeaderboard);
 				setUsername(response.data.username);
-        setTotalProjectedCarbon(response.data.projectedCarbon)
+        setTotalProjectedCarbon(response.data.totalProjectedCarbon)
+        setProjectedCarbon(response.data.projectedCarbon)
         setCurrentCarbon(response.data.currentCarbon)
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
@@ -63,10 +61,10 @@ const Dashboard = () => {
     };
 	
   useEffect(() => {
+    fetchUserActivities();
+    fetchAllQuestions();
     fetchData();
-  }, []);
-
-  const projectedCarbon = Math.round(1.1 * currentCarbon * 100) / 100;
+  }, [isFormOpen]);
 
 	const current = isOn ? weekData : monthData;
   const leaderboardData = current
@@ -77,16 +75,26 @@ const Dashboard = () => {
     }));
   
 
-  const handleFormSubmit = async (answers) => {
-    console.log("Form submitted with answers:", answers);
-    try {
-      const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
-      await fetchData();
-      console.log("Server response:", response.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+  // const handleFormSubmit = async (answers) => {
+  //   console.log("Form submitted with answers:", answers);
+  //   try {
+  //     const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
+  //     await fetchData();
+  //     console.log("Server response:", response.data);
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //   }
+  // }
+
+  const handleActivitySave = async (selected) => {
+  try {
+    await axios.post(
+      "http://localhost:9099/api/update-user-activities", { activities: selected }, { withCredentials: true });
+    await fetchUserActivities();
+  } catch (error) {
+    console.error("Error saving user activities:", error);
   }
+};
   
 
   return (
@@ -182,18 +190,18 @@ const Dashboard = () => {
             <CardContent>
 								<div className="p-4">
 									<h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
-									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} Tons</span> of CO2</p>
+									<p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} kg</span> of CO2</p>
 
 									<ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
 
                   <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
-                    Currently, you have produced <strong>{currentCarbon} Tons</strong> of CO2 so far, which is <strong>{Math.round((projectedCarbon - currentCarbon) * 100) / 100} Tons Less</strong> than projected for this point in the year!
+                    Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round(projectedCarbon - currentCarbon)} kg Less</strong> than projected for this point in the year!
                   </p>
 								</div>
-              <h2 className="text-2xl font-bold text-center text-gray-900">
+              <h2 className="text-[38px] [font-family:'Sky_Text',Helvetica] font-normal text-gray-900">
                 Tips to reduce your Carbon Footprint
               </h2>
-              <ul className="mt-4 space-y-4 text-gray-700">
+              <ul className="mt-4 space-y-4 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
                 <li>
                   <strong>Streamline your digital life:</strong> Delete unused
                   files and emails to reduce cloud storage energy use. Turn off
@@ -215,11 +223,8 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
-      {/* Will be used later when we add preferences for user activities
-      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={userActivities} onSubmit={handleFormSubmit} />
-      */}
 
-      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} onSubmit={handleFormSubmit} />
+      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} allQuestions={allQuestions} onActivitiesSave={handleActivitySave} />
 
       {/* Footer */}
       <FooterBanner />

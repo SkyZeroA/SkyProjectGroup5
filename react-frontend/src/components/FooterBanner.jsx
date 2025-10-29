@@ -19,7 +19,7 @@ const FooterBanner = ({ className }) => {
   return (
     <div>
       <footer className={cn("bottom-1 w-full min-h-[70px] border-t border-solid border-[#dddddd] bg-white flex items-center px-4 md:px-16", className)}>
-        <div className="flex flex-col-reverse md:flex-row md:justify-between w-full items-center py-4 md:py-0 gap-6">
+        <div className="flex flex-col-reverse md:flex-row md:justify-between w-full items-start md:items-center py-4 md:py-4 gap-6">
           <div className="flex items-center space-x-4">
             <img
               className="w-auto h-[34px] object-cover"
@@ -31,7 +31,7 @@ const FooterBanner = ({ className }) => {
             </span>
           </div>
 
-          <div className="ml-[200px] md:ml-[100px] ml-0">
+          <div className="ml-0 md:ml-[100px]">
             <nav
               className={cn(
                 "grid grid-cols-2 place-item-center sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-12 xlg:gap-x-6 lg:gap-x-6 md:gap-x-4 sm:gap-x-10 lg:gap-y-2",

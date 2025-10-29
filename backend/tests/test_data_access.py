@@ -1,86 +1,151 @@
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import patch, MagicMock
+from datetime import date
+from backend.data_access import (init_db, init_insert,insert_new_user, get_user_id_from_db, get_username_from_db,
+                                 check_password, insert_into_questionnaire, read_user_table,
+                                 read_view_table_week, read_view_table_month, get_current_week_number, get_current_month_number,
+                                 get_users_preferred_activities, get_activity_id, get_all_activity_names, insert_user_activity)
 
-class TestDataAccess(TestCase):
+# Sample test data
+TEST_EMAIL = "harry@example.com"
+TEST_FIRST_NAME = "Harry"
+TEST_USERNAME = "harrySky"
+TEST_PASSWORD = "test123"
+
+class TestDatabaseFunctions(TestCase):
+
     def setUp(self):
-        # Arrange: Set up mock data access and sample data
-        self.data_access = MagicMock()
-        self.sample_data = [
-            {"id": 1, "name": "Alice"},
-            {"id": 2, "name": "Bob"},
-            {"id": 3, "name": "Charlie"},
-        ]
-        self.data_access.get_all.return_value = self.sample_data
-        self.data_access.get_by_id.side_effect = lambda x: next((item for item in self.sample_data if item["id"] == x), None)
-        self.data_access.create.side_effect = lambda x: {"id": len(self.sample_data) + 1, **x}
-        self.data_access.update.side_effect = lambda id, x: {**x, "id": id} if any(item["id"] == id for item in self.sample_data) else None
-        self.data_access.delete.side_effect = lambda id: True if any(item["id"] == id for item in self.sample_data) else False
+        patcher = patch('mysql.connector.connect')
+        self.addCleanup(patcher.stop)
+        self.mock_connect = patcher.start()
 
-    def test_get_all(self):
-        # Act: Call the method
-        result = self.data_access.get_all()
+        self.mock_conn = MagicMock()
+        self.mock_cursor = MagicMock()
+        self.mock_connect.return_value = self.mock_conn
+        self.mock_conn.cursor.return_value = self.mock_cursor
 
-        # Assert: Verify the result and interaction
-        self.assertEqual(result, self.sample_data)
-        self.data_access.get_all.assert_called_once()
+    # Test for read create database file
+    @patch("backend.data_access.Path.read_text",
+           return_value="CREATE DATABASE test; USE test; CREATE TABLE User(id INT);")
+    @patch("backend.data_access.Path.exists", return_value=True)
+    def test_init_db(self, mock_exists, mock_read_text):
 
-    def test_get_by_id_found(self):
-        # Act: Call the method with an existing ID
-        result = self.data_access.get_by_id(1)
+        init_db()
+        self.mock_cursor.execute.assert_any_call("CREATE DATABASE test")
+        self.mock_cursor.execute.assert_any_call("USE test")
+        self.mock_cursor.execute.assert_any_call("CREATE TABLE User(id INT)")
+        self.mock_conn.commit.assert_called_once()
 
-        # Assert: Verify the correct item is returned
-        self.assertEqual(result, {"id": 1, "name": "Alice"})
-        self.data_access.get_by_id.assert_called_once_with(1)
+    # Test for read insert table file
+    @patch("backend.data_access.Path.read_text", return_value="CREATE VIEW test_view AS SELECT * FROM User;")
+    @patch("backend.data_access.Path.exists", return_value=True)
+    def test_init_insert(self, mock_exists, mock_read_text):
+        init_insert()
+        self.mock_cursor.execute.assert_called_with("CREATE VIEW test_view AS SELECT * FROM User")
+        self.mock_conn.commit.assert_called_once()
 
-    def test_get_by_id_not_found(self):
-        # Act: Call the method with a non-existent ID
-        result = self.data_access.get_by_id(999)
+    #  Test for Missing File Error
+    @patch("backend.data_access.Path.exists", return_value=False)
+    def test_init_db_file_not_found(self, mock_exists):
+        with self.assertRaises(FileNotFoundError):
+            init_db()
 
-        # Assert: Verify that None is returned
-        self.assertIsNone(result)
-        self.data_access.get_by_id.assert_called_once_with(999)
+    #  Test for Missing File Error
+    @patch("backend.data_access.Path.exists", return_value=False)
+    def test_init_insert_file_not_found(self, mock_exists):
+        with self.assertRaises(FileNotFoundError):
+            init_insert()
 
-    def test_create(self):
-        # Arrange: Prepare new data
-        new_data = {"name": "David"}
+    # Insert a user and verify it's in the DB.
+    def test_insert_new_user(self):
+        insert_new_user(TEST_EMAIL, TEST_FIRST_NAME, TEST_USERNAME, TEST_PASSWORD)
+        self.mock_cursor.execute.assert_called_once()
+        self.mock_conn.commit.assert_called_once()
 
-        # Act: Call the create method
-        result = self.data_access.create(new_data)
+    # Retrieve user ID by email.
+    def test_get_user_id_from_db(self):
+        self.mock_cursor.fetchone.return_value = [123]
+        user_id = get_user_id_from_db(TEST_EMAIL)
+        self.assertEqual(user_id, 123)
 
-        # Assert: Verify the returned data includes a new ID
-        expected_result = {"id": 4, "name": "David"}
-        self.assertEqual(result, expected_result)
-        self.data_access.create.assert_called_once_with(new_data)
+    #  Retrieve username by email.
+    def test_get_username_from_db(self):
+        self.mock_cursor.fetchone.return_value = [TEST_USERNAME]
+        username = get_username_from_db(TEST_EMAIL)
+        self.assertEqual(username, TEST_USERNAME)
 
-    def test_update_found(self):
-        # Arrange: Prepare updated data
-        updated_data = {"name": "Alice Updated"}
-
-        # Act: Call the update method with an existing ID
-        result = self.data_access.update(1, updated_data)
-
-        # Assert: Verify the updated result
-        expected_result = {"id": 1, "name": "Alice Updated"}
-        self.assertEqual(result, expected_result)
-        self.data_access.update.assert_called_once_with(1, updated_data)
-
-    def test_update_not_found(self):
-        # Arrange: Prepare updated data for non-existent ID
-        updated_data = {"name": "Nonexistent"}
-
-        # Act: Call the update method with a non-existent ID
-        result = self.data_access.update(999, updated_data)
-
-        # Assert: Verify that None is returned
-        self.assertIsNone(result)
-        self.data_access.update.assert_called_once_with(999, updated_data)
-
-    def test_delete_found(self):
-        # Act: Call the delete method with an existing ID
-        result = self.data_access.delete(1)
-
-        # Assert: Verify that deletion was successful
+    # Verify correct and incorrect password hashes.
+    def test_check_password_correct(self):
+        self.mock_cursor.fetchone.return_value = [TEST_PASSWORD]
+        result = check_password(TEST_EMAIL, TEST_PASSWORD)
         self.assertTrue(result)
-        self.data_access.delete.assert_called_once_with(1)
+
+    def test_check_password_incorrect(self):
+        self.mock_cursor.fetchone.return_value = ["wrong_hash"]
+        result = check_password(TEST_EMAIL, TEST_PASSWORD)
+        self.assertFalse(result)
+
+    # Insert a questionnaire response and verify.
+    def test_insert_into_questionnaire(self):
+        insert_into_questionnaire((1, "Q1", "Q2", "Q3"))
+        self.mock_cursor.execute.assert_called_once()
+        self.mock_conn.commit.assert_called_once()
+
+    # Check if usernames and emails are returned correctly.
+    def test_read_user_table(self):
+        self.mock_cursor.fetchall.return_value = [("user1", "email1"), ("user2", "email2")]
+        users, emails = read_user_table()
+        self.assertEqual(users, ["user1", "user2"])
+        self.assertEqual(emails, ["email1", "email2"])
+
+    # Validate leaderboard data format (Week).
+    def test_read_view_table_week(self):
+        self.mock_cursor.fetchall.return_value = [("user1", 10), ("user2", 20)]
+        result = read_view_table_week()
+        self.assertEqual(result, [{"name": "user1", "score": 10}, {"name": "user2", "score": 20}])
+
+    # Validate leaderboard data format (Month).
+    def test_read_view_table_month(self):
+        self.mock_cursor.fetchall.return_value = [("user1", 30), ("user2", 40)]
+        result = read_view_table_month()
+        self.assertEqual(result, [{"name": "user1", "score": 30}, {"name": "user2", "score": 40}])
+
+    # Ensure correct week ID is returned.
+    def test_get_current_week_number(self):
+        self.mock_cursor.fetchone.return_value = [42]
+        result = get_current_week_number()
+        self.assertEqual(result, 42)
+
+    # Ensure correct month ID is returned.
+    def test_get_current_month_number(self):
+        self.mock_cursor.fetchone.return_value = [10]
+        result = get_current_month_number()
+        self.assertEqual(result, 10)
+
+    # Validate activity names returned for a user.
+    def test_get_users_preferred_activities(self):
+        self.mock_cursor.fetchall.return_value = [("Recycling",), ("Walking",)]
+        result = get_users_preferred_activities(1)
+        self.assertEqual(result, ["Recycling", "Walking"])
+
+    # Ensure all activity names are fetched.
+    def test_get_all_activity_names(self):
+        self.mock_cursor.fetchall.return_value = [("Cycling",), ("Composting",)]
+        result = get_all_activity_names()
+        self.assertEqual(result, ["Cycling", "Composting"])
 
 
+    # Validate correct activity ID is returned.
+    def test_get_activity_id(self):
+        self.mock_cursor.fetchone.return_value = [5]
+        result = get_activity_id("Cycling")
+        self.assertEqual(result, 5)
+
+    # Insert an activity and verify it's stored.
+    def test_insert_user_activity(self):
+        insert_user_activity(1, 2, 3, 4, True)
+        self.mock_cursor.execute.assert_called_once()
+        self.mock_conn.commit.assert_called_once()
+
+# if __name__ == '__main__':
+#     unittest.main()

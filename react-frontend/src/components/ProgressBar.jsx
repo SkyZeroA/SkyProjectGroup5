@@ -1,25 +1,19 @@
 import React from 'react';
 
-const ProgressBar = ({ current, projected, totalProjected}) => {
-  const percentCurrent = (current / totalProjected) * 100;
-  const percentProjected = (projected / totalProjected) * 100;
+const ProgressBar = ({ current, projected}) => {
+  const percentCurrent = (current / projected) * 100;
 
   return (
     <div className="bg-white p-5 rounded-md w-full flex flex-col gap-3">
       {/* Progress Bar */}
-      <div className="relative bg-gray-200 h-[120px] rounded-md overflow-hidden">
-        {/* Projected marker */}
+      <div className="relative bg-[#4BAD31] h-[120px] rounded-md overflow-hidden">
+
+        {/* Current marker */}
         <div
-          className="absolute top-0 bottom-0 w-[2px] bg-green-500"
-          style={{ width: `${percentProjected}%` }}
-        />
-        
-        {/* Current progress fill */}
-        <div
-          className="absolute top-0 bottom-0 left-0 bg-[#d9ed92]"
+          className="absolute top-0 bottom-0 w-[2px] bg-[#454955]"
           style={{ width: `${percentCurrent}%` }}
         />
-      </div>
+       </div>
 
       {/* Labels below the bar */}
       <div className="relative h-6 w-full text-gray-600 text-sm">
@@ -42,17 +36,9 @@ const ProgressBar = ({ current, projected, totalProjected}) => {
         {/* Projected */}
         <span
           className="absolute"
-          style={{ left: `${percentProjected}%`, transform: 'translateX(-50%)' }}
-        >
-          {projected}
-        </span>
-
-        {/* Total */}
-        <span
-          className="absolute"
           style={{ left: '100%', transform: 'translateX(-50%)' }}
         >
-          {totalProjected}
+          {projected}
         </span>
       </div>
     </div>
