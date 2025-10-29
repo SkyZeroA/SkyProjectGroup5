@@ -52,9 +52,9 @@ const Dashboard = () => {
         setWeekData(response.data.weekLeaderboard);
 				setMonthData(response.data.monthLeaderboard);
 				setUsername(response.data.username);
-        setTotalProjectedCarbon(response.data.totalProjectedCarbon)
-        setProjectedCarbon(response.data.projectedCarbon)
-        setCurrentCarbon(response.data.currentCarbon)
+        setTotalProjectedCarbon(response.data.totalProjectedCarbon);
+        setProjectedCarbon(response.data.projectedCarbon);
+        setCurrentCarbon(response.data.currentCarbon);
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
       });

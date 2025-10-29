@@ -156,3 +156,13 @@ def dashboard():
                    "currentCarbon": current,
                    "username": username}), 200
 
+
+@app.route('/api/fetch-user-data')
+def fetch_user_data():
+    email = session["email"]
+    username = get_username_from_db(email)
+    first_name = get_first_name_from_db(email)
+    print(username, first_name)
+    return jsonify({"message": "User data fetch successful",
+                    "username": username,
+                    "firstName": first_name}), 200

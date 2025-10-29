@@ -154,6 +154,15 @@ def get_username_from_db(email):
     return username
 
 
+def get_first_name_from_db(email):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT firstName FROM User WHERE email = %s", (email,))
+    username = cursor.fetchone()[0]
+    close_connection(db)
+    return username
+
+
 def insert_new_user(email, first_name, username, password):
     db = get_connection()
     cursor = db.cursor()
