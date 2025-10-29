@@ -10,9 +10,12 @@ import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
+  const [avatar, setAvatar] = useState(null);
+
 
   const navigate = useNavigate();
 
+  // Gets the username and first name of the current user
   const fetchUserInfo = async () => {
     await axios.get("http://localhost:9099/api/fetch-user-data", { withCredentials: true })
       .then(response => {
@@ -24,6 +27,16 @@ const Profile = () => {
       });
   };
 
+  // Allows the user to change their profile picture
+  const handleAvatarChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const imageUrl = URL.createObjectURL(file);
+    setAvatar(imageUrl);
+  }
+};
+
+
   useEffect(() => {
     fetchUserInfo();
   }, [])
@@ -31,6 +44,7 @@ const Profile = () => {
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <HeaderBanner
+          className="md:fixed"
           logoAlign="left"
           navbar={
             <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
@@ -51,13 +65,45 @@ const Profile = () => {
           <Card className="bg-white min-h-[815px] rounded-lg">
             <CardContent className="p-6">
               <div className="flex flex-col items-center justify-center py-10 space-y-4">
-                <Avatar className="w-[250px] h-[250px] bg-gray-200">
-                  <AvatarFallback className="bg-gray-200 text-black font-bold text-[50px]">
-                    {username.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="pt-5 text-xl font-semibold [font-family:'Sky_Text',Helvetica]">Hi {firstName}!</span>
-                <span className="text-gray-900 [font-family:'Sky_Text',Helvetica]">Username: {username}</span>
+                <div className="relative flex flex-col items-center">
+                  <Avatar className="w-[250px] h-[250px] bg-gray-200 overflow-hidden">
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        alt="User avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <AvatarFallback className="bg-gray-200 text-black font-bold text-[50px]">
+                        {username.charAt(0)}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+
+                  {/* Hidden file input */}
+                  <input
+                    id="avatarUpload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                  />
+
+                  {/* Upload button below avatar */}
+                  <label
+                    htmlFor="avatarUpload"
+                    className="mt-3 inline-block cursor-pointer text-blue-600 hover:underline text-sm"
+                  >
+                    Change Avatar
+                  </label>
+                </div>
+
+                <span className="pt-5 text-xl font-semibold [font-family:'Sky_Text',Helvetica]">
+                  Hi {firstName}!
+                </span>
+                <span className="[font-family:'Sky_Text',Helvetica] text-gray-900">
+                  Username: {username}
+                </span>
               </div>
             </CardContent>
           </Card>
