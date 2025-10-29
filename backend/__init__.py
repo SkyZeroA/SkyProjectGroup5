@@ -17,3 +17,16 @@ app.config['SECRET_KEY'] = SECRET_KEY
 from . import routes
 
 CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
+
+# --------- For avatar image uploading ---------------
+
+# Gets directory of project folder and then appends /uploads to it
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+
+# Creates folder if it doesnt exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Adds path and allowed file types to flask apps config directory - accessable anywhere
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}

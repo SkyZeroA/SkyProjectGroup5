@@ -21,6 +21,7 @@ const Profile = () => {
       .then(response => {
         setUsername(response.data.username);
         setFirstName(response.data.firstName);
+        setAvatar(response.data.avatar)
       })
       .catch(error => {
         console.error("Error fetching user data:", error);
@@ -28,18 +29,34 @@ const Profile = () => {
   };
 
   // Allows the user to change their profile picture
-  const handleAvatarChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    setAvatar(imageUrl);
-  }
-};
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setAvatar(imageUrl); // local preview
+
+      // Prepare form data for backend
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      try {
+        const res = await axios.post(
+          "http://localhost:9099/api/upload-avatar",
+          formData,
+          { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
+        );
+        console.log("Avatar uploaded:", res.data);
+      } catch (error) {
+        console.error("Error uploading avatar:", error);
+      }
+    }
+  };
+
 
 
   useEffect(() => {
     fetchUserInfo();
-  }, [])
+  }, [avatar])
 
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
@@ -69,7 +86,7 @@ const Profile = () => {
                   <Avatar className="w-[250px] h-[250px] bg-gray-200 overflow-hidden">
                     {avatar ? (
                       <img
-                        src={avatar}
+                        src={`http://localhost:9099${avatar}`}
                         alt="User avatar"
                         className="w-full h-full object-cover"
                       />

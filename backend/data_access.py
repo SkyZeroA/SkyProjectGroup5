@@ -158,9 +158,18 @@ def get_first_name_from_db(email):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("SELECT firstName FROM User WHERE email = %s", (email,))
-    username = cursor.fetchone()[0]
+    first_name = cursor.fetchone()[0]
     close_connection(db)
-    return username
+    return first_name
+
+
+def get_avatar_from_db(email):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT avatarFilename FROM User WHERE email = %s", (email,))
+    avatar = cursor.fetchone()[0]
+    close_connection(db)
+    return avatar
 
 
 def insert_new_user(email, first_name, username, password):
@@ -283,5 +292,17 @@ def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
         INSERT INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity)
         VALUES (%s, %s, %s, %s, %s)
     """, (user_id, weekID, monthID, activity, positive_activity))
+    db.commit()
+    close_connection(db)
+
+
+def update_user_avatar(email, avatarFilename):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        UPDATE User
+        SET avatarFilename = %s
+        WHERE email = %s
+    """, (avatarFilename, email))
     db.commit()
     close_connection(db)

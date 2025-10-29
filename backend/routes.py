@@ -1,9 +1,13 @@
-from flask import render_template, request, session, redirect, url_for, jsonify
+import os
+from flask import request, session, jsonify, send_from_directory
 from backend import app
 from hashlib import sha256
+from werkzeug.utils import secure_filename
+
 
 from backend.Questionnaire import Questionnaire
 from backend.data_access import *
+from backend.helpers import allowed_file
 
 
 @app.route('/api/sign-in', methods=['POST'])
@@ -80,18 +84,6 @@ def user_activities():
     return jsonify(activities), 200
 
 
-# @app.route('/api/log-activity', methods=['POST'])
-# def log_activity():
-#     data = request.get_json()
-#     user_id = get_user_id_from_db(session['email'])
-#     week_number = get_current_week_number()
-#     month_number = get_current_month_number()
-#     for activity_name, value in data.items():
-#        activity_id = get_activity_id(activity_name)
-#        for _ in range(value):
-#               insert_user_activity(user_id, activity_id, week_number, month_number)
-#     return jsonify({"message": "Activity logged successfully"}), 200
-
 @app.route('/api/log-activity', methods=['POST'])
 def log_activity():
     data = request.get_json()
@@ -160,9 +152,39 @@ def dashboard():
 @app.route('/api/fetch-user-data')
 def fetch_user_data():
     email = session["email"]
+
     username = get_username_from_db(email)
     first_name = get_first_name_from_db(email)
+    avatar_filename = get_avatar_from_db(email)
+    avatar = f"/uploads/{avatar_filename}"
     print(username, first_name)
     return jsonify({"message": "User data fetch successful",
                     "username": username,
-                    "firstName": first_name}), 200
+                    "firstName": first_name,
+                    "avatar": avatar}), 200
+
+
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+@app.route('/api/upload-avatar', methods=['POST'])
+def upload_avatar():
+    email = session["email"]
+    file = request.files["avatar"]
+
+    print(file)
+
+    if file and allowed_file(file.filename):
+        # Save file in uploads folder
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+
+        # Store filename in db
+        update_user_avatar(email, filename)
+
+        return jsonify({"message": "Avatar uploaded successfully"}), 200
+
+    return jsonify({"error": "Invalid file type"}), 400
