@@ -73,18 +73,9 @@ const Dashboard = () => {
       ...user,
       isCurrentUser: user.name === username,
     }));
-  
 
-  // const handleFormSubmit = async (answers) => {
-  //   console.log("Form submitted with answers:", answers);
-  //   try {
-  //     const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
-  //     await fetchData();
-  //     console.log("Server response:", response.data);
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //   }
-  // }
+  console.log(leaderboardData)
+
 
   const handleActivitySave = async (selected) => {
   try {
@@ -159,9 +150,17 @@ const Dashboard = () => {
 										>
 											<div className="flex items-center gap-4">
 												<Avatar className="w-12 h-12 bg-gray-200">
-													<AvatarFallback className="bg-gray-200 text-black font-bold text-lg">
-														{user.name.charAt(0)}
-													</AvatarFallback>
+													{user.avatarFilename ? (
+                            <img
+                              src={`http://localhost:9099/uploads/${user.avatarFilename}`}
+                              alt="User avatar"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <AvatarFallback className="bg-gray-200 text-black font-bold text-lg">
+                              {user.name.charAt(0)}
+                            </AvatarFallback>
+                          )}
 												</Avatar>
 												<span className="text-lg font-medium text-gray-900">
 													{user.name}

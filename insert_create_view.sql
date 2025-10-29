@@ -245,6 +245,7 @@ INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_act
 CREATE OR REPLACE VIEW month_leaderboard AS
 SELECT
     u.username,
+    u.avatarFilename,
     COALESCE(SUM(CASE
         WHEN ec.positive_activity = TRUE THEN a.value_points
         WHEN ec.positive_activity = FALSE THEN -a.value_points
@@ -264,6 +265,7 @@ ORDER BY totalPoints DESC;
 CREATE OR REPLACE VIEW week_leaderboard AS
 SELECT
     u.username,
+    u.avatarFilename,
     COALESCE(SUM(CASE
         WHEN ec.positive_activity = TRUE THEN a.value_points
         WHEN ec.positive_activity = FALSE THEN -a.value_points

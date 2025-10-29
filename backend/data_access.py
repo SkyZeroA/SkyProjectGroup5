@@ -183,20 +183,20 @@ def insert_new_user(email, first_name, username, password):
 def read_view_table_week():
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT username, totalPoints FROM week_leaderboard')
+    cursor.execute('SELECT username, avatarFilename, totalPoints FROM week_leaderboard')
     db_info = cursor.fetchall()
     close_connection(db)
-    converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
+    converted_data = [{"name": username, "avatarFilename": avatar_filename, "score": int(score)} for username, avatar_filename, score in db_info]
     return converted_data
 
 
 def read_view_table_month():
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT username, totalPoints FROM month_leaderboard')
+    cursor.execute('SELECT username, avatarFilename, totalPoints FROM month_leaderboard')
     db_info = cursor.fetchall()
     close_connection(db)
-    converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
+    converted_data = [{"name": username, "avatarFilename": avatar_filename, "score": int(score)} for username, avatar_filename, score in db_info]
     return converted_data
 
 
