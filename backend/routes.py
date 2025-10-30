@@ -3,6 +3,7 @@ from flask import request, session, jsonify, send_from_directory
 from backend import app
 from hashlib import sha256
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 
 from backend.Questionnaire import Questionnaire
@@ -68,10 +69,10 @@ def sign_up():
 @app.route('/api/set-questionnaire', methods=['POST'])
 def questionnaire():
     # print("User email from session:", session['email'])
-    print(session['email'])
+    email = session['email']
     data = request.get_json()
     print("Questionnaire data received:", data)
-    answers = Questionnaire(data, get_user_id_from_db(session['email']))
+    answers = Questionnaire(data, get_user_id_from_db(email), datetime.today())
     # print(answers.get_questionnaire())
     insert_into_questionnaire(answers.format_answers())
     return jsonify({"message": "Questionnaire submitted successfully"}), 200
@@ -132,22 +133,45 @@ def dashboard():
     week_leaderboard = read_view_table_week()
     month_leaderboard = read_view_table_month()
     
-    answers, user_id = get_answers_from_questionnaire(email)
-    questionnaire_answers = Questionnaire(answers, user_id)
-    # print(questionnaire_answers)
-    projected_carbon_dict = questionnaire_answers.calculate_projected_carbon_footprint()
-    total_projected = projected_carbon_dict["annual_total"]
-    projected = projected_carbon_dict["projected"]
-    current = projected_carbon_dict["current"]
-    print(projected_carbon_dict)
-    # print(week_leaderboard)
-    # print(month_leaderboard)
+    # Loop over all responses and create questionnaire classes for each
+    questionnaires = []
+    previous_questionnaire = -99
+    current_questionnaire = -99
+    submissions = get_all_questionnaire_submissions(email)
+    for i, submission in enumerate(submissions):
+        # Get first and last keys and extract values from dict
+        keys = list(submission.keys())
+        user_id_key = keys[0]
+        date_key = keys[-1]
+
+        user_id = submission[user_id_key]
+        date = submission[date_key]
+
+        # Rest in dict are answers to questionnaire
+        answers = {k: v for k, v in submission.items() if k not in (user_id_key, date_key)}
+        if i == 0:
+            # Assign earliest questionnaire to Jan 1st so it covers whole year if answers never edited
+            current_questionnaire = Questionnaire(answers, user_id, datetime(2025, 1, 1))
+        else:
+            previous_questionnaire = current_questionnaire
+            previous_questionnaire.set_end_date(date)
+            questionnaires.append(previous_questionnaire)
+            
+            current_questionnaire = Questionnaire(answers, user_id, date)
+    questionnaires.append(current_questionnaire)
+
+    projected_carbon = 0
+    current_carbon = 0
+    for questionnaire in questionnaires:
+        new_projected, new_current = questionnaire.calculate_projected_carbon_footprint()
+        projected_carbon += new_projected
+        current_carbon += new_current
+
     return jsonify({"message": "Leaderboard send successful",
                    "weekLeaderboard": week_leaderboard,
                    "monthLeaderboard": month_leaderboard,
-                   "totalProjectedCarbon": total_projected,
-                   "projectedCarbon": projected,
-                   "currentCarbon": current,
+                   "projectedCarbon": projected_carbon,
+                   "currentCarbon": current_carbon,
                    "username": username}), 200
 
 
@@ -195,7 +219,7 @@ def upload_avatar():
 @app.route('/api/fetch-questionnaire-answers')
 def fetch_questionnaire_answers():
     email = session["email"]
-    answers, _ = get_answers_from_questionnaire(email)
+    answers = get_latest_answers_from_questionnaire(email)
     return jsonify({"message": "Fetching questionnaire answers",
                     "answers": answers}), 200
 

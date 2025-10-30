@@ -14,7 +14,7 @@ const RadioQuestion = ({options, current, setCurrent, question}) => {
 					onValueChange={setCurrent}
 					className={
 						"flex justify-between grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-x-8 lg:gap-x-6 md:gap-x-4 sm:gap-x-8 lg:gap-y-2" +
-						"[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
+						" [font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
 					}>
 					{options.map((option) => (
 						<div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">

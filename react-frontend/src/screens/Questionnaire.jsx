@@ -47,7 +47,7 @@ const Questionnaire = () => {
         </Card>
 
         {/* Contains all questions and answers */}
-        <Questions onAnswersChange={setAnswers}/>
+        <Questions onAnswersChange={setAnswers} isEditing={true} initialAnswers={answers}/>
 
         {/* Submit Section */}
         <div className="flex flex-col items-center space-y-4">

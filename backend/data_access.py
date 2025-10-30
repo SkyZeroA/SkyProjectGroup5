@@ -112,13 +112,17 @@ def insert_into_questionnaire(questionnaire):
     close_connection(db)
 
 
-def get_answers_from_questionnaire(email):
+def get_latest_answers_from_questionnaire(email):
     db = get_connection()
     cursor = db.cursor()
     user_id = get_user_id_from_db(email)
     cursor.execute("""
         SELECT
-        transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours FROM QuestionnaireResponse WHERE userID = %s
+        transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours
+        FROM QuestionnaireResponse
+        WHERE userID = %s
+        ORDER BY dateSubmitted DESC
+        LIMIT 1
         """, (user_id,))
     response = cursor.fetchone()
     close_connection(db)
@@ -131,7 +135,47 @@ def get_answers_from_questionnaire(email):
                     "dietDays": response[3],
                     "meats": response[4],
                     "heatingHours": response[5]}
-        return response, user_id
+        return response
+
+
+def get_all_questionnaire_submissions(email):
+    db = get_connection()
+    cursor = db.cursor()
+    user_id = get_user_id_from_db(email)
+
+    cursor.execute("""
+        SELECT
+            transportMethod,
+            travelDistance,
+            officeDays,
+            dietDays,
+            meats,
+            heatingHours,
+            dateSubmitted
+        FROM QuestionnaireResponse
+        WHERE userID = %s
+        ORDER BY dateSubmitted ASC
+    """, (user_id,))
+
+    rows = cursor.fetchall()
+    close_connection(db)
+
+    # Convert each row into a dictionary
+    submissions = []
+    for row in rows:
+        submissions.append({
+            "userId": user_id,
+            "transportMethod": row[0],
+            "travelDistance": row[1],
+            "officeDays": row[2],
+            "dietDays": row[3],
+            "meats": row[4],
+            "heatingHours": row[5],
+            "dateSubmitted": row[6]
+        })
+
+    return submissions
+
 
 
 def read_user_table():

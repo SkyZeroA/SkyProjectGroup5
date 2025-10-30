@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent } from "./Card";
 import Slider from "./Slider";
 
-const SliderQuestion = ({min, max, jump, current, setCurrent, question}) => {
+const SliderQuestion = ({min = 0, max, jump, current, setCurrent, question}) => {
 	return (
 		<Card className="mx-auto max-w-5xl bg-white rounded-lg shadow">
 			<CardContent className="p-6 pb-8">
