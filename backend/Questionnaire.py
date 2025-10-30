@@ -100,6 +100,10 @@ class Questionnaire:
         heating_emissions = calculate_heating_emissions(heating_hours)
 
         total = transport_emissions + diet_emissions + heating_emissions
+        percentage_progress = self.get_year_progress()
+        transport = transport_emissions * percentage_progress
+        diet = diet_emissions * percentage_progress
+        heating = heating_emissions * percentage_progress
         self.set_projected_carbon(total)
 
         counts = get_user_activity_count_total(self._id)
@@ -147,8 +151,6 @@ class Questionnaire:
                     transport_emissions -= update_transport_emissions(tef_index, td_index, count) * 0.75
 
 
-        percentage_progress = self.get_year_progress()
-
         day_of_year = datetime.today().timetuple().tm_yday
         year_progress_today = day_of_year / 365
 
@@ -157,6 +159,6 @@ class Questionnaire:
         return {"total_projected": round(self.projected_carbon),
                 "projected": round(self.projected_carbon * year_progress_today),
                 "current": round(current),
-                "transport_emissions": round(transport_emissions * percentage_progress),
-                "diet_emissions": round(diet_emissions * percentage_progress),
-                "heating_emissions": round(heating_emissions * percentage_progress)}
+                "transport_emissions": round(transport),
+                "diet_emissions": round(diet),
+                "heating_emissions": round(heating)}
