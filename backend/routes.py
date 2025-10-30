@@ -162,3 +162,16 @@ def dashboard():
                    "dietEmissions": diet_emissions,
                    "heatingEmissions": heating_emissions
                    }), 200
+
+@app.route('/api/daily-rank', methods=['GET'])
+def daily_rank():
+    period = request.args.get('period', 'week')
+    start_date = request.args.get('startDate')
+    end_date = request.args.get('endDate')
+    email = session.get('email')
+    if not email:
+        return jsonify({"error": "User not signed in"}), 401
+    user_id = get_user_id_from_db(email)
+    ranks = get_user_daily_ranks(user_id, period, start_date, end_date)
+    return jsonify({"username": get_username_from_db(email), "ranks": ranks}), 200
+

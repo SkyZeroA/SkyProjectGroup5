@@ -10,6 +10,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import MyPieChart from "../components/MyPieChart";
+import UserRankChart from "../components/UserRankChart";
 
 const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -101,23 +102,6 @@ const Dashboard = () => {
     console.error("Error saving user activities:", error);
   }
 };
-
-const data = {
-    labels: ["Transport", "Home Energy", "Food", "Other"],
-    datasets: [
-      {
-        label: "CO₂ (kg)",
-        data: [400, 300, 200, 100],
-        backgroundColor: [
-          "#4CAF50",
-          "#81C784",
-          "#A5D6A7",
-          "#C8E6C9",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -215,43 +199,10 @@ const data = {
             </CardContent>
           </Card>
           <div className="flex gap-6 flex-1 overflow-hidden">
-            <Card className="flex-1 bg-white border rounded-lg flex-shrink-0 overflow-auto">
-              <CardContent className="p-6">
-                <h2 className="[font-family:'Sky_Text',Helvetica] text-2xl font-bold text-center text-gray-900">
-                  Projected Emissions Breakdown
-                </h2>
-                <div className="flex items-center justify-center">
-                  <MyPieChart transportEmissions={transportEmissions} dietEmissions={dietEmissions} heatingEmissions={heatingEmissions} />
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="flex-1 bg-white border rounded-lg flex-shrink-0 overflow-auto">
-              <CardContent className="p-6 w-full">
-              <h2 className="[font-family:'Sky_Text',Helvetica] text-2xl font-bold text-center text-gray-900">
-                Tips to reduce your Carbon Footprint
-              </h2>
-              <ul className="mt-4 space-y-4 [font-family:'Sky_Text',Helvetica] font-normal text-gray-700 ">
-                <li>
-                  <strong>Streamline your digital life:</strong> Delete unused
-                  files and emails to reduce cloud storage energy use. Turn off
-                  devices when not in use and stream at lower quality when
-                  possible.
-                </li>
-                <li>
-                  <strong>Choose low-carbon commutes:</strong> Walk, cycle, or
-                  use public transport where possible. Carpool with colleagues
-                  or explore EV options if driving.
-                </li>
-                <li>
-                  <strong>Eat more sustainably:</strong> Swap meat for
-                  plant-based meals a few times a week. Bring your own lunch in
-                  reusable containers to cut down on packaging waste.
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+             <MyPieChart transportEmissions={transportEmissions} dietEmissions={dietEmissions} heatingEmissions={heatingEmissions} />  
+             <UserRankChart isWeekly={isOn} isFormOpen={isFormOpen} />
+          </div>
         </div>
-      </div>
       </main>
 
       <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} allQuestions={allQuestions} onActivitiesSave={handleActivitySave} />

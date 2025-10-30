@@ -1,6 +1,6 @@
 import mysql.connector as mysql
 from pathlib import Path
-from datetime import date
+from datetime import date, timedelta, datetime
 
 def get_connection():
     return mysql.connect(user="root", passwd="", host="localhost", database="SkyZeroDB")
@@ -276,3 +276,78 @@ def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
     """, (user_id, weekID, monthID, activity, positive_activity))
     db.commit()
     close_connection(db)
+
+def get_user_daily_ranks(user_id, period="week", start_date=None, end_date=None):
+    db = get_connection()
+    cursor = db.cursor(dictionary=True)
+
+    # ---- Parse date inputs ----
+    if start_date:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+    else:
+        today = date.today()
+        start_date = today - timedelta(days=today.weekday())  # Monday by default
+
+    if end_date:
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+    else:
+        end_date = date.today()
+
+    # ---- Query total scores between range ----
+    query = """
+        SELECT 
+            e.userID AS user_id,
+            e.date_done AS date,
+            COALESCE(SUM(CASE 
+                        WHEN e.positive_activity = TRUE THEN a.value_points
+                        ELSE -a.value_points
+                        END), 0) AS total_score
+        FROM EcoCounter e
+        JOIN ActivityKey a ON e.activityID = a.activityID
+        WHERE e.date_done BETWEEN %s AND %s
+        GROUP BY e.userID, e.date_done
+        ORDER BY e.date_done ASC, total_score DESC;
+    """
+    cursor.execute(query, (start_date, end_date))
+    daily_scores = cursor.fetchall()
+    close_connection(db)
+
+    # ---- Build list of all days in that range ----
+    dates = [(start_date + timedelta(days=i)) for i in range((end_date - start_date).days + 1)]
+
+    cumulative_scores = {}
+    daily_ranks = []
+
+    for d in dates:
+        # Update running totals
+        for row in [r for r in daily_scores if r["date"] == d]:
+            uid = row["user_id"]
+            score = row["total_score"] or 0
+            cumulative_scores[uid] = cumulative_scores.get(uid, 0) + score
+
+        # Rank users by cumulative score so far
+        ranked_users = sorted(
+            cumulative_scores.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
+
+        ranks_dict = {}
+        last_score = None
+        last_rank = 0
+        for i, (uid, total) in enumerate(ranked_users, start=1):
+            if total == last_score:
+                rank = last_rank
+            else:
+                rank = i
+                last_score = total
+                last_rank = rank
+            ranks_dict[uid] = rank
+
+        # Save only the current user's rank
+        daily_ranks.append({
+            "date": d.isoformat(),
+            "rank": ranks_dict.get(user_id)
+        })
+
+    return daily_ranks

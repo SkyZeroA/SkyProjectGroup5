@@ -49,14 +49,16 @@ CREATE TABLE IF NOT EXISTS UserActivity (
 );
 
 CREATE TABLE IF NOT EXISTS EcoCounter (
-	ecoID INT AUTO_INCREMENT PRIMARY KEY,
+    ecoID INT AUTO_INCREMENT PRIMARY KEY,
     userID INT NOT NULL,
     weekID INT NOT NULL,
     monthID INT NOT NULL,
     activityID INT NOT NULL,
     positive_activity BOOL NOT NULL,
+    date_done DATE NOT NULL DEFAULT (CURRENT_DATE),
     FOREIGN KEY (userID) REFERENCES User(userID), 
     FOREIGN KEY (weekID) REFERENCES Week(weekID), 
-	FOREIGN KEY (monthID) REFERENCES Month(monthID), 
+    FOREIGN KEY (monthID) REFERENCES Month(monthID), 
     FOREIGN KEY (activityID) REFERENCES ActivityKey(activityID)
 );
+
