@@ -65,7 +65,7 @@ def sign_up():
         return jsonify({"message": "Sign up successful"}), 200
 
 
-@app.route('/api/questionnaire', methods=['POST'])
+@app.route('/api/set-questionnaire', methods=['POST'])
 def questionnaire():
     # print("User email from session:", session['email'])
     print(session['email'])
@@ -198,3 +198,4 @@ def fetch_questionnaire_answers():
     answers, _ = get_answers_from_questionnaire(email)
     return jsonify({"message": "Fetching questionnaire answers",
                     "answers": answers}), 200
+

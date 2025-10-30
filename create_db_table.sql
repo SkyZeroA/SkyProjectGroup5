@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS User (
 );
 
 CREATE TABLE IF NOT EXISTS QuestionnaireResponse (
-    userID INT NOT NULL PRIMARY KEY,
+    responseID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
+    dateSubmitted DATE NOT NULL DEFAULT (CURRENT_DATE), 
     transportMethod INT NOT NULL,   
     travelDistance INT NOT NULL,    
     officeDays INT NOT NULL,        

@@ -2,17 +2,28 @@ import React, {useState, useEffect } from 'react'
 import RadioQuestion from './RadioQuestion';
 import SliderQuestion from './SliderQuestion';
 
-const Questions = ({ onAnswersChange, initialAnswers = {} }) => {
-  const [transportMethod, setTransportMethod] = useState(initialAnswers.transportMethod || 0);
-  const [travelDistance, setTravelDistance] = useState(initialAnswers.travelDistance || 0);
-  const [officeDays, setOfficeDays] = useState(initialAnswers.officeDays || 0);
-  const [dietDays, setDietDays] = useState(initialAnswers.dietDays || 0);
-  const [meats, setMeats] = useState(initialAnswers.meats || 0);
-  const [heatingHours, setHeatingHours] = useState(initialAnswers.heatingHours || 0);
-
+const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
+  const [transportMethod, setTransportMethod] = useState(0);
+  const [travelDistance, setTravelDistance] = useState(0);
+  const [officeDays, setOfficeDays] = useState(0);
+  const [dietDays, setDietDays] = useState(0);
+  const [meats, setMeats] = useState(0);
+  const [heatingHours, setHeatingHours] = useState(0);
+	
 	// Keeps track of current question
   // Used to make numbers consistent with conditionally displayed questions
   let questionNumber = 1;
+
+	useEffect(() => {
+    if (initialAnswers) {
+      setTransportMethod(initialAnswers.transportMethod ?? 0);
+      setTravelDistance(initialAnswers.travelDistance ?? 0);
+      setOfficeDays(initialAnswers.officeDays ?? 0);
+      setDietDays(initialAnswers.dietDays ?? 0);
+      setMeats(initialAnswers.meats ?? 0);
+      setHeatingHours(initialAnswers.heatingHours ?? 0);
+    }
+  }, [initialAnswers]);
 
 	// Notify parent whenever answers change
   useEffect(() => {
@@ -37,7 +48,11 @@ const Questions = ({ onAnswersChange, initialAnswers = {} }) => {
 	]);
 
 	return (
-		<>
+		<div
+      className={`transition-opacity duration-300 space-y-6 ${
+        isEditing ? "opacity-100 pointer-events-auto" : "opacity-50 pointer-events-none"
+      }`}
+    >
 			<RadioQuestion
 				options={[
 					{ value: 0, label: "Work from Home" },
@@ -106,7 +121,7 @@ const Questions = ({ onAnswersChange, initialAnswers = {} }) => {
 			setCurrent={setHeatingHours}
 			question={`Question ${questionNumber++}: How many hours per day do you have your heating on in winter?`}
 			/>
-		</>
+		</div>
 	);
 }
 

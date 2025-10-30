@@ -103,7 +103,11 @@ def insert_into_questionnaire(questionnaire):
     # Needs %s for each question, first %s is for the userID
     answers = len(questionnaire)
     placeholders = ", ".join(["%s"] * answers)
-    cursor.execute(f"INSERT INTO QuestionnaireResponse VALUES ({placeholders})", questionnaire)
+    cursor.execute(f"""
+                   INSERT INTO QuestionnaireResponse
+                   (userId, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours)
+                   VALUES ({placeholders})
+                   """, questionnaire)
     db.commit()
     close_connection(db)
 

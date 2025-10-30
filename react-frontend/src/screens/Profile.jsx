@@ -6,12 +6,14 @@ import { Avatar, AvatarFallback } from "../components/Avatar";
 import axios from "axios";
 import { Button } from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import Questions from "../components/Questions";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [avatar, setAvatar] = useState(null);
-  const [answers, setAnswers] = useState()
+  const [answers, setAnswers] = useState({})
+  const [isEditing, setIsEditing] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,9 +41,19 @@ const Profile = () => {
   };
 
 
-  useEffect(() => {
-    fetchUserData();
-  }, [avatar])
+  const handleQuestionnaireUpdate = async () => {
+    if (isEditing) {
+    console.log("Submitting Answers:", answers);
+    await axios.post("http://localhost:9099/api/set-questionnaire", answers, { withCredentials: true })
+      .then((response) => {
+        console.log("Response:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+    }
+  };
+
 
   // Allows the user to change their profile picture
   const handleAvatarChange = async (e) => {
@@ -66,6 +78,15 @@ const Profile = () => {
       }
     }
   };
+
+
+  useEffect(() => {
+    fetchUserData();
+  }, [avatar])
+
+  useEffect(() => {
+    fetchQuestionnaireData();
+  }, [])
 
   console.log("avatar", avatar)
   return (
@@ -136,12 +157,33 @@ const Profile = () => {
           </Card>
         </div>
 				<div className="w-2/3 px-2">
-					<Card className="bg-white rounded-lg min-h-[815px]">
-						<CardContent>
-             
-            </CardContent>
-					</Card>
-				</div>
+          <Card className="bg-white rounded-lg h-[815px] flex items-center justify-center">
+            <div className="bg-white rounded-lg h-[95%] w-[95%] overflow-hidden">
+              <CardContent className="h-full p-6 overflow-y-auto">
+                <div className="flex items-center justify-between mb-6">
+                  <h1 className="text-[34px] [font-family:'Sky_Text',Helvetica]">
+                    Your Lifestyle Questionnaire
+                  </h1>
+
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      handleQuestionnaireUpdate();
+                      setIsEditing((prev) => !prev);
+                    }}
+                    className="text-sm px-4 py-2"
+                  >
+                    {isEditing ? "Save" : "Edit"}
+                  </Button>
+                </div>
+
+                <div className="py-4 space-y-6">
+                  <Questions initialAnswers={answers} isEditing={isEditing} />
+                </div>
+              </CardContent>
+            </div>
+          </Card>
+        </div>
       </main>
       <FooterBanner className="md:fixed"/>
     </div>
