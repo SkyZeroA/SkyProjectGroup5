@@ -20,7 +20,6 @@ meat_eaten = [10.0, 8.0, 2.0, 1.6, 2.4, 1.4]
 def calculate_transport_emissions(tef_index, td_index, office_days):
     # Travel dist * 2 because return journey
     # Assumes 48 working weeks in the year
-    print(tef_index, td_index, office_days)
     return transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * office_days * 48
 
 def update_transport_emissions(tef_index, td_index, count):
@@ -80,7 +79,6 @@ class Questionnaire:
         based on the user's answers to a SINGLE questionnaire
         """
 
-        print(self._questionnaire.values())
         tef_index, td_index, office_days, days_eating_meat, me_index, heating_hours = self._questionnaire.values()
 
         # Calculate footprint
@@ -137,8 +135,15 @@ class Questionnaire:
 
 
         percentage_progress = self.get_year_progress()
-        current = (transport_emissions + diet_emissions + heating_emissions) * percentage_progress
 
-        return round(self.projected_carbon), round(current), {"transport_emissions": round(transport_emissions),
-                                                                "diet_emissions": round(diet_emissions),
-                                                                "heating_emissions": round(heating_emissions)}
+        day_of_year = datetime.today().timetuple().tm_yday
+        year_progress_today = day_of_year / 365
+
+        current = (transport_emissions + diet_emissions + heating_emissions) * percentage_progress * year_progress_today
+
+        return {"total_projected": round(self.projected_carbon),
+                "projected": round(self.projected_carbon * year_progress_today),
+                "current": round(current),
+                "transport_emissions": round(transport_emissions * percentage_progress),
+                "diet_emissions": round(diet_emissions * percentage_progress),
+                "heating_emissions": round(heating_emissions * percentage_progress)}

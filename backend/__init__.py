@@ -29,4 +29,4 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Adds path and allowed file types to flask apps config directory - accessable anywhere
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'tiff', 'bmp', 'webp'}

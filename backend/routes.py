@@ -160,15 +160,17 @@ def dashboard():
             current_questionnaire = Questionnaire(answers, user_id, date)
     questionnaires.append(current_questionnaire)
 
+    total_carbon = 0
     projected_carbon = 0
     current_carbon = 0
     transport_emissions = 0
     diet_emissions = 0
     heating_emissions = 0
     for questionnaire in questionnaires:
-        new_projected, new_current, emissions_dict = questionnaire.calculate_projected_carbon_footprint()
-        projected_carbon += new_projected
-        current_carbon += new_current
+        emissions_dict = questionnaire.calculate_projected_carbon_footprint()
+        total_carbon += emissions_dict["total_projected"]
+        projected_carbon += emissions_dict["projected"]
+        current_carbon += emissions_dict["current"]
         transport_emissions += emissions_dict["transport_emissions"]
         diet_emissions += emissions_dict["diet_emissions"]
         heating_emissions += emissions_dict["heating_emissions"]
@@ -179,6 +181,7 @@ def dashboard():
                    "transportEmissions": transport_emissions,
                    "dietEmissions": diet_emissions,
                    "heatingEmissions": heating_emissions,
+                   "totalCarbon": total_carbon,
                    "projectedCarbon": projected_carbon,
                    "currentCarbon": current_carbon,
                    "username": username
