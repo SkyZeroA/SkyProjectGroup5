@@ -55,6 +55,7 @@ const Dashboard = () => {
         setWeekData(response.data.weekLeaderboard);
         setMonthData(response.data.monthLeaderboard);
         setUsername(response.data.username);
+        setTotalProjectedCarbon(response.data.totalCarbon)
         setProjectedCarbon(response.data.projectedCarbon)
         setCurrentCarbon(response.data.currentCarbon)
         setTransportEmissions(response.data.transportEmissions)
@@ -80,7 +81,7 @@ const Dashboard = () => {
     }));
 
   console.log(leaderboardData)
-
+  console.log(currentCarbon, projectedCarbon, totalProjectedCarbon)
 
   const handleActivitySave = async (selected) => {
   try {

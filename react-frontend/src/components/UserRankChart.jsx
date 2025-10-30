@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { Card, CardContent } from "../components/Card";
 import {
@@ -61,7 +61,7 @@ const UserRankChart = ({ isWeekly, isFormOpen }) => {
 
   const MIN_DATE = new Date(2025, 0, 1);
 
-  const fetchDailyRanks = async () => {
+  const fetchDailyRanks = useCallback(async () => {
     try {
       const allDates = isWeekly
         ? getWeekDates(currentWeekStart)
@@ -90,11 +90,11 @@ const UserRankChart = ({ isWeekly, isFormOpen }) => {
     } catch (error) {
       console.error("Failed to fetch daily ranks:", error);
     }
-  };
+  }, [currentWeekStart, currentMonth, isWeekly]);
 
   useEffect(() => {
     fetchDailyRanks();
-  }, [isWeekly, isFormOpen, currentWeekStart, currentMonth]);
+  }, [isWeekly, isFormOpen, currentWeekStart, currentMonth, fetchDailyRanks]);
 
   const handlePrev = () => {
     if (isWeekly) {
