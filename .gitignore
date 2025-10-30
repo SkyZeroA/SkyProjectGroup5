@@ -252,3 +252,5 @@ yarn-error.log*
 .vscode/
 
 .todo
+
+.env
