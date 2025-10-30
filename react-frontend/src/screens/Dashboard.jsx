@@ -10,7 +10,6 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import MyPieChart from "../components/MyPieChart";
-import UserRankChart from "../components/UserRankChart";
 
 const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -200,7 +199,6 @@ const Dashboard = () => {
           </Card>
           <div className="flex gap-6 flex-1 overflow-hidden">
              <MyPieChart transportEmissions={transportEmissions} dietEmissions={dietEmissions} heatingEmissions={heatingEmissions} />  
-             <UserRankChart isWeekly={isOn} isFormOpen={isFormOpen} />
           </div>
         </div>
       </main>

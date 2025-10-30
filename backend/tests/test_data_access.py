@@ -143,7 +143,7 @@ class TestDatabaseFunctions(TestCase):
 
     # Insert an activity and verify it's stored.
     def test_insert_user_activity(self):
-        insert_user_activity(1, 2, 3, 4)
+        insert_user_activity(1, 2, 3, 4, True)
         self.mock_cursor.execute.assert_called_once()
         self.mock_conn.commit.assert_called_once()
 
