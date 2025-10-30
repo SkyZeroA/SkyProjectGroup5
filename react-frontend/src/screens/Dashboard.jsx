@@ -55,7 +55,6 @@ const Dashboard = () => {
         setWeekData(response.data.weekLeaderboard);
         setMonthData(response.data.monthLeaderboard);
         setUsername(response.data.username);
-        setTotalProjectedCarbon(response.data.totalProjectedCarbon)
         setProjectedCarbon(response.data.projectedCarbon)
         setCurrentCarbon(response.data.currentCarbon)
         setTransportEmissions(response.data.transportEmissions)
@@ -79,18 +78,9 @@ const Dashboard = () => {
       ...user,
       isCurrentUser: user.name === username,
     }));
-  
 
-  // const handleFormSubmit = async (answers) => {
-  //   console.log("Form submitted with answers:", answers);
-  //   try {
-  //     const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
-  //     await fetchData();
-  //     console.log("Server response:", response.data);
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //   }
-  // }
+  console.log(leaderboardData)
+
 
   const handleActivitySave = async (selected) => {
   try {
@@ -115,7 +105,8 @@ const Dashboard = () => {
                 <Button 
                   variant="link"
                   className="bg-green-500 text-white" 
-                  onClick={() => setIsFormOpen(true)}>
+                  onClick={() => setIsFormOpen(true)}
+                >
                   Form
                 </Button>
                 <Button
@@ -129,9 +120,16 @@ const Dashboard = () => {
 
               {/* Right content */}
               <div className="ml-auto">
+                <Button
+                  variant="link"
+                  onClick={() => navigate("/profile")}
+                >
+                  {username}
+                </Button>
                 <Button 
                   variant="link"
-                  onClick={() => navigate("/")}>
+                  onClick={() => navigate("/")}
+                >
                   Sign Out
                 </Button>
               </div>
@@ -149,41 +147,49 @@ const Dashboard = () => {
               <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-center text-[38px] leading-[57px]">
                   Leaderboard
               </h1>
-              <Card className="h-[calc(100vh-296px)] bg-neutral-50 rounded-lg overflow-y-auto">
-                <CardContent>
-                <div className="mt-6 space-y-4">
-                  {leaderboardData.map((user) => (
-                    <Card
-                      key={user.name}
-                      className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
-                        user.isCurrentUser
-                          ? "sticky top-0 bottom-0 z-10 border-2 border-green-500"
-                          : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <Avatar className="w-12 h-12 bg-gray-200">
-                          <AvatarFallback className="bg-gray-200 text-black font-bold text-lg">
-                            {user.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-lg font-medium text-gray-900">
-                          {user.name}
-                        </span>
-                      </div>
-                      <span className="text-lg font-medium text-gray-900">
-                        {user.score}
-                      </span>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-              </Card>
-              <div className="flex justify-center items-center mt-8">
-                <span className="mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Monthly</span>
-                  <Switch setOutput={setIsOn} option1={weekData} option2={monthData} />
-                <span className="ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Weekly</span>
-              </div>
+							<Card className="h-[calc(100vh-296px)] bg-neutral-50 rounded-lg overflow-y-auto">
+								<CardContent>
+								<div className="mt-6 space-y-4">
+									{leaderboardData.map((user) => (
+										<Card
+											key={user.name}
+											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
+												user.isCurrentUser
+													? "sticky top-0 bottom-0 z-10 border-2 border-green-500"
+													: ""
+											}`}
+										>
+											<div className="flex items-center gap-4">
+												<Avatar className="w-12 h-12 bg-gray-200">
+													{user.avatarFilename ? (
+                            <img
+                              src={`http://localhost:9099/uploads/${user.avatarFilename}`}
+                              alt="User avatar"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <AvatarFallback className="bg-gray-200 text-black font-bold text-lg">
+                              {user.name.charAt(0)}
+                            </AvatarFallback>
+                          )}
+												</Avatar>
+												<span className="text-lg font-medium text-gray-900">
+													{user.name}
+												</span>
+											</div>
+											<span className="text-lg font-medium text-gray-900">
+												{user.score}
+											</span>
+										</Card>
+									))}
+								</div>
+							</CardContent>
+							</Card>
+							<div className="flex justify-center items-center mt-8">
+								<span className="mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Monthly</span>
+									<Switch setOutput={setIsOn} option1={weekData} option2={monthData} />
+								<span className="ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Weekly</span>
+							</div>
             </CardContent>
           </Card>
         </div>

@@ -25,7 +25,9 @@ VALUES
 ('Tina', 'tina_b', 'tina@example.com', 'pass20');
 
 
-INSERT IGNORE INTO QuestionnaireResponse (userID, q1, q2, q3, q4, q5, q6) VALUES
+INSERT IGNORE INTO QuestionnaireResponse 
+(userID, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours) 
+VALUES
 (1, 3, 4, 6, 3, 2, 8),
 (2, 0, 0, 0, 4, 3, 5),
 (3, 1, 2, 1, 1, 5, 7),
@@ -266,6 +268,7 @@ VALUES
 CREATE OR REPLACE VIEW month_leaderboard AS
 SELECT
     u.username,
+    u.avatarFilename,
     COALESCE(SUM(CASE
         WHEN ec.positive_activity = TRUE THEN a.value_points
         WHEN ec.positive_activity = FALSE THEN -a.value_points
@@ -285,6 +288,7 @@ ORDER BY totalPoints DESC;
 CREATE OR REPLACE VIEW week_leaderboard AS
 SELECT
     u.username,
+    u.avatarFilename,
     COALESCE(SUM(CASE
         WHEN ec.positive_activity = TRUE THEN a.value_points
         WHEN ec.positive_activity = FALSE THEN -a.value_points

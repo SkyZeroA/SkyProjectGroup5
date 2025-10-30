@@ -103,23 +103,79 @@ def insert_into_questionnaire(questionnaire):
     # Needs %s for each question, first %s is for the userID
     answers = len(questionnaire)
     placeholders = ", ".join(["%s"] * answers)
-    cursor.execute(f"INSERT INTO QuestionnaireResponse VALUES ({placeholders})", questionnaire)
+    cursor.execute(f"""
+                   INSERT INTO QuestionnaireResponse
+                   (userId, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours)
+                   VALUES ({placeholders})
+                   """, questionnaire)
     db.commit()
     close_connection(db)
 
 
-def get_answers_from_questionnaire(email):
+def get_latest_answers_from_questionnaire(email):
     db = get_connection()
     cursor = db.cursor()
     user_id = get_user_id_from_db(email)
-    cursor.execute("SELECT q1, q2, q3, q4, q5, q6 FROM QuestionnaireResponse WHERE userID = %s", (user_id,))
+    cursor.execute("""
+        SELECT
+        transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours
+        FROM QuestionnaireResponse
+        WHERE userID = %s
+        ORDER BY dateSubmitted DESC
+        LIMIT 1
+        """, (user_id,))
     response = cursor.fetchone()
     close_connection(db)
     if response is None:
         return []
     else:
-        response = {"q1": response[0], "q2": response[1], "q3": response[2], "q4": response[3], "q5": response[4], "q6": response[5]}
-        return response, user_id
+        response = {"transportMethod": response[0],
+                    "travelDistance": response[1], 
+                    "officeDays": response[2], 
+                    "dietDays": response[3],
+                    "meats": response[4],
+                    "heatingHours": response[5]}
+        return response
+
+
+def get_all_questionnaire_submissions(email):
+    db = get_connection()
+    cursor = db.cursor()
+    user_id = get_user_id_from_db(email)
+
+    cursor.execute("""
+        SELECT
+            transportMethod,
+            travelDistance,
+            officeDays,
+            dietDays,
+            meats,
+            heatingHours,
+            dateSubmitted
+        FROM QuestionnaireResponse
+        WHERE userID = %s
+        ORDER BY dateSubmitted ASC
+    """, (user_id,))
+
+    rows = cursor.fetchall()
+    close_connection(db)
+
+    # Convert each row into a dictionary
+    submissions = []
+    for row in rows:
+        submissions.append({
+            "userId": user_id,
+            "transportMethod": row[0],
+            "travelDistance": row[1],
+            "officeDays": row[2],
+            "dietDays": row[3],
+            "meats": row[4],
+            "heatingHours": row[5],
+            "dateSubmitted": row[6]
+        })
+
+    return submissions
+
 
 
 def read_user_table():
@@ -154,6 +210,24 @@ def get_username_from_db(email):
     return username
 
 
+def get_first_name_from_db(email):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT firstName FROM User WHERE email = %s", (email,))
+    first_name = cursor.fetchone()[0]
+    close_connection(db)
+    return first_name
+
+
+def get_avatar_from_db(email):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT avatarFilename FROM User WHERE email = %s", (email,))
+    avatar = cursor.fetchone()[0]
+    close_connection(db)
+    return avatar
+
+
 def insert_new_user(email, first_name, username, password):
     db = get_connection()
     cursor = db.cursor()
@@ -165,20 +239,20 @@ def insert_new_user(email, first_name, username, password):
 def read_view_table_week():
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT username, totalPoints FROM week_leaderboard')
+    cursor.execute('SELECT username, avatarFilename, totalPoints FROM week_leaderboard')
     db_info = cursor.fetchall()
     close_connection(db)
-    converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
+    converted_data = [{"name": username, "avatarFilename": avatar_filename, "score": int(score)} for username, avatar_filename, score in db_info]
     return converted_data
 
 
 def read_view_table_month():
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute('SELECT username, totalPoints FROM month_leaderboard')
+    cursor.execute('SELECT username, avatarFilename, totalPoints FROM month_leaderboard')
     db_info = cursor.fetchall()
     close_connection(db)
-    converted_data = [{"name": username, "score": int(score)} for username, score in db_info]
+    converted_data = [{"name": username, "avatarFilename": avatar_filename, "score": int(score)} for username, avatar_filename, score in db_info]
     return converted_data
 
 
@@ -228,6 +302,7 @@ def get_activity_id(activity_name):
     close_connection(db)
     return activity_id
 
+
 def update_user_preferred_activities(user_id, selected_activities):
     db = get_connection()
     cursor = db.cursor()
@@ -237,6 +312,7 @@ def update_user_preferred_activities(user_id, selected_activities):
         cursor.execute("INSERT INTO UserActivity (userID, activityID) VALUES (%s, %s)", (user_id, activity_id))
     db.commit()
     close_connection(db)
+
 
 def get_user_activity_count(user_id, activity_id):
     db = get_connection()
@@ -251,6 +327,7 @@ def get_user_activity_count(user_id, activity_id):
     count = cursor.fetchone()[0]
     close_connection(db)
     return count
+
 
 def get_user_activity_count_total(user_id):
     db = get_connection()
@@ -267,6 +344,7 @@ def get_user_activity_count_total(user_id):
     converted_data = [(activity_id, int(count)) for activity_id, count in count_data]
     return converted_data
 
+
 def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
     db = get_connection()
     cursor = db.cursor()
@@ -274,6 +352,18 @@ def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
         INSERT INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity)
         VALUES (%s, %s, %s, %s, %s)
     """, (user_id, weekID, monthID, activity, positive_activity))
+    db.commit()
+    close_connection(db)
+
+
+def update_user_avatar(email, avatarFilename):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        UPDATE User
+        SET avatarFilename = %s
+        WHERE email = %s
+    """, (avatarFilename, email))
     db.commit()
     close_connection(db)
 

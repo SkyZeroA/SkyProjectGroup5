@@ -6,19 +6,23 @@ CREATE TABLE IF NOT EXISTS User (
     firstName VARCHAR(50) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
+    avatarFilename VARCHAR(250) UNIQUE,
     encrypted_password VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS QuestionnaireResponse (
-	userID INT NOT NULL PRIMARY KEY,
-    q1 INT NOT NULL,
-    q2 INT NOT NULL,
-    q3 INT NOT NULL,
-    q4 INT NOT NULL,
-    q5 INT NOT NULL,
-    q6 INT NOT NULL,
+    responseID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
+    dateSubmitted DATE NOT NULL DEFAULT (CURRENT_DATE), 
+    transportMethod INT NOT NULL,   
+    travelDistance INT NOT NULL,    
+    officeDays INT NOT NULL,        
+    dietDays INT NOT NULL,     
+    meats INT NOT NULL,      
+    heatingHours INT NOT NULL,
     FOREIGN KEY(userID) REFERENCES User(userID)
 );
+
 
 CREATE TABLE IF NOT EXISTS Week (
 	weekID INT NOT NULL PRIMARY KEY,
