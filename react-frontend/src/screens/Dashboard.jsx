@@ -118,6 +118,13 @@ const Dashboard = () => {
                   onClick={() => setIsFormOpen(true)}>
                   Form
                 </Button>
+                <Button
+                  variant="link"
+                  className="bg-blue-500 text-white"
+                  onClick={() => navigate("/stats")}
+                >
+                  Stats
+                </Button>
               </div>
 
               {/* Right content */}

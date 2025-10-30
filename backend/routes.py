@@ -174,4 +174,3 @@ def daily_rank():
     user_id = get_user_id_from_db(email)
     ranks = get_user_daily_ranks(user_id, period, start_date, end_date)
     return jsonify({"username": get_username_from_db(email), "ranks": ranks}), 200
-
