@@ -159,6 +159,7 @@ def dashboard():
             
             current_questionnaire = Questionnaire(answers, user_id, date)
     questionnaires.append(current_questionnaire)
+    # print(f"Total questionnaires processed: {len(questionnaires)}")
 
     total_carbon = 0
     projected_carbon = 0
