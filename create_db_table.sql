@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS User (
 CREATE TABLE IF NOT EXISTS QuestionnaireResponse (
     responseID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     userID INT NOT NULL,
-    dateSubmitted DATE NOT NULL DEFAULT (CURRENT_DATE), 
+    dateSubmitted DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
     transportMethod INT NOT NULL,   
     travelDistance INT NOT NULL,    
     officeDays INT NOT NULL,        

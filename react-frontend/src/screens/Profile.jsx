@@ -178,7 +178,7 @@ const Profile = () => {
                 </div>
 
                 <div className="py-4 space-y-6">
-                  <Questions initialAnswers={answers} isEditing={isEditing} />
+                  <Questions onAnswersChange={setAnswers} initialAnswers={answers} isEditing={isEditing} />
                 </div>
               </CardContent>
             </div>

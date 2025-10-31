@@ -20,6 +20,7 @@ meat_eaten = [10.0, 8.0, 2.0, 1.6, 2.4, 1.4]
 def calculate_transport_emissions(tef_index, td_index, office_days):
     # Travel dist * 2 because return journey
     # Assumes 48 working weeks in the year
+    print(tef_index, td_index)
     return transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * office_days * 48
 
 def update_transport_emissions(tef_index, td_index, count):
@@ -66,9 +67,15 @@ class Questionnaire:
 
 
     def format_answers(self):
-        output = list(self._questionnaire.values())
-        output.insert(0, self._id)
-        return tuple(output)
+        return (
+            self._id,
+            self._questionnaire["transportMethod"],
+            self._questionnaire["travelDistance"],
+            self._questionnaire["officeDays"],
+            self._questionnaire["dietDays"],
+            self._questionnaire["meats"],
+            self._questionnaire["heatingHours"],
+        )
 
     def get_questionnaire(self):
         return self._questionnaire
@@ -79,7 +86,13 @@ class Questionnaire:
         based on the user's answers to a SINGLE questionnaire
         """
 
-        tef_index, td_index, office_days, days_eating_meat, me_index, heating_hours = self._questionnaire.values()
+        # Assign questionnaire answers to variables
+        tef_index = self._questionnaire["transportMethod"]
+        td_index = self._questionnaire["travelDistance"]
+        office_days = self._questionnaire["officeDays"]
+        days_eating_meat = self._questionnaire["dietDays"]
+        me_index = self._questionnaire["meats"]
+        heating_hours = self._questionnaire["heatingHours"]
 
         # Calculate footprint
         transport_emissions = calculate_transport_emissions(tef_index, td_index, office_days)

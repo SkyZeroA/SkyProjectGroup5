@@ -73,7 +73,7 @@ def questionnaire():
     data = request.get_json()
     print("Questionnaire data received:", data)
     answers = Questionnaire(data, get_user_id_from_db(email), datetime.today())
-    # print(answers.get_questionnaire())
+    print(answers.format_answers())
     insert_into_questionnaire(answers.format_answers())
     return jsonify({"message": "Questionnaire submitted successfully"}), 200
 
