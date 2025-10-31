@@ -206,7 +206,7 @@ const Stats = () => {
             </CardContent>
           </Card>
           <div className="flex gap-6 flex-1 overflow-hidden">
-            <CalendarHeatmap />
+            <CalendarHeatmap isFormOpen={isFormOpen}/>
              <UserRankChart isFormOpen={isFormOpen} isOn={isOn} />
           </div>
         </div>
