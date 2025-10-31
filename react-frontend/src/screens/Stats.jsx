@@ -113,26 +113,34 @@ const Stats = () => {
             <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
               {/* Left content */}
               <div>
-                <Button 
-                  variant="link"
-                  className="bg-green-500 text-white" 
-                  onClick={() => setIsFormOpen(true)}>
-                  Form
-                </Button>
                 <Button
                   variant="link"
-                  className="bg-blue-500 text-white"
+                  className="text-grey-900"
                   onClick={() => navigate("/dashboard")}
                 >
                   Dashboard
+                </Button>
+                <Button
+                  variant="link"
+                  className="text-grey-900"
+                  onClick={() => navigate("/stats")}
+                >
+                  Statistics
                 </Button>
               </div>
 
               {/* Right content */}
               <div className="ml-auto">
+                <Button
+                  variant="link"
+                  onClick={() => navigate("/profile")}
+                >
+                  {username}
+                </Button>
                 <Button 
                   variant="link"
-                  onClick={() => navigate("/")}>
+                  onClick={() => navigate("/")}
+                >
                   Sign Out
                 </Button>
               </div>

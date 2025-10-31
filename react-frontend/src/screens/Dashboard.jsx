@@ -103,19 +103,26 @@ const Dashboard = () => {
             <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
               {/* Left content */}
               <div>
-                <Button 
+                <Button
                   variant="link"
-                  className="bg-green-500 text-white" 
-                  onClick={() => setIsFormOpen(true)}
+                  className="text-grey-900"
+                  onClick={() => navigate("/dashboard")}
                 >
-                  Form
+                  Dashboard
                 </Button>
                 <Button
                   variant="link"
-                  className="bg-blue-500 text-white"
+                  className="text-grey-900"
                   onClick={() => navigate("/stats")}
                 >
-                  Stats
+                  Statistics
+                </Button>
+                <Button 
+                  variant="link"
+                  className="text-green-500" 
+                  onClick={() => setIsFormOpen(true)}
+                >
+                  Log your Activities
                 </Button>
               </div>
 
