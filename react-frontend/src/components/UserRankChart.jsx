@@ -66,11 +66,12 @@ const UserRankChart = ({ isWeekly, isFormOpen }) => {
       const allDates = isWeekly
         ? getWeekDates(currentWeekStart)
         : getMonthDates(currentMonth);
-
+        
+      const apiUrl = process.env.REACT_APP_API_URL;
       const startDate = allDates[0];
       const endDate = allDates[allDates.length - 1];
 
-      const response = await axios.get("http://localhost:9099/api/daily-rank", {
+      const response = await axios.get(`${apiUrl}/api/daily-rank`, {
         params: {
           period: isWeekly ? "week" : "month",
           startDate,

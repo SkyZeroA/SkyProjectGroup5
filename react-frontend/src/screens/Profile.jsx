@@ -15,11 +15,12 @@ const Profile = () => {
   const [answers, setAnswers] = useState({})
   const [isEditing, setIsEditing] = useState(false);
 
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
   // Gets the username and first name of the current user
   const fetchUserData = async () => {
-    await axios.get("http://localhost:9099/api/fetch-user-data", { withCredentials: true })
+    await axios.get(`${apiUrl}/api/fetch-user-data`, { withCredentials: true })
       .then(response => {
         setUsername(response.data.username);
         setFirstName(response.data.firstName);
@@ -31,7 +32,7 @@ const Profile = () => {
   };
 
   const fetchQuestionnaireData = async () => {
-    await axios.get("http://localhost:9099/api/fetch-questionnaire-answers", { withCredentials: true })
+    await axios.get(`${apiUrl}/api/fetch-questionnaire-answers`, { withCredentials: true })
       .then(response => {
         setAnswers(response.data.answers);
       })
@@ -44,7 +45,7 @@ const Profile = () => {
   const handleQuestionnaireUpdate = async () => {
     if (isEditing) {
     console.log("Submitting Answers:", answers);
-    await axios.post("http://localhost:9099/api/set-questionnaire", answers, { withCredentials: true })
+    await axios.post(`${apiUrl}/api/set-questionnaire`, answers, { withCredentials: true })
       .then((response) => {
         console.log("Response:", response.data);
       })
@@ -68,7 +69,7 @@ const Profile = () => {
 
       try {
         const res = await axios.post(
-          "http://localhost:9099/api/upload-avatar",
+          `${apiUrl}/api/upload-avatar`,
           formData,
           { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -117,7 +118,8 @@ const Profile = () => {
                   <Avatar className="w-[250px] h-[250px] bg-gray-200 overflow-hidden">
                     {avatar && avatar !== 'None' ? (
                       <img
-                        src={`http://localhost:9099${avatar}`}
+                        // src={`http://localhost:9099${avatar}`}
+                        src={`${apiUrl}${avatar}`}
                         alt="User avatar"
                         className="w-full h-full object-cover"
                       />

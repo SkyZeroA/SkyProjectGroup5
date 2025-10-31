@@ -11,8 +11,10 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
-
+  
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -22,7 +24,8 @@ const SignIn = () => {
     };
     console.log("Sign In Payload:", signInPayload);
 
-    await axios.post("http://localhost:9099/api/sign-in", signInPayload, {withCredentials:true})
+    // await axios.post("http://localhost:9099/api/sign-in", signInPayload, {withCredentials:true})
+    await axios.post(`${apiUrl}/api/sign-in`, signInPayload, {withCredentials:true})
       .then((response) => {
         console.log("Sign In Response:", response.data);
         if (response?.data?.message === "Sign in successful") {

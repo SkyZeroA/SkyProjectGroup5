@@ -26,10 +26,11 @@ const Dashboard = () => {
   const [dietEmissions, setDietEmissions] = useState(0);
   const [heatingEmissions, setHeatingEmissions] = useState(0);
 
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
   const fetchAllQuestions = async () => {
-      await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true })
+      await axios.get(`${apiUrl}/api/fetch-questions`, { withCredentials: true })
       .then(response => {
         setAllQuestions(response.data);
       })
@@ -40,7 +41,7 @@ const Dashboard = () => {
 
   //Will replace above and be used later when we add preferences for user activities
   const fetchUserActivities = async () => {
-      await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true })
+      await axios.get(`${apiUrl}/api/user-activities`, { withCredentials: true })
       .then(response => {
         setQuestions(response.data);
       })
@@ -50,7 +51,7 @@ const Dashboard = () => {
   };
 
   const fetchData = async () => {
-      await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
+      await axios.get(`${apiUrl}/api/dashboard`, {withCredentials:true})
       .then(response => {
         setWeekData(response.data.weekLeaderboard);
         setMonthData(response.data.monthLeaderboard);
@@ -86,7 +87,7 @@ const Dashboard = () => {
   const handleActivitySave = async (selected) => {
   try {
     await axios.post(
-      "http://localhost:9099/api/update-user-activities", { activities: selected }, { withCredentials: true });
+      `${apiUrl}/api/update-user-activities`, { activities: selected }, { withCredentials: true });
     await fetchUserActivities();
   } catch (error) {
     console.error("Error saving user activities:", error);
@@ -164,7 +165,7 @@ const Dashboard = () => {
 												<Avatar className="w-12 h-12 bg-gray-200">
 													{user.avatarFilename ? (
                             <img
-                              src={`http://localhost:9099/uploads/${user.avatarFilename}`}
+                              src={`${apiUrl}/uploads/${user.avatarFilename}`}
                               alt="User avatar"
                               className="w-full h-full object-cover"
                             />

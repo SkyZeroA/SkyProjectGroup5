@@ -21,6 +21,7 @@ const SignUp = () => {
   const [passwordError, setPasswordError] = useState("Enter your password.");
   const [formErrors, setFormErrors] = useState([]);
 
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate()
 
   // Validation regexes
@@ -36,13 +37,13 @@ const SignUp = () => {
     // Client-side validation
     if (!nameRegex.test(name.trim())) {
       const msg = "First name must be at least 3 characters and may not include numbers, letters, spaces, hyphens or apostrophes.";
-      setFirstNameError(msg);
+      // setFirstNameError(msg);
       setFormErrors([msg]);
       return;
     }
     if (!usernameRegex.test(username.trim())) {
       const msg = "Username must be 3-16 characters and may include letters, numbers, underscores or hyphens.";
-      setUsernameError(msg);
+      // setUsernameError(msg);
       setFormErrors([msg]);
       return;
     }
@@ -85,7 +86,7 @@ const SignUp = () => {
     };
     console.log("Sign Up Payload:", signUpPayload);
 
-    await axios.post("http://localhost:9099/api/sign-up", signUpPayload, {withCredentials:true})
+    await axios.post(`${apiUrl}/api/sign-up`, signUpPayload, {withCredentials:true})
       .then((response) => {
         console.log("Sign In Response:", response.data);
         if (response?.data?.message === "Sign up successful") {

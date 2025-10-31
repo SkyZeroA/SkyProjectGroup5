@@ -9,11 +9,13 @@ import Questions from "../components/Questions";
 
 const Questionnaire = () => {
   const [answers, setAnswers] = useState({});
+
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     console.log("Submitting Answers:", answers);
-    await axios.post("http://localhost:9099/api/set-questionnaire", answers, { withCredentials: true })
+    await axios.post(`${apiUrl}/api/set-questionnaire`, answers, { withCredentials: true })
       .then((response) => {
         console.log("Response:", response.data);
         if (response?.data?.message === "Questionnaire submitted successfully") {
