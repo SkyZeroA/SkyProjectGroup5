@@ -10,7 +10,7 @@ import Popup from "../components/PopUp";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import MyPieChart from "../components/MyPieChart";
+import CalendarHeatmap from "../components/CalendarHeatMap";
 
 const Stats = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -206,7 +206,7 @@ const Stats = () => {
             </CardContent>
           </Card>
           <div className="flex gap-6 flex-1 overflow-hidden">
-             <MyPieChart transportEmissions={transportEmissions} dietEmissions={dietEmissions} heatingEmissions={heatingEmissions} />  
+            <CalendarHeatmap />
              <UserRankChart isFormOpen={isFormOpen} isOn={isOn} />
           </div>
         </div>

@@ -248,3 +248,16 @@ def fetch_questionnaire_answers():
     return jsonify({"message": "Fetching questionnaire answers",
                     "answers": answers}), 200
 
+@app.route('/api/calendar-activity-counts', methods=['GET'])
+def calendar_activity_counts():
+    email = session.get('email')
+    if not email:
+        return jsonify({"error": "User not signed in"}), 401
+
+    user_id = get_user_id_from_db(email)
+    start_date = request.args.get('startDate')
+    end_date = request.args.get('endDate')
+    counts = get_daily_activity_counts(user_id, start_date, end_date)
+
+    return jsonify({"counts": counts}), 200
+

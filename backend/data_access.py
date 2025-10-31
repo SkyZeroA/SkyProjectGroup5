@@ -441,3 +441,38 @@ def get_user_daily_ranks(user_id, period="week", start_date=None, end_date=None)
         })
 
     return daily_ranks
+
+def get_daily_activity_counts(user_id, start_date=None, end_date=None):
+    if isinstance(start_date, str):
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+    if isinstance(end_date, str):
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    db = get_connection()
+    cursor = db.cursor(dictionary=True)
+
+    query = """
+        SELECT
+            date_done AS activity_date,
+            COALESCE(SUM(CASE WHEN positive_activity = TRUE THEN 1 ELSE -1 END), 0) AS daily_count
+        FROM EcoCounter
+        WHERE userID = %s AND date_done BETWEEN %s AND %s
+        GROUP BY date_done
+        ORDER BY date_done ASC
+    """
+    cursor.execute(query, (user_id, start_date, end_date))
+    results = cursor.fetchall()
+    # print("DB results:", results)
+    close_connection(db)
+
+    # Convert to dict
+    counts_by_date = {row["activity_date"].strftime("%Y-%m-%d"): row["daily_count"] for row in results}
+
+    # Fill missing dates with 0
+    total_days = (end_date - start_date).days + 1
+    for i in range(total_days):
+        d = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+        if d not in counts_by_date:
+            counts_by_date[d] = 0
+
+    return counts_by_date
