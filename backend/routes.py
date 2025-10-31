@@ -190,20 +190,53 @@ def dashboard():
                    }), 200
 
 
+BUFFER_SIZE = 10   # number of tips stored in DB
+DISPLAY_COUNT = 3  # number of tips shown to the user
+
 @app.route('/api/initial-ai-tips')
 def generate_initial_tips():
     email = session["email"]
-    tips = [generate_tip(email) for _ in range(3)]
-    return jsonify({"message": "Tip generated",
-                    "tips": tips}), 200
+    tips = get_tips_from_db(email) or []
+
+    # If user already has tips
+    if tips and len(tips) >= DISPLAY_COUNT:
+        # Return only the last DISPLAY_COUNT
+        return jsonify({
+            "message": "Tips loaded from buffer",
+            "tips": tips[-DISPLAY_COUNT:]
+        }), 200
+
+    # Otherwise, create DISPLAY_COUNT tips
+    tips = [generate_tip(email) for _ in range(DISPLAY_COUNT)]
+    set_tips_in_db(email, tips)
+
+    return jsonify({
+        "message": "Tips generated",
+        "tips": tips
+    }), 200
 
 
 @app.route('/api/ai-tip')
 def generate_ai_tip():
     email = session["email"]
-    tip = generate_tip(email)
-    return jsonify({"message": "Tip generated",
-                    "tip": tip}), 200
+    tips = get_tips_from_db(email) or []
+
+    # Generate a new tip
+    new_tip = generate_tip(email)
+    tips.append(new_tip)
+
+    # Keep buffer to max BUFFER_SIZE
+    if len(tips) > BUFFER_SIZE:
+        tips = tips[-BUFFER_SIZE:]  # keep only the most recent BUFFER_SIZE tips
+
+    # Save back to DB
+    set_tips_in_db(email, tips)
+
+    return jsonify({
+        "message": "Tip generated",
+        "tip": new_tip
+    }), 200
+
 
 
 @app.route('/api/daily-rank', methods=['GET'])

@@ -23,6 +23,8 @@ const Dashboard = () => {
   const [isOn, setIsOn] = useState(false);
   const [allQuestions, setAllQuestions] = useState([]);
   const [tips, setTips] = useState([]);
+  const [tipsLoading, setTipsLoading] = useState(true);
+
 
   const navigate = useNavigate();
 
@@ -72,15 +74,19 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchInitialTips = async () => {
-      await axios.get("http://localhost:9099/api/initial-ai-tips", { withCredentials: true })
-      .then(res => {
+      setTipsLoading(true); // start loading
+      try {
+        const res = await axios.get("http://localhost:9099/api/initial-ai-tips", { withCredentials: true });
         setTips(res.data.tips);
-      }).catch(err => {
+      } catch (err) {
         console.error("Error fetching tips:", err);
-      });
+      } finally {
+        setTipsLoading(false); // stop loading
+      }
     };
     fetchInitialTips();
   }, []);
+
 
   console.log("tips", tips)
 
@@ -252,17 +258,18 @@ const Dashboard = () => {
                 <div className="mt-6 p-4">
                   <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Tips for reducing your carbon footprint</h1>
                   <ul className="list-none">
-                    {tips.map((tip, index) => (
-                      <li key={index} className="flex items-center mb-2">
-                        <TipCard
-                          tip={tip}
-                          onDelete={async () => {
-                            await replaceTip(index); // your function that fetches new tip
-                          }}
-                        />
-                      </li>
-                    ))}
-                  </ul>
+                  {(tipsLoading ? [0,1,2] : tips).map((tip, index) => (
+                    <li key={index} className="flex items-center mb-2">
+                      <TipCard
+                        tip={tipsLoading ? "Generating Tip…" : tip}
+                        onDelete={async () => {
+                          if (!tipsLoading) await replaceTip(index); // only allow replace after real tips
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+
                 </div>
             </CardContent>
           </Card>
