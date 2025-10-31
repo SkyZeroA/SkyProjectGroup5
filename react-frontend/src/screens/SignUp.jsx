@@ -17,14 +17,65 @@ const SignUp = () => {
   const [usernameError, setUsernameError] = useState("Enter your username.");
   const [emailError, setEmailError] = useState("Enter your email address.");
   const [confirmPasswordError, setConfirmPasswordError] = useState("Re-type your password.");
+  const [firstNameError, setFirstNameError] = useState("Enter your first name.");
+  const [passwordError, setPasswordError] = useState("Enter your password.");
+  const [formErrors, setFormErrors] = useState([]);
 
   const navigate = useNavigate()
 
+  // Validation regexes
+  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
+  const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
   // Each error caught in this function sets the relevant error message and clears the relevant fields
   // This is so if the user makes two mistakes, one after the other, they will not see both error messages, only the one relevant to their most recent mistake
-  // There will be a better way to do this but I can't think of it right now
   const handleSignUp = async (e) => {
     e.preventDefault();
+    // Client-side validation
+    if (!nameRegex.test(name.trim())) {
+      const msg = "First name must be at least 3 characters and may not include numbers, letters, spaces, hyphens or apostrophes.";
+      setFirstNameError(msg);
+      setFormErrors([msg]);
+      return;
+    }
+    if (!usernameRegex.test(username.trim())) {
+      const msg = "Username must be 3-16 characters and may include letters, numbers, underscores or hyphens.";
+      setUsernameError(msg);
+      setFormErrors([msg]);
+      return;
+    }
+    if (!emailRegex.test(email.trim())) {
+      const msg = "Please enter a valid email address.";
+      setUsernameError("Enter your username.");
+      setEmailError(msg);
+      setConfirmPasswordError("Re-type your password.");
+      setFormErrors([msg]);
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      const msg = "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
+      setUsernameError("Enter your username.");
+      setEmailError("Enter your email address.");
+      // setPasswordError(msg);
+      // setPassword("");
+      // setConfirmPassword("");
+      setFormErrors([msg]);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      const msg = "Passwords do not match. Please re-type.";
+      setUsernameError("Enter your username.");
+      setEmailError("Enter your email address.");
+      // setConfirmPasswordError(msg);
+      // setPassword("");
+      // setConfirmPassword("");
+      setFormErrors([msg]);
+      return;
+    }
     const signUpPayload = {
       "first-name": name,
       "username": username,
@@ -38,6 +89,7 @@ const SignUp = () => {
       .then((response) => {
         console.log("Sign In Response:", response.data);
         if (response?.data?.message === "Sign up successful") {
+          setFormErrors([]);
           navigate("/questionnaire")
         }
       })
@@ -98,10 +150,10 @@ const SignUp = () => {
                   id="first-name"
                   type="text"
                   label="First Name"
-                  errorMessage="Enter your first name."
+                  errorMessage={firstNameError}
                   showError={true}
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => { setName(e.target.value)}}
                 />
 
                 <Input
@@ -128,7 +180,7 @@ const SignUp = () => {
                   id="password"
                   type="password"
                   label="Password"
-                  errorMessage="Enter your password."
+                  errorMessage={passwordError}
                   showError={true}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -151,6 +203,14 @@ const SignUp = () => {
                 >
                   Continue
                 </Button>
+
+                {formErrors.length > 0 && (
+                  <div className="mt-3 text-center">
+                    {formErrors.map((err, i) => (
+                      <p key={i} className="text-sm text-red-600">{err}</p>
+                    ))}
+                  </div>
+                )}
   
                 <div className="text-center">
                   <Button
