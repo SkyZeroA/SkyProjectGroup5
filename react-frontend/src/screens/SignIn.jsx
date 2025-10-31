@@ -11,9 +11,13 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
+  const [formErrors, setFormErrors] = useState([]);
   
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 
   const handleSignIn = async (e) => {
@@ -23,6 +27,18 @@ const SignIn = () => {
       "password": password
     };
     console.log("Sign In Payload:", signInPayload);
+
+    if (!emailRegex.test(email.trim())) {
+      const msg = "Please enter a valid email address.";
+      setFormErrors([msg]);
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      const msg = "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
+      setFormErrors([msg]);
+      return;
+    }
 
     // await axios.post("http://localhost:9099/api/sign-in", signInPayload, {withCredentials:true})
     await axios.post(`${apiUrl}/api/sign-in`, signInPayload, {withCredentials:true})
@@ -91,6 +107,13 @@ const SignIn = () => {
                 >
                   Continue
                 </Button>
+                {formErrors.length > 0 && (
+                  <div className="mt-3 text-center">
+                    {formErrors.map((err, i) => (
+                      <p key={i} className="text-sm text-red-600">{err}</p>
+                    ))}
+                  </div>
+                )}
   
                 <div className="text-center space-y-4">
                   <Button
