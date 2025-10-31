@@ -137,7 +137,7 @@ useEffect(() => {
             classForValue={(value) => {
                 if (!value || value.count === 0) return "color-empty";
                 const level = Math.min(4, value.count);
-                let classes = `color-scale-${level}`;
+                let classes = `color-github-${level}`;
                 if (value.isFirstDay) classes += " first-day";
                 if (value.isLastDay) classes += " last-day";
                 return classes;
