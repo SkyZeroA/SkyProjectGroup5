@@ -115,7 +115,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
       {/* Header */}
-      <div className="top-0 z-10 bg-white">
+      <div className="top-0 z-50 bg-white">
         <HeaderBanner
           logoAlign="left"
           navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
@@ -127,7 +127,7 @@ const Dashboard = () => {
 
         {/* Left Column - Leaderboard */}
         <div className="w-full md:w-1/3 flex flex-col max-h-[calc(100vh-96px)]">
-          <Card className="bg-white rounded-lg flex flex-col">
+          <Card className="bg-white rounded-lg flex flex-col md:min-h-[calc(100vh-96px)]">
             <CardContent className="p-3 md:p-6 flex flex-col">
               {/* Header */}
               <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]
@@ -139,38 +139,40 @@ const Dashboard = () => {
               </h1>
 
               {/* Scrollable leaderboard list */}
-              <div className="bg-neutral-50 overflow-y-auto rounded-lg p-2 md:p-4 max-h-[calc(100vh-296px)]">
+              <div className="bg-neutral-50 overflow-y-auto rounded-lg p-2 md:p-4 max-h-[calc(100vh-296px)] md:min-h-[calc(100vh-296px)] scroll-py-4">
                 <div className="space-y-3 md:space-y-4">
                   {leaderboardData.map((user) => (
-                    <Card
-                      key={user.name}
-                      className={`flex items-center justify-between p-3 md:p-4 rounded-lg shadow-sm transition-all duration-300 bg-white ${
-                        user.isCurrentUser ? "border-2 border-green-500" : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 md:gap-4">
-                        <Avatar className="w-10 h-10 md:w-12 md:h-12 bg-gray-200">
-                          {user.avatarFilename ? (
+										<Card
+											key={user.name}
+											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
+												user.isCurrentUser
+													? "sticky top-0 bottom-0 z-10 border-2 border-green-500"
+													: ""
+											}`}
+										>
+											<div className="flex items-center gap-4">
+												<Avatar className="w-12 h-12 bg-gray-200">
+													{user.avatarFilename ? (
                             <img
                               src={`http://localhost:9099/uploads/${user.avatarFilename}`}
                               alt="User avatar"
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <AvatarFallback className="bg-gray-200 text-black font-bold text-sm md:text-lg">
+                            <AvatarFallback className="bg-gray-200 text-black font-bold text-lg">
                               {user.name.charAt(0)}
                             </AvatarFallback>
                           )}
-                        </Avatar>
-                        <span className="text-[16px] md:text-[20px] font-medium text-gray-900">
-                          {user.name}
-                        </span>
-                      </div>
-                      <span className="text-[16px] md:text-[20px] font-medium text-gray-900">
-                        {user.score}
-                      </span>
-                    </Card>
-                  ))}
+												</Avatar>
+												<span className="text-lg font-medium text-gray-900">
+													{user.name}
+												</span>
+											</div>
+											<span className="text-lg font-medium text-gray-900">
+												{user.score}
+											</span>
+										</Card>
+									))}
                 </div>
               </div>
 
