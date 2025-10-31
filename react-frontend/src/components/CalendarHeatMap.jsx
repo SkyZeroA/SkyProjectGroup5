@@ -93,41 +93,43 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
     currentMonth.getFullYear() === today.getFullYear() &&
     currentMonth.getMonth() === today.getMonth();
 
-  return (
-    <Card className="flex-1 min-w-0 bg-white border rounded-lg overflow-auto">
-      <CardContent className="p-6 w-full">
-        {/* Navigation + Title */}
-        <div className="flex justify-between items-center mb-4">
-          <button
-            onClick={handlePrev}
-            disabled={isPrevDisabled}
-            className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-40"
-          >
-            ◀
-          </button>
+ return (
+  <div className="flex flex-col w-full h-full justify-between items-center overflow-hidden p-4">
+    {/* Navigation + Title */}
+    <div className="flex justify-between items-center w-full mb-2 shrink-0">
+      <button
+        onClick={handlePrev}
+        disabled={isPrevDisabled}
+        className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-40"
+      >
+        ◀
+      </button>
 
-          <h2 className="[font-family:'Sky_Text',Helvetica] text-2xl font-bold text-center text-gray-900">
-            Monthly Activity
-            <div className="text-sm font-medium text-gray-500 mt-1">
-              {currentMonth.toLocaleDateString(undefined, {
-                month: "long",
-                year: "numeric",
-              })}
-            </div>
-          </h2>
-
-          <button
-            onClick={handleNext}
-            disabled={isNextDisabled}
-            className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-40"
-          >
-            ▶
-          </button>
+      <div className="text-center">
+        <h2 className="[font-family:'Sky_Text',Helvetica] text-xl font-bold text-gray-900">
+          Your Activity
+        </h2>
+        <div className="text-sm font-medium text-gray-500 mt-1">
+          {currentMonth.toLocaleDateString(undefined, {
+            month: "long",
+            year: "numeric",
+          })}
         </div>
+      </div>
 
-        {/* Heatmap */}
+      <button
+        onClick={handleNext}
+        disabled={isNextDisabled}
+        className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-40"
+      >
+        ▶
+      </button>
+    </div>
+
+    {/* Heatmap Container */}
+    {/* Heatmap */}
         <div className="w-full flex justify-center">
-        <div className="w-[500px] [&_.react-calendar-heatmap-month-label]:hidden transform translate-x-12">
+        <div className="w-[450px] [&_.react-calendar-heatmap-month-label]:hidden transform translate-x-12">
             <CalendarHeatmap
             startDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)}
             endDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)}
@@ -145,14 +147,14 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
                 ? `${value.date}: ${value.count} activities`
                 : "No data",
             })}
-            showWeekdayLabels={false}
             horizontal={false}
+            showWeekdayLabels={true}
             />
         </div>
         </div>
-      </CardContent>
-    </Card>
-  );
+  </div>
+);
+
 };
 
 export default UserActivityHeatmap;
