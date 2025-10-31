@@ -50,7 +50,7 @@ const SignUp = () => {
     if (!emailRegex.test(email.trim())) {
       const msg = "Please enter a valid email address.";
       setUsernameError("Enter your username.");
-      setEmailError(msg);
+      // setEmailError(msg);
       setConfirmPasswordError("Re-type your password.");
       setFormErrors([msg]);
       return;
@@ -113,6 +113,7 @@ const SignUp = () => {
             setEmail("");
             setPassword("");
             setConfirmPassword("");
+            setFormErrors([]);
 
           } else if (error.response?.data?.error === "Passwords do not match") {
             // Handle passwords do not match error

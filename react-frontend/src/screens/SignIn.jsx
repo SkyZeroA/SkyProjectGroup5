@@ -50,7 +50,9 @@ const SignIn = () => {
       })
       .catch((error) => {
         if (error.response?.data?.error === "Incorrect username or password") {
+          setEmail("");
           setPassword("");
+          setFormErrors(["Incorrect username or password."]);
           incrementAttempts();
         }
         console.error("Sign In Error:", error);
@@ -94,7 +96,8 @@ const SignIn = () => {
                   id="password"
                   type="password"
                   label="Password"
-                  errorMessage={`${attempts === 0 ? "Enter your password." : "Incorrect password. Please try again."}`}
+                  // errorMessage={`${attempts === 0 ? "Enter your password." : "Incorrect password. Please try again."}`}
+                  errorMessage="Enter your password."
                   showError={true}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
