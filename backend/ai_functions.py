@@ -16,7 +16,7 @@ def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 
-def is_similar_tip(new_tip, previous_tips, threshold=0.85):
+def is_similar_tip(new_tip, previous_tips, threshold=0.75):
     """Return True if the new_tip is semantically similar to any in previous_tips."""
     if not previous_tips:
         return False

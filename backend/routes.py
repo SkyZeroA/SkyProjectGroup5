@@ -190,7 +190,7 @@ def dashboard():
                    }), 200
 
 
-BUFFER_SIZE = 10   # number of tips stored in DB
+BUFFER_SIZE = 5   # number of tips stored in DB
 DISPLAY_COUNT = 3  # number of tips shown to the user
 
 @app.route('/api/initial-ai-tips')
