@@ -9,6 +9,7 @@ from datetime import datetime
 from backend.Questionnaire import Questionnaire
 from backend.data_access import *
 from backend.helpers import allowed_file
+from backend.ai_functions import generate_tip
 
 
 @app.route('/api/sign-in', methods=['POST'])
@@ -188,6 +189,23 @@ def dashboard():
                    "username": username
                    }), 200
 
+
+@app.route('/api/initial-ai-tips')
+def generate_initial_tips():
+    email = session["email"]
+    tips = [generate_tip(email) for _ in range(3)]
+    return jsonify({"message": "Tip generated",
+                    "tips": tips}), 200
+
+
+@app.route('/api/ai-tip')
+def generate_ai_tip():
+    email = session["email"]
+    tip = generate_tip(email)
+    return jsonify({"message": "Tip generated",
+                    "tip": tip}), 200
+
+
 @app.route('/api/daily-rank', methods=['GET'])
 def daily_rank():
     period = request.args.get('period', 'week')
@@ -199,6 +217,7 @@ def daily_rank():
     user_id = get_user_id_from_db(email)
     ranks = get_user_daily_ranks(user_id, period, start_date, end_date)
     return jsonify({"username": get_username_from_db(email), "ranks": ranks}), 200
+
 
 @app.route('/api/fetch-user-data')
 def fetch_user_data():

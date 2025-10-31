@@ -9,7 +9,7 @@ import Popup from "../components/PopUp";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import MyPieChart from "../components/MyPieChart";
+import TipCard from '../components/TipCard';
 
 const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -22,9 +22,7 @@ const Dashboard = () => {
   const [currentCarbon, setCurrentCarbon] = useState([])
   const [isOn, setIsOn] = useState(false);
   const [allQuestions, setAllQuestions] = useState([]);
-  const [transportEmissions, setTransportEmissions] = useState(0);
-  const [dietEmissions, setDietEmissions] = useState(0);
-  const [heatingEmissions, setHeatingEmissions] = useState(0);
+  const [tips, setTips] = useState([]);
 
   const navigate = useNavigate();
 
@@ -49,6 +47,7 @@ const Dashboard = () => {
       });
   };
 
+
   const fetchData = async () => {
       await axios.get("http://localhost:9099/api/dashboard", {withCredentials:true})
       .then(response => {
@@ -58,19 +57,48 @@ const Dashboard = () => {
         setTotalProjectedCarbon(response.data.totalCarbon)
         setProjectedCarbon(response.data.projectedCarbon)
         setCurrentCarbon(response.data.currentCarbon)
-        setTransportEmissions(response.data.transportEmissions)
-        setDietEmissions(response.data.dietEmissions)
-        setHeatingEmissions(response.data.heatingEmissions)
       }).catch((error) => {
         console.error("Failed to fetch data from json" , error);
       });
     };
   
+
   useEffect(() => {
     fetchUserActivities();
     fetchAllQuestions();
     fetchData();
   }, [isFormOpen]);
+
+
+  useEffect(() => {
+    const fetchInitialTips = async () => {
+      await axios.get("http://localhost:9099/api/initial-ai-tips", { withCredentials: true })
+      .then(res => {
+        setTips(res.data.tips);
+      }).catch(err => {
+        console.error("Error fetching tips:", err);
+      });
+    };
+    fetchInitialTips();
+  }, []);
+
+  console.log("tips", tips)
+
+
+   // Replace a specific tip with a new one
+  const replaceTip = async (index) => {
+      await axios.get("http://localhost:9099/api/ai-tip", { withCredentials: true })
+      .then(res => {
+        const newTip = res.data.tip;
+        setTips((prevTips) => {
+          const updated = [...prevTips];
+          updated[index] = newTip;
+          return updated;
+        });
+    }).catch(err => {
+      console.error("Error fetching new tip:", err);
+    })
+  };
 
   const current = isOn ? weekData : monthData;
   const leaderboardData = current
@@ -84,14 +112,16 @@ const Dashboard = () => {
   console.log(currentCarbon, projectedCarbon, totalProjectedCarbon)
 
   const handleActivitySave = async (selected) => {
-  try {
-    await axios.post(
-      "http://localhost:9099/api/update-user-activities", { activities: selected }, { withCredentials: true });
-    await fetchUserActivities();
-  } catch (error) {
-    console.error("Error saving user activities:", error);
-  }
-};
+    try {
+      await axios.post(
+        "http://localhost:9099/api/update-user-activities", { activities: selected }, { withCredentials: true });
+      await fetchUserActivities();
+    } catch (error) {
+      console.error("Error saving user activities:", error);
+    }
+  };
+
+
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -203,9 +233,10 @@ const Dashboard = () => {
         </div>
 
         {/* Right Section: Tips */}
-        <div className="w-2/3 flex flex-col gap-6 justify-start h-[calc(100vh-96px)]">
-          <Card className=" bg-white rounded-lg shadow">
+        <div className="w-2/3 flex flex-col gap-6 justify-start">
+          <Card className=" bg-white h-[calc(100vh-96px)] rounded-lg">
             <CardContent>
+                {/* Projected Carbon */}
                 <div className="p-4">
                   <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
                   <p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} kg</span> of CO2</p>
@@ -216,11 +247,25 @@ const Dashboard = () => {
                     Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round(projectedCarbon - currentCarbon)} kg Less</strong> than projected for this point in the year!
                   </p>
                 </div>
+
+                {/* AI generated tips */}
+                <div className="mt-6 p-4">
+                  <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Tips for reducing your carbon footprint</h1>
+                  <ul className="list-none">
+                    {tips.map((tip, index) => (
+                      <li key={index} className="flex items-center mb-2">
+                        <TipCard
+                          tip={tip}
+                          onDelete={async () => {
+                            await replaceTip(index); // your function that fetches new tip
+                          }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
             </CardContent>
           </Card>
-          <div className="flex gap-6 flex-1 overflow-hidden">
-             <MyPieChart transportEmissions={transportEmissions} dietEmissions={dietEmissions} heatingEmissions={heatingEmissions} />  
-          </div>
         </div>
       </main>
 

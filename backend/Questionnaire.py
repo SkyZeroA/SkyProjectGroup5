@@ -1,19 +1,29 @@
 from datetime import datetime
 from backend.data_access import *
 
+# ---------- Text options --------------
+# Will be used to generate a prompt for use in the AI tips section
+TRANSPORT_METHODS = ["Work from home", "Walk/Cycle", "Public transport", "Petrol car", "Electric car"]
+
+MEAT_CHOICES = ["Beef", "Lamb", "Pork", "Chicken", "Turkey", "Fish"]
+
+
+
+
+
 # --------- Emission Factors ------------
 
 # Transport options kg CO2 / km
 # Work from home, Walk/Cycle, Public Transport (Bus/Train), Car (Petrol/Deisel), Car (Electic)
-transport_emission_factors = [0.0, 0.0, 0.05, 0.25, 0.05]
+TRANSPORT_EMISSION_FACTORS = [0.0, 0.0, 0.05, 0.25, 0.05]
 
 # Travel distance (miles)  
 # 0-5, 5-10, 10-15, 15-20, 20-30, 30+
-travel_distance = [2.5, 7.5, 12.5, 17.5, 25, 40]
+TRAVEL_DISTANCE = [2.5, 7.5, 12.5, 17.5, 25, 40]
 
 # Meats eaten kg Co2 (Assumes 200g eaten)
 # Beef, Lamb, Pork, Chicken, Turkey, Fish
-meat_eaten = [10.0, 8.0, 2.0, 1.6, 2.4, 1.4]
+MEAT_EATEN = [10.0, 8.0, 2.0, 1.6, 2.4, 1.4]
 
 # -------------- Functions to calculate/adjust projected carbon footprint -----------------
 
@@ -21,18 +31,18 @@ def calculate_transport_emissions(tef_index, td_index, office_days):
     # Travel dist * 2 because return journey
     # Assumes 48 working weeks in the year
     print(tef_index, td_index)
-    return transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * office_days * 48
+    return TRANSPORT_EMISSION_FACTORS[tef_index] * (TRAVEL_DISTANCE[td_index] * 2) * office_days * 48
 
 def update_transport_emissions(tef_index, td_index, count):
-    return transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * count
+    return TRANSPORT_EMISSION_FACTORS[tef_index] * (TRAVEL_DISTANCE[td_index] * 2) * count
 
 
 def calculate_diet_emissions(me_index, days_eating_meat):
     # Assumes meat eating habits year round
-    return days_eating_meat * meat_eaten[me_index] * 52 # kg CO2 / year
+    return days_eating_meat * MEAT_EATEN[me_index] * 52 # kg CO2 / year
 
 def update_diet_emissions(me_index, count):
-    return meat_eaten[me_index] * count
+    return MEAT_EATEN[me_index] * count
 
 
 def calculate_heating_emissions(heating_hours):
@@ -76,6 +86,16 @@ class Questionnaire:
             self._questionnaire["meats"],
             self._questionnaire["heatingHours"],
         )
+    
+    def format_prompt(self):
+        return {
+            "transport_method": TRANSPORT_METHODS[self._questionnaire["transportMethod"]],
+            "travel_distance": TRAVEL_DISTANCE[self._questionnaire["travelDistance"]],
+            "office_days": self._questionnaire["officeDays"],
+            "diet_days": self._questionnaire["dietDays"],
+            "meat_choice": MEAT_CHOICES[self._questionnaire["meats"]],
+            "heating_hours": self._questionnaire["heatingHours"]
+        }
 
     def get_questionnaire(self):
         return self._questionnaire
