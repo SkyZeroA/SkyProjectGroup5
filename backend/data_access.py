@@ -2,8 +2,19 @@ import mysql.connector as mysql
 from pathlib import Path
 from datetime import date, timedelta, datetime
 
+# Use the central config to allow switching between development/production
+from backend import config
+
+
 def get_connection():
-    return mysql.connect(user="root", passwd="", host="localhost", database="SkyZeroDB")
+    """Return a MySQL connection using environment-configurable settings.
+
+    The connection kwargs are taken from `backend.config.get_db_connect_kwargs()`.
+    """
+    kwargs = config.get_db_connect_kwargs()
+    # mysql.connector uses 'passwd' rather than 'password' in older code; our
+    # config exposes DB_PASSWORD so get_db_connect_kwargs maps to 'passwd'.
+    return mysql.connect(**kwargs)
 
 def close_connection(connection):
     connection.close()
