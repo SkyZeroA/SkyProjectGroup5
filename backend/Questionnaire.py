@@ -20,7 +20,7 @@ meat_eaten = [10.0, 8.0, 2.0, 1.6, 2.4, 1.4]
 def calculate_transport_emissions(tef_index, td_index, office_days):
     # Travel dist * 2 because return journey
     # Assumes 48 working weeks in the year
-    print(tef_index, td_index)
+    # print(tef_index, td_index)
     return transport_emission_factors[tef_index] * (travel_distance[td_index] * 2) * office_days * 48
 
 def update_transport_emissions(tef_index, td_index, count):
