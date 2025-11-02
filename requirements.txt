@@ -7,6 +7,5 @@ MarkupSafe==3.0.3
 mysql-connector-python==9.4.0
 Werkzeug==3.1.3
 openai
-
-# Optional: helpful for loading .env files in development
 python-dotenv==1.2.1
+pytest==8.4.2
