@@ -2,18 +2,17 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Environment: 'production' or 'development' (default)
+ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
+
 # Try to load a .env file if present (optional dependency)
 try:
-    env_path = Path(__file__).resolve().parents[1] / '.env'
+    env_path = Path(__file__).resolve().parents[1] / '.env.{ENV}'
     if env_path.exists():
         load_dotenv(dotenv_path=env_path)
 except Exception:
     # If python-dotenv isn't installed, we still work using environment variables
     pass
-
-
-# Environment: 'production' or 'development' (default)
-ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
 
 
 # Base URL configuration per environment
