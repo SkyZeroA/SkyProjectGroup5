@@ -1,19 +1,54 @@
 import mysql.connector as mysql
 from pathlib import Path
 from datetime import date, timedelta, datetime
+import os
 
-# Use the central config to allow switching between development/production
-from backend import config
+# Optionally load backend/.env so local .env.development or .env.production
+# copied to backend/.env is respected during local runs. If python-dotenv is not
+# available this will silently be skipped and environment variables must be set
+# externally (for example by the hosting environment or CI).
+try:
+    from dotenv import load_dotenv
+    env_path = Path(__file__).resolve().parent / '.env'
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
+except Exception:
+    pass
+
+
+def get_db_connect_kwargs():
+    """Return kwargs suitable for `mysql.connector.connect(**kwargs)`.
+
+    Reads DB_* environment variables (DB_USER, DB_PASSWORD, DB_HOST, DB_PORT,
+    DB_NAME). If DB_PORT is not set it will be omitted.
+    """
+    db_user = os.getenv('DB_USER', 'root')
+    db_password = os.getenv('DB_PASSWORD', '')
+    db_host = os.getenv('DB_HOST', 'localhost')
+    db_port = os.getenv('DB_PORT')
+    db_name = os.getenv('DB_NAME', 'SkyZeroDB')
+
+    kwargs = {
+        'user': db_user,
+        'passwd': db_password,
+        'host': db_host,
+        'database': db_name,
+    }
+    if db_port:
+        try:
+            kwargs['port'] = int(db_port)
+        except ValueError:
+            # leave as-is if it's not an int
+            kwargs['port'] = db_port
+    return kwargs
 
 
 def get_connection():
     """Return a MySQL connection using environment-configurable settings.
 
-    The connection kwargs are taken from `backend.config.get_db_connect_kwargs()`.
+    The connection kwargs are taken from `get_db_connect_kwargs()`.
     """
-    kwargs = config.get_db_connect_kwargs()
-    # mysql.connector uses 'passwd' rather than 'password' in older code; our
-    # config exposes DB_PASSWORD so get_db_connect_kwargs maps to 'passwd'.
+    kwargs = get_db_connect_kwargs()
     return mysql.connect(**kwargs)
 
 def close_connection(connection):

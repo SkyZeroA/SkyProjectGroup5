@@ -1,19 +1,40 @@
 from . import app
-import backend.data_access  as db
-import backend.config as config
+import backend.data_access as db
 from urllib.parse import urlparse
+import os
+from pathlib import Path
+
+# Optionally load a local .env (backend/.env) if present. If python-dotenv is
+# not installed this is skipped and environment variables must be set externally.
+try:
+    from dotenv import load_dotenv
+    env_path = Path(__file__).resolve().parent / '.env'
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
+except Exception:
+    pass
 
 
 if __name__ == "__main__":
     db.init_db()
     db.init_insert()
 
-    #  Parse BASE_URL to get host and port
-    parsed_url = urlparse(config.BASE_URL)
+    # Determine ENV and BASE_URL from environment variables
+    ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
+    DEFAULT_DEV_BASE = "http://localhost:9099"
+    DEFAULT_PROD_BASE = os.getenv('PROD_BASE_URL', 'https://example.com')
+
+    if ENV == 'production':
+        BASE_URL = os.getenv('BASE_URL', DEFAULT_PROD_BASE)
+    else:
+        BASE_URL = os.getenv('BASE_URL', DEFAULT_DEV_BASE)
+
+    # Parse BASE_URL to get host and port
+    parsed_url = urlparse(BASE_URL)
     host = parsed_url.hostname or "localhost"
     port = parsed_url.port or 9099
 
-    app.run(host=host, port=port, debug=(config.ENV == 'development'))
+    app.run(host=host, port=port, debug=(ENV == 'development'))
 
     # app.run(host="localhost", port=9099, debug=True)
 
