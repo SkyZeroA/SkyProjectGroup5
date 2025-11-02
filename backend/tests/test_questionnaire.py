@@ -1,47 +1,81 @@
 import unittest
-from datetime import datetime# Adjust import if needed
-from backend.Questionnaire import Questionnaire
+from datetime import datetime
+from unittest.mock import patch
+from backend.Questionnaire import (
+    calculate_transport_emissions,
+    calculate_diet_emissions,
+    calculate_heating_emissions,
+    update_transport_emissions,
+    update_diet_emissions,
+    update_heating_emissions,
+    Questionnaire,
+)
 
 class TestQuestionnaire(unittest.TestCase):
     def test_calculate_projected_carbon_footprint(self):
-        # Mock answers: transport=2 (Car Petrol/Diesel), diet=1 (Mixed), efficiency=0 (Very efficient)
+        # Mock answers: keys must match Questionnaire.format_answers expectations
         answers = {
-            "transport": 3,  # e.g., Car (Petrol/Diesel)
-            "distance": 2,  # e.g., 10-15 miles
-            "office_days": 3,  # e.g., 3 days/week
-            "meat_days": 5,  # e.g., 5 days/week
-            "meat_type": 0,  # e.g., Beef
-            "heating_hours": 4  # e.g., 4 hours/day
-
+            "transportMethod": 3,  # Car (Petrol/Diesel)
+            "travelDistance": 2,   # 10-15 miles
+            "officeDays": 3,       # 3 days/week
+            "dietDays": 5,         # 5 days/week
+            "meats": 0,            # Beef
+            "heatingHours": 4      # 4 hours/day
         }
 
         user_id = "123"
-        q = Questionnaire(answers, user_id)
+        # Provide a stable start date for deterministic progress calculations
+        start_date = datetime(2025, 1, 1)
+        q = Questionnaire(answers, user_id, start_date)
 
         result = q.calculate_projected_carbon_footprint()
 
-        # Expected annual total: 2.4 (transport) + 1.7 (diet) + 0.8 (efficiency) = 4.9
-        # expected_total = 4.9
+        # Result keys are defined in Questionnaire.calculate_projected_carbon_footprint
+        # Ensure expected keys exist and values are integers (rounded inside implementation)
+        self.assertIn("total_projected", result)
+        self.assertIn("projected", result)
+        self.assertIn("current", result)
 
-        # Calculate expected year progress
-        # today = datetime.today()
-        # day_of_year = today.timetuple().tm_yday
-        # is_leap = (today.year % 4 == 0 and (today.year % 100 != 0 or today.year % 400 == 0))
-        # days_in_year = 366 if is_leap else 365
-        # year_progress = day_of_year / days_in_year
-        # expected_current = round(expected_total * year_progress, 2)
-
-        # self.assertAlmostEqual(result["annual_total"], expected_total)
-        # self.assertAlmostEqual(result["current_to_date"], expected_current)
-        # self.assertAlmostEqual(result["year_progress_percent"], round(year_progress * 100, 2))
-
-        self.assertIsInstance(result["annual_total"], int)
+        self.assertIsInstance(result["total_projected"], int)
         self.assertIsInstance(result["projected"], int)
         self.assertIsInstance(result["current"], int)
 
-        self.assertIn("annual_total", result)
-        self.assertIn("projected", result)
-        self.assertIn("current", result)
+    def test_helpers_basic(self):
+        # Basic smoke tests for helper functions
+        assert calculate_transport_emissions(3, 2, 1) >= 0
+        assert calculate_diet_emissions(0, 1) > 0
+        assert calculate_heating_emissions(2) > 0
+        assert update_transport_emissions(3, 2, 4) >= 0
+        assert update_diet_emissions(0, 2) > 0
+        assert update_heating_emissions(2, 5) > 0
+
+    @patch('backend.Questionnaire.get_user_activity_count_total')
+    def test_activity_adjustments_all_branches(self, mock_counts):
+        # Return counts that exercise every activity id (1..9)
+        mock_counts.return_value = [(i, 1) for i in range(1, 10)]
+
+        answers = {
+            "transportMethod": 3,  # Diesel car (to trigger some branches)
+            "travelDistance": 2,   # 10-15
+            "officeDays": 3,
+            "dietDays": 3,
+            "meats": 0,
+            "heatingHours": 2,
+        }
+        q = Questionnaire(answers, user_id=1, start_date=datetime(2025, 1, 1))
+
+        # Ensure get_year_progress and set_end_date work
+        orig_progress = q.get_year_progress()
+        q.set_end_date(datetime(2025, 6, 1))
+        assert q.get_year_progress() != orig_progress
+
+        result = q.calculate_projected_carbon_footprint()
+
+        # Validate returned structure and types
+        assert isinstance(result, dict)
+        for k in ("total_projected", "projected", "current", "transport_emissions", "diet_emissions", "heating_emissions"):
+            assert k in result
+            assert isinstance(result[k], int)
 
 # if __name__ == "__main__":
 #     unittest.main()
