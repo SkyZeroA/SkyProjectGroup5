@@ -1,6 +1,7 @@
 import mysql.connector as mysql
 from pathlib import Path
 from datetime import date, timedelta, datetime
+import json
 
 def get_connection():
     return mysql.connect(user="root", passwd="", host="localhost", database="SkyZeroDB")
@@ -196,36 +197,71 @@ def get_user_id_from_db(email):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("SELECT userID FROM User WHERE email = %s", (email,))
-    user_id = cursor.fetchone()[0]
+    user_id = cursor.fetchone()
     close_connection(db)
-    return user_id
+    if user_id and user_id[0]:
+        return user_id[0]
+    return None
 
 
 def get_username_from_db(email):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("SELECT username FROM User WHERE email = %s", (email,))
-    username = cursor.fetchone()[0]
+    username = cursor.fetchone()
     close_connection(db)
-    return username
+    if username and username[0]:
+        return username[0]
+    return None
 
 
 def get_first_name_from_db(email):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("SELECT firstName FROM User WHERE email = %s", (email,))
-    first_name = cursor.fetchone()[0]
+    first_name = cursor.fetchone()
     close_connection(db)
-    return first_name
+    if first_name and first_name[0]:
+        return first_name[0]
+    return None
+
+
+def get_tips_from_db(email):
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT tips FROM User WHERE email = %s", (email,))
+    result = cursor.fetchone()
+    close_connection(db)
+
+    if result and result[0]:
+        return json.loads(result[0])
+    return None
+
+
+def set_tips_in_db(email, tips):
+    db = get_connection()
+    cursor = db.cursor()
+
+    tips_json = json.dumps(tips)
+
+    cursor.execute("""
+                   UPDATE User
+                   SET tips = %s
+                   WHERE email = %s
+                   """, (tips_json, email))
+    db.commit()
+    close_connection(db)
 
 
 def get_avatar_from_db(email):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("SELECT avatarFilename FROM User WHERE email = %s", (email,))
-    avatar = cursor.fetchone()[0]
+    avatar = cursor.fetchone()
     close_connection(db)
-    return avatar
+    if avatar and avatar[0]:
+        return avatar[0]
+    return None
 
 
 def insert_new_user(email, first_name, username, password):

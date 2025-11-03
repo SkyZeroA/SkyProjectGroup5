@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import CalendarHeatmap from "react-calendar-heatmap";
 import 'react-calendar-heatmap/dist/styles.css';
-import { Card, CardContent } from "../components/Card";
 
 const formatDate = (date) => {
   const year = date.getFullYear();

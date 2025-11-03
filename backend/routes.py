@@ -9,6 +9,7 @@ from datetime import datetime
 from backend.Questionnaire import Questionnaire
 from backend.data_access import *
 from backend.helpers import allowed_file
+from backend.ai_functions import generate_tip
 
 
 @app.route('/api/sign-in', methods=['POST'])
@@ -187,6 +188,56 @@ def dashboard():
                    "username": username
                    }), 200
 
+
+BUFFER_SIZE = 5   # number of tips stored in DB
+DISPLAY_COUNT = 3  # number of tips shown to the user
+
+@app.route('/api/initial-ai-tips')
+def generate_initial_tips():
+    email = session["email"]
+    tips = get_tips_from_db(email) or []
+
+    # If user already has tips
+    if tips and len(tips) >= DISPLAY_COUNT:
+        # Return only the last DISPLAY_COUNT
+        return jsonify({
+            "message": "Tips loaded from buffer",
+            "tips": tips[-DISPLAY_COUNT:]
+        }), 200
+
+    # Otherwise, create DISPLAY_COUNT tips
+    tips = [generate_tip(email) for _ in range(DISPLAY_COUNT)]
+    set_tips_in_db(email, tips)
+
+    return jsonify({
+        "message": "Tips generated",
+        "tips": tips
+    }), 200
+
+
+@app.route('/api/ai-tip')
+def generate_ai_tip():
+    email = session["email"]
+    tips = get_tips_from_db(email) or []
+
+    # Generate a new tip
+    new_tip = generate_tip(email)
+    tips.append(new_tip)
+
+    # Keep buffer to max BUFFER_SIZE
+    if len(tips) > BUFFER_SIZE:
+        tips = tips[-BUFFER_SIZE:]  # keep only the most recent BUFFER_SIZE tips
+
+    # Save back to DB
+    set_tips_in_db(email, tips)
+
+    return jsonify({
+        "message": "Tip generated",
+        "tip": new_tip
+    }), 200
+
+
+
 @app.route('/api/stats', methods=['GET'])
 def stats():
     user_id = get_user_id_from_db(session['email'])
@@ -276,6 +327,7 @@ def daily_rank():
     user_id = get_user_id_from_db(email)
     ranks = get_user_daily_ranks(user_id, period, start_date, end_date)
     return jsonify({"username": get_username_from_db(email), "ranks": ranks}), 200
+
 
 @app.route('/api/fetch-user-data')
 def fetch_user_data():

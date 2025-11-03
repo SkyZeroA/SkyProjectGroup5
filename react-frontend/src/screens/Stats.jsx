@@ -15,6 +15,7 @@ const Stats = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
+  const [username, setUsername] = useState("");
   const [isOn, setIsOn] = useState(false);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
@@ -111,7 +112,7 @@ const Stats = () => {
                   className="bg-blue-500 text-white text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
                   onClick={() => navigate("/dashboard")}
                 >
-                  Dashboard
+                  Statistics
                 </Button>
               </div>
 

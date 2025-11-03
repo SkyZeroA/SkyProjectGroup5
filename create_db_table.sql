@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS User (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     avatarFilename VARCHAR(250) UNIQUE,
-    encrypted_password VARCHAR(100) NOT NULL
+    encrypted_password VARCHAR(100) NOT NULL,
+    tips JSON
 );
 
 CREATE TABLE IF NOT EXISTS QuestionnaireResponse (
