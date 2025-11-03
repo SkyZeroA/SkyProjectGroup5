@@ -120,44 +120,44 @@ const PointsBarChart = ({ isFormOpen }) => {
       </h2>
 
       <div className="flex justify-center items-center mb-2 space-x-2">
-  <span className={isWeek ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 sm:text-md text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 sm:text-md text-sm"}>
-    Weekly
-  </span>
-  <button
-    onClick={() => setIsWeek(!isWeek)}
-    className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition-colors duration-300 ${
-      isWeek ? "justify-start" : "justify-end"
-    }`}
-  >
-    <div className="w-3 h-3 bg-white rounded-full shadow-md"></div>
-  </button>
-  <span className={!isWeek ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 sm:text-md text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 sm:text-md text-sm"}>
-    Monthly
-  </span>
-</div>
+      <span className={isWeek ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 sm:text-md text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 sm:text-md text-sm"}>
+        Weekly
+      </span>
+      <button
+        onClick={() => setIsWeek(!isWeek)}
+        className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition-colors duration-300 ${
+          isWeek ? "justify-start" : "justify-end"
+        }`}
+      >
+      <div className="w-3 h-3 bg-white rounded-full shadow-md"></div>
+      </button>
+      <span className={!isWeek ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 sm:text-md text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 sm:text-md text-sm"}>
+        Monthly
+      </span>
+    </div>
 
-{/* Navigation */}
-<div className="flex justify-between items-center mb-1 px-2">
-  <button
-    onClick={isWeek ? () => setWeekChunk((p) => Math.max(p - 1, 0)) : () => setMonthChunk((p) => Math.max(p - 1, 0))}
-    disabled={isWeek ? weekChunk === 0 : monthChunk === 0}
-    className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"
-  >
-    ◀
-  </button>
+    {/* Navigation */}
+    <div className="flex justify-between items-center mb-1 px-2">
+      <button
+        onClick={isWeek ? () => setWeekChunk((p) => Math.max(p - 1, 0)) : () => setMonthChunk((p) => Math.max(p - 1, 0))}
+        disabled={isWeek ? weekChunk === 0 : monthChunk === 0}
+        className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"
+      >
+        ◀
+      </button>
 
-  <div className="text-xs font-medium text-gray-500 text-center">
-    {year} {isWeek ? `(Weeks ${startWeek}-${endWeek})` : ""}
-  </div>
+      <div className="text-xs font-medium text-gray-500 text-center">
+        {year} {isWeek ? `(Weeks ${startWeek}-${endWeek})` : ""}
+      </div>
 
-  <button
-    onClick={isWeek ? () => setWeekChunk((p) => Math.min(p + 1, currentWeekChunk)) : () => setMonthChunk((p) => Math.min(p + 1, currentMonthChunk))}
-    disabled={isWeek ? weekChunk === currentWeekChunk : monthChunk === currentMonthChunk}
-    className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"
-  >
-    ▶
-  </button>
-</div>
+      <button
+        onClick={isWeek ? () => setWeekChunk((p) => Math.min(p + 1, currentWeekChunk)) : () => setMonthChunk((p) => Math.min(p + 1, currentMonthChunk))}
+        disabled={isWeek ? weekChunk === currentWeekChunk : monthChunk === currentMonthChunk}
+        className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"
+      >
+        ▶
+      </button>
+    </div>
 
       {/* Responsive Bar Chart */}
       <ResponsiveContainer width="100%" height={chartHeight}>

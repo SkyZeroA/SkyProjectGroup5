@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import { Card, CardContent } from "../components/Card";
-import { Button } from "../components/Button";
 import Popup from "../components/PopUp";
 import MyPieChart from "../components/MyPieChart";
 import CalendarHeatmap from "../components/CalendarHeatMap";
 import UserRankChart from "../components/UserRankChart";
 import PointsBarChart from "../components/PointsBarChart";
+import Navbar from "../components/Navbar";
 
 const Stats = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
-  const [username, setUsername] = useState("");
   const [isOn, setIsOn] = useState(false);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
+  const [username, setUsername] = useState("");
   const [transportEmissions, setTransportEmissions] = useState(0);
   const [dietEmissions, setDietEmissions] = useState(0);
   const [heatingEmissions, setHeatingEmissions] = useState(0);
@@ -28,8 +27,6 @@ const Stats = () => {
   const [highestMonthUser, setHighestMonthUser] = useState("");
   const [userBestWeek, setUserBestWeek] = useState("");
   const [userBestMonth, setUserBestMonth] = useState("");
-
-  const navigate = useNavigate();
 
   const fetchAllQuestions = async () => {
     try {
@@ -55,6 +52,7 @@ const Stats = () => {
       const data = response.data;
       setWeekData(data.weekLeaderboard);
       setMonthData(data.monthLeaderboard);
+      setUsername(data.username);
       setTransportEmissions(data.transportEmissions);
       setDietEmissions(data.dietEmissions);
       setHeatingEmissions(data.heatingEmissions);
@@ -91,42 +89,10 @@ const Stats = () => {
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
       {/* Header */}
-      <header className="top-0 z-10 bg-white shadow-md">
+      <header className="top-0 z-50 bg-white">
         <HeaderBanner
           logoAlign="left"
-          navbar={
-            <nav
-              className="w-full flex flex-col sm:flex-row items-center sm:items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px] gap-2 sm:gap-4"
-              aria-label="Main navigation"
-            >
-              <div className="flex gap-2 sm:gap-4">
-                <Button 
-                  variant="link"
-                  className="bg-green-500 text-white text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
-                  onClick={() => setIsFormOpen(true)}
-                >
-                  Form
-                </Button>
-                <Button
-                  variant="link"
-                  className="bg-blue-500 text-white text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Statistics
-                </Button>
-              </div>
-
-              <div className="mt-2 sm:mt-0 sm:ml-auto">
-                <Button 
-                  variant="link"
-                  className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
-                  onClick={() => navigate("/")}
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </nav>
-          }
+          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
         />
       </header>
 

@@ -32,33 +32,33 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
   const MIN_DATE = new Date(2025, 0, 1);
 
   const fetchActivity = useCallback(async () => {
-  try {
-    const allDates = getMonthDates(currentMonth);
-    const startDate = allDates[0];
-    const endDate = allDates[allDates.length - 1];
+    try {
+      const allDates = getMonthDates(currentMonth);
+      const startDate = allDates[0];
+      const endDate = allDates[allDates.length - 1];
 
-    const response = await axios.get(
-      "http://localhost:9099/api/calendar-activity-counts",
-      {
-        params: { startDate, endDate },
-        withCredentials: true,
-      }
-    );
+      const response = await axios.get(
+        "http://localhost:9099/api/calendar-activity-counts",
+        {
+          params: { startDate, endDate },
+          withCredentials: true,
+        }
+      );
 
-    // Map counts object to array
-    const counts = response.data.counts || {};
-    const merged = allDates.map((date, index) => ({
-      date,
-      count: counts[date] || 0,
-      isFirstDay: index === 0,
-      isLastDay: index === allDates.length - 1,
-    }));
+      // Map counts object to array
+      const counts = response.data.counts || {};
+      const merged = allDates.map((date, index) => ({
+        date,
+        count: counts[date] || 0,
+        isFirstDay: index === 0,
+        isLastDay: index === allDates.length - 1,
+      }));
 
     setActivityData(merged);
-  } catch (error) {
-    console.error("Failed to fetch activity data:", error);
-  }
-}, [currentMonth]);
+      } catch (error) {
+        console.error("Failed to fetch activity data:", error);
+      }
+    }, [currentMonth]);
 
   useEffect(() => {
     if (!isFormOpen) {
@@ -127,31 +127,30 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
 
     {/* Heatmap Container */}
     {/* Heatmap */}
-        <div className="w-full flex justify-center overflow-y-auto md:overflow-y-visible">
-        <div className="w-[250px] md:w-[450px] transform translate-x-12 md:translate-x-20 [&_.react-calendar-heatmap-month-label]:hidden">
-  <CalendarHeatmap
-    startDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)}
-    endDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)}
-    values={activityData}
-    classForValue={(value) => {
-      if (!value || value.count === 0) return "color-empty";
-      const level = Math.min(4, value.count);
-      let classes = `color-github-${level}`;
-      if (value.isFirstDay) classes += " first-day";
-      if (value.isLastDay) classes += " last-day";
-      return classes;
-    }}
-    tooltipDataAttrs={(value) => ({
-      "data-tip": value.date
-        ? `${value.date}: ${value.count} activities`
-        : "No data",
-    })}
-    horizontal={false}
-    showWeekdayLabels={true}
-  />
-</div>
-
-        </div>
+    <div className="w-full flex justify-center overflow-y-auto md:overflow-y-visible">
+      <div className="w-[250px] md:w-[450px] transform translate-x-12 md:translate-x-20 [&_.react-calendar-heatmap-month-label]:hidden">
+        <CalendarHeatmap
+          startDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)}
+          endDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)}
+          values={activityData}
+          classForValue={(value) => {
+            if (!value || value.count === 0) return "color-empty";
+            const level = Math.min(4, value.count);
+            let classes = `color-github-${level}`;
+            if (value.isFirstDay) classes += " first-day";
+            if (value.isLastDay) classes += " last-day";
+            return classes;
+          }}
+          tooltipDataAttrs={(value) => ({
+            "data-tip": value.date
+              ? `${value.date}: ${value.count} activities`
+              : "No data",
+          })}
+          horizontal={false}
+          showWeekdayLabels={true}
+        />
+      </div>
+    </div>
   </div>
 );
 

@@ -108,7 +108,6 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
       const dateObj = new Date(date);
       const found = ranks.find((r) => r.date === date);
 
-      // ✅ Only assign rank if date <= today
       return {
         date,
         rank: dateObj <= todayMidnight ? (found ? found.rank : null) : null
@@ -116,12 +115,10 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
     });
 
     setDailyRanks(merged);
-  } catch (error) {
-    console.error("Failed to fetch daily ranks:", error);
-  }
-};
-
-
+    } catch (error) {
+      console.error("Failed to fetch daily ranks:", error);
+    }
+  };
 
   useEffect(() => {
     fetchDailyRanks();
