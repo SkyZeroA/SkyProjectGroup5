@@ -10,6 +10,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 
+// --- Helper functions ---
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -40,7 +41,6 @@ const getMonthDates = (monthStart) => {
   const year = monthStart.getFullYear();
   const month = monthStart.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
   const monthDates = [];
   for (let i = 1; i <= daysInMonth; i++) {
     const d = new Date(year, month, i);
@@ -49,7 +49,27 @@ const getMonthDates = (monthStart) => {
   return monthDates;
 };
 
+// --- Custom hook to track window width ---
+const useWindowWidth = () => {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return width;
+};
+
 const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
+  const windowWidth = useWindowWidth();
+
+  // --- Dynamic sizing ---
+  const chartHeight = windowWidth < 640 ? 125 : windowWidth < 1024 ? 250 : 275;
+  const xTickFontSize = windowWidth < 640 ? 10 : 12;
+  const yTickFontSize = windowWidth < 640 ? 10 : 12;
+  const dotRadius = windowWidth < 640 ? 2 : 4;
+  const navChartSpacing = windowWidth < 640 ? 5 : 10;
+
   const [dailyRanks, setDailyRanks] = useState([]);
   const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
   const [currentMonth, setCurrentMonth] = useState(
@@ -59,6 +79,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
   const today = new Date();
   const MIN_DATE = new Date(2025, 0, 1);
 
+  // --- Fetch data ---
   const fetchDailyRanks = async () => {
     try {
       const allDates = isOn
@@ -90,6 +111,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
     fetchDailyRanks();
   }, [isOn, isFormOpen, currentWeekStart, currentMonth]);
 
+  // --- Navigation handlers ---
   const handlePrev = () => {
     if (isOn) {
       setCurrentWeekStart((prev) => {
@@ -171,62 +193,63 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
     }
   };
 
+  // --- Render ---
   return (
     <div className="w-full">
-      {/* Chart Title */}
-      <h2 className="[font-family:'Sky_Text',Helvetica] text-2xl font-bold text-center text-gray-900 mb-2">
+      <h2 className={`[font-family:'Sky_Text',Helvetica] text-xl sm:text-2xl font-bold text-center text-gray-900 mb-2`}>
         Leaderboard Position
       </h2>
-      {/* Toggle Above Chart */}
-      <div className="flex justify-center items-center mb-4 space-x-4">
-        <span className={isOn ? "font-semibold text-gray-900" : "text-gray-500"}>
+
+      {/* Toggle */}
+      <div className="flex justify-center items-center mb-2 space-x-2">
+        <span className={isOn ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 text-sm"}>
           Weekly
         </span>
-
         <button
           onClick={() => setIsOn(!isOn)}
-          className={`w-12 h-6 flex items-center bg-gray-300 rounded-full p-1 transition-colors duration-300 ${
+          className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition-colors duration-300 ${
             isOn ? "justify-start" : "justify-end"
           }`}
         >
-          <div className="w-4 h-4 bg-white rounded-full shadow-md"></div>
+          <div className="w-3 h-3 bg-white rounded-full shadow-md"></div>
         </button>
-
-        <span className={!isOn ? "font-semibold text-gray-900" : "text-gray-500"}>
+        <span className={!isOn ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 text-sm"}>
           Monthly
         </span>
       </div>
-      {/* Chart Controls */}
-      <div className="flex justify-between items-center mb-2 px-4">
+
+      {/* Navigation */}
+      <div className="flex justify-between items-center mb-1 px-2">
         <button
           onClick={handlePrev}
           disabled={isPrevDisabled}
-          className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-40"
+          className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"
         >
           ◀
         </button>
-        <div className="text-sm font-medium text-gray-500 text-center mb-4">
+        <div className="text-xs font-medium text-gray-500 text-center">
           {formatPeriodLabel()}
         </div>
         <button
           onClick={handleNext}
           disabled={isNextDisabled}
-          className="px-3 py-1 text-gray-600 hover:text-gray-900 disabled:opacity-40"
+          className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"
         >
           ▶
         </button>
       </div>
 
       {/* Chart */}
-      <ResponsiveContainer width="100%" height={250}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <LineChart
           data={dailyRanks}
-          margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+          margin={{ top: navChartSpacing, right: 20, left: 10, bottom: navChartSpacing }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="date"
             interval={isOn ? 0 : 5}
+            tick={{ fontSize: xTickFontSize }}
             tickFormatter={(dateStr) => {
               const date = new Date(dateStr);
               return isOn
@@ -235,7 +258,8 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
             }}
           />
           <YAxis
-            label={{ value: "Rank", angle: -90, position: "insideLeft" }}
+            label={{ value: "Rank", angle: -90, position: "insideLeft", fontSize: yTickFontSize }}
+            tick={{ fontSize: yTickFontSize }}
             allowDecimals={false}
             domain={[
               1,
@@ -262,7 +286,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
             dataKey="rank"
             stroke="#4CAF50"
             connectNulls={false}
-            dot={{ r: 4 }}
+            dot={{ r: dotRadius }}
           />
         </LineChart>
       </ResponsiveContainer>

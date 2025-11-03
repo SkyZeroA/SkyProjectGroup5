@@ -92,142 +92,143 @@ const Stats = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
-      {/* Sticky Header */}
-      <div className="top-0 z-10 bg-white">
-        <HeaderBanner
-          logoAlign="left"
-          navbar={
-            <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
-              {/* Left side buttons */}
-              <div>
-                <Button 
-                  variant="link"
-                  className="bg-green-500 text-white" 
-                  onClick={() => setIsFormOpen(true)}>
-                  Form
-                </Button>
-                <Button
-                  variant="link"
-                  className="bg-blue-500 text-white"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Dashboard
-                </Button>
-              </div>
+  {/* Sticky Header */}
+  <div className="top-0 z-10 bg-white">
+    <HeaderBanner
+      logoAlign="left"
+      navbar={
+        <div className="w-full flex flex-col sm:flex-row items-center sm:items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px] gap-2 sm:gap-4">
+          {/* Left side buttons */}
+          <div className="flex gap-2 sm:gap-4">
+            <Button 
+              variant="link"
+              className="bg-green-500 text-white text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
+              onClick={() => setIsFormOpen(true)}>
+              Form
+            </Button>
+            <Button
+              variant="link"
+              className="bg-blue-500 text-white text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
+              onClick={() => navigate("/dashboard")}
+            >
+              Dashboard
+            </Button>
+          </div>
 
-              {/* Right side */}
-              <div className="ml-auto">
-                <Button 
-                  variant="link"
-                  onClick={() => navigate("/")}>
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          }
-        />
-      </div>
-
-      {/* Main Content */}
-      <main className="flex flex-1 px-6 py-6 gap-6">
-        {/* Left Section: 4 Chart Squares */}
-        <div className="w-3/4 grid grid-cols-2 grid-rows-2 gap-6 h-[calc(100vh-96px)]">
-          {/* Pie Chart */}
-          <Card className="flex flex-col justify-center items-center h-full w-full overflow-hidden">
-            <CardContent className="h-full w-full flex flex-col justify-center items-center">
-              <h2 className="[font-family:'Sky_Text',Helvetica] text-2xl font-bold text-center text-gray-900">
-                Projected Emissions Breakdown
-              </h2>
-              <MyPieChart
-                transportEmissions={transportEmissions}
-                dietEmissions={dietEmissions}
-                heatingEmissions={heatingEmissions}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Calendar Heatmap */}
-          <Card className="flex flex-col justify-center items-center h-full w-full">
-            <CardContent className="h-full w-full flex flex-col justify-center items-center">
-              <CalendarHeatmap isFormOpen={isFormOpen} />
-            </CardContent>
-          </Card>
-
-          {/* User Rank Line Chart */}
-          <Card className="flex flex-col justify-center items-center h-full w-full overflow-hidden">
-            <CardContent className="h-full w-full flex flex-col justify-center items-center">
-              <UserRankChart 
-                isFormOpen={isFormOpen} 
-                isOn={isOn} 
-                setIsOn={setIsOn} 
-                weekData={weekData} 
-                monthData={monthData} 
-              />
-            </CardContent>
-          </Card>
-
-          {/* User Points vs Average */}
-          <Card className="flex flex-col justify-center items-center h-full w-full overflow-hidden">
-            <CardContent className="h-full w-full flex flex-col justify-center items-center text-gray-400 text-lg">
-              <PointsBarChart isFormOpen={isFormOpen} />
-            </CardContent>
-          </Card>
+          {/* Right side */}
+          <div className="mt-2 sm:mt-0 sm:ml-auto">
+            <Button 
+              variant="link"
+              className="text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2"
+              onClick={() => navigate("/")}>
+              Sign Out
+            </Button>
+          </div>
         </div>
+      }
+    />
+  </div>
 
-        {/* Right Section: Info Cards */}
-        <div className="w-1/4 flex flex-col gap-6 h-[calc(100vh-96px)]">
-          <Card className="bg-white rounded-lg shadow-lg p-6 flex-1 flex flex-col justify-between">
-            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
-              Highest Week Points
-            </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestWeekUser}</p>
-            <p className="[font-family:'Sky_Text',Helvetica] text-3xl font-bold text-green-600">
-              {highestWeekPoints}
-            </p>
-          </Card>
+  {/* Main Content */}
+  <main className="flex flex-col sm:flex-row flex-1 px-4 sm:px-6 py-6 gap-4 sm:gap-6">
+    {/* Left Section: 4 Chart Squares */}
+    <div className="w-full sm:w-3/4 grid grid-cols-1 sm:grid-cols-2 grid-rows-4 sm:grid-rows-2 gap-4 sm:gap-6">
+      {/* Pie Chart */}
+      <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+        <CardContent className="h-full w-full flex flex-col justify-center items-center">
+          <h2 className="[font-family:'Sky_Text',Helvetica] text-xl sm:text-2xl font-bold text-center text-gray-900">
+            Projected Emissions Breakdown
+          </h2>
+          <MyPieChart
+            transportEmissions={transportEmissions}
+            dietEmissions={dietEmissions}
+            heatingEmissions={heatingEmissions}
+          />
+        </CardContent>
+      </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-6 flex-1 flex flex-col justify-between">
-            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
-              Highest Month Points
-            </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestMonthUser}</p>
-            <p className="[font-family:'Sky_Text',Helvetica] text-3xl font-bold text-green-600">
-              {highestMonthPoints}
-            </p>
-          </Card>
+      {/* Calendar Heatmap */}
+      <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full">
+        <CardContent className="h-full w-full flex flex-col justify-center items-center">
+          <CalendarHeatmap isFormOpen={isFormOpen} />
+        </CardContent>
+      </Card>
 
-          {/* Additional info cards */}
-          <Card className="bg-white rounded-lg shadow-lg p-6 flex-1 flex flex-col justify-between">
-            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
-              Your Highest Week Points
-            </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-3xl font-bold text-green-600">
-              {userBestWeek}
-            </p>
-          </Card>
+      {/* User Rank Line Chart */}
+      <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+        <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
+          <UserRankChart 
+            isFormOpen={isFormOpen} 
+            isOn={isOn} 
+            setIsOn={setIsOn} 
+            weekData={weekData} 
+            monthData={monthData} 
+          />
+        </CardContent>
+      </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-6 flex-1 flex flex-col justify-between">
-            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
-              Your Highest Month Points
-            </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-3xl font-bold text-green-600">
-              {userBestMonth}
-            </p>
-          </Card>
-        </div>
-      </main>
-
-      <Popup
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        questions={questions}
-        allQuestions={allQuestions}
-        onActivitiesSave={handleActivitySave}
-      />
-
-      {/* Footer */}
-      <FooterBanner />
+      {/* User Points vs Average */}
+      <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+        <CardContent className="h-full w-full flex flex-col justify-center items-center text-gray-400 text-lg pb-2">
+          <PointsBarChart isFormOpen={isFormOpen} />
+        </CardContent>
+      </Card>
     </div>
+
+    {/* Right Section: Info Cards */}
+    <div className="w-full sm:w-1/4 flex flex-col gap-4 sm:gap-6">
+      <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+        <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+          Highest Week Points
+        </h3>
+        <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestWeekUser}</p>
+        <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+          {highestWeekPoints}
+        </p>
+      </Card>
+
+      <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+        <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+          Highest Month Points
+        </h3>
+        <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestMonthUser}</p>
+        <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+          {highestMonthPoints}
+        </p>
+      </Card>
+
+      <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+        <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+          Your Highest Week Points
+        </h3>
+        <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+          {userBestWeek}
+        </p>
+      </Card>
+
+      <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+        <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+          Your Highest Month Points
+        </h3>
+        <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+          {userBestMonth}
+        </p>
+      </Card>
+    </div>
+  </main>
+
+  <Popup
+    isOpen={isFormOpen}
+    onClose={() => setIsFormOpen(false)}
+    questions={questions}
+    allQuestions={allQuestions}
+    onActivitiesSave={handleActivitySave}
+  />
+
+  {/* Footer */}
+  <FooterBanner />
+</div>
+
   );
 };
 

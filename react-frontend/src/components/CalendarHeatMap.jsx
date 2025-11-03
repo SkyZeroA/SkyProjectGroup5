@@ -128,29 +128,30 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
 
     {/* Heatmap Container */}
     {/* Heatmap */}
-        <div className="w-full flex justify-center">
-        <div className="w-[450px] [&_.react-calendar-heatmap-month-label]:hidden transform translate-x-12">
-            <CalendarHeatmap
-            startDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)}
-            endDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)}
-            values={activityData}
-            classForValue={(value) => {
-                if (!value || value.count === 0) return "color-empty";
-                const level = Math.min(4, value.count);
-                let classes = `color-github-${level}`;
-                if (value.isFirstDay) classes += " first-day";
-                if (value.isLastDay) classes += " last-day";
-                return classes;
-            }}
-            tooltipDataAttrs={(value) => ({
-                "data-tip": value.date
-                ? `${value.date}: ${value.count} activities`
-                : "No data",
-            })}
-            horizontal={false}
-            showWeekdayLabels={true}
-            />
-        </div>
+        <div className="w-full flex justify-center overflow-y-auto md:overflow-y-visible">
+        <div className="w-[250px] md:w-[450px] transform translate-x-12 md:translate-x-20 [&_.react-calendar-heatmap-month-label]:hidden">
+  <CalendarHeatmap
+    startDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)}
+    endDate={new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)}
+    values={activityData}
+    classForValue={(value) => {
+      if (!value || value.count === 0) return "color-empty";
+      const level = Math.min(4, value.count);
+      let classes = `color-github-${level}`;
+      if (value.isFirstDay) classes += " first-day";
+      if (value.isLastDay) classes += " last-day";
+      return classes;
+    }}
+    tooltipDataAttrs={(value) => ({
+      "data-tip": value.date
+        ? `${value.date}: ${value.count} activities`
+        : "No data",
+    })}
+    horizontal={false}
+    showWeekdayLabels={true}
+  />
+</div>
+
         </div>
   </div>
 );
