@@ -7,20 +7,9 @@ const ProgressBar = ({ current, projected }) => {
   const [animatedRightLabel, setAnimatedRightLabel] = useState(0);
 
   useEffect(() => {
-    // Animate background (green)
-    const timer1 = setTimeout(() => {
-      setAnimatedGreen(100);
-    }, 200);
-
-    // Animate dark bar (current progress)
-    const timer2 = setTimeout(() => {
-      setAnimatedCurrent(percentCurrent);
-    }, 400);
-
-    // Animate projected label sliding to the end
-    const timer3 = setTimeout(() => {
-      setAnimatedRightLabel(100);
-    }, 500);
+    const timer1 = setTimeout(() => setAnimatedGreen(100), 200);
+    const timer2 = setTimeout(() => setAnimatedCurrent(percentCurrent), 400);
+    const timer3 = setTimeout(() => setAnimatedRightLabel(100), 500);
 
     return () => {
       clearTimeout(timer1);
@@ -28,6 +17,10 @@ const ProgressBar = ({ current, projected }) => {
       clearTimeout(timer3);
     };
   }, [percentCurrent]);
+
+  // 🔹 Detect label overlap
+  const diff = Math.abs(animatedRightLabel - animatedCurrent);
+  const isClose = diff < 5; // 5% or less apart on the bar
 
   return (
     <div className="bg-white p-5 rounded-md w-full flex flex-col gap-3">
@@ -47,7 +40,7 @@ const ProgressBar = ({ current, projected }) => {
       </div>
 
       {/* Labels */}
-      <div className="relative h-6 w-full text-gray-600 text-sm">
+      <div className="relative h-6 w-full text-gray-600 text-sm font-medium">
         {/* 0 label */}
         <span
           className="absolute"
@@ -56,20 +49,25 @@ const ProgressBar = ({ current, projected }) => {
           0
         </span>
 
-        {/* Current label (moves with dark bar) */}
+        {/* Current label */}
         <span
           className="absolute transition-all duration-[1300ms] ease-in-out"
-          style={{ left: `${animatedCurrent}%`, transform: 'translateX(-50%)' }}
+          style={{
+            left: `${animatedCurrent}%`,
+            transform: 'translateX(-50%)',
+            top: isClose ? '-10px' : '0px', // 🔹 Move up if too close
+          }}
         >
           {current}
         </span>
 
-        {/* Projected label (slides to the end) */}
+        {/* Projected label */}
         <span
           className="absolute transition-all duration-[2000ms] ease-in-out"
           style={{
             left: `${animatedRightLabel}%`,
             transform: 'translateX(-50%)',
+            top: isClose ? '10px' : '0px', // 🔹 Move down if too close
           }}
         >
           {projected}
