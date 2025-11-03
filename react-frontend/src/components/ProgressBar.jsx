@@ -2,36 +2,36 @@ import React, { useEffect, useState } from 'react';
 
 const ProgressBar = ({ current, projected }) => {
   const percentCurrent = Math.min((current / projected) * 100, 100);
+
   const [animatedCurrent, setAnimatedCurrent] = useState(0);
   const [animatedGreen, setAnimatedGreen] = useState(0);
   const [animatedRightLabel, setAnimatedRightLabel] = useState(0);
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setAnimatedGreen(100), 200);
-    const timer2 = setTimeout(() => setAnimatedCurrent(percentCurrent), 400);
-    const timer3 = setTimeout(() => setAnimatedRightLabel(100), 500);
+    // Animate everything at once
+    const timer = setTimeout(() => {
+      setAnimatedCurrent(percentCurrent);
+      setAnimatedGreen(100);
+      setAnimatedRightLabel(100);
+    }, 100); // small delay to trigger CSS transitions
 
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
+    return () => clearTimeout(timer);
   }, [percentCurrent]);
 
   const diff = Math.abs(animatedRightLabel - animatedCurrent);
-  const isClose = diff < 5; // 5% or less apart on the bar
+  const isClose = diff < 5;
 
   return (
     <div className="bg-white p-5 rounded-md w-full flex flex-col gap-3">
       {/* Progress Bar */}
       <div className="relative h-[120px] rounded-md overflow-hidden">
-        {/* Green fill (background) */}
+        {/* Green bar (background) */}
         <div
-          className="absolute top-0 left-0 h-full bg-[#4BAD31] transition-all duration-[2000ms] ease-in-out"
+          className="absolute top-0 left-0 h-full bg-[#4BAD31] transition-all duration-[1300ms] ease-in-out"
           style={{ width: `${animatedGreen}%` }}
         ></div>
 
-        {/* Dark fill (current) */}
+        {/* Grey bar (current) */}
         <div
           className="absolute top-0 left-0 h-full bg-[#454955] transition-all duration-[1300ms] ease-in-out"
           style={{ width: `${animatedCurrent}%` }}
@@ -54,7 +54,7 @@ const ProgressBar = ({ current, projected }) => {
           style={{
             left: `${animatedCurrent}%`,
             transform: 'translateX(-50%)',
-            top: isClose ? '-10px' : '0px', 
+            top: isClose ? '-10px' : '0px',
           }}
         >
           {current}
@@ -62,11 +62,11 @@ const ProgressBar = ({ current, projected }) => {
 
         {/* Projected label */}
         <span
-          className="absolute transition-all duration-[2000ms] ease-in-out"
+          className="absolute transition-all duration-[1300ms] ease-in-out"
           style={{
             left: `${animatedRightLabel}%`,
             transform: 'translateX(-50%)',
-            top: isClose ? '10px' : '0px', 
+            top: isClose ? '10px' : '0px',
           }}
         >
           {projected}

@@ -13,6 +13,7 @@ import Navbar from "../components/Navbar";
 const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
+  const [points, setPoints] = useState([]);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
   const [username, setUsername] = useState([]);
@@ -21,13 +22,15 @@ const Dashboard = () => {
   const [currentCarbon, setCurrentCarbon] = useState([]);
   const [isOn, setIsOn] = useState(false);
   const [allQuestions, setAllQuestions] = useState([]);
+  const [allPoints, setAllPoints] = useState([]);
   const [tips, setTips] = useState([]);
   const [tipsLoading, setTipsLoading] = useState(true);
 
   const fetchAllQuestions = async () => {
     try {
       const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-      setAllQuestions(response.data);
+      setAllQuestions(response.data.map(question => question.name));
+      setAllPoints(response.data.map(question => question.points));
     } catch (error) {
       console.error("Error fetching activity questions:", error);
     }
@@ -36,7 +39,8 @@ const Dashboard = () => {
   const fetchUserActivities = async () => {
     try {
       const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
-      setQuestions(response.data);
+      setQuestions(response.data.map(activity => activity.name));
+      setPoints(response.data.map(activity => activity.points));
     } catch (error) {
       console.error("Error fetching user activities:", error);
     }
@@ -247,7 +251,9 @@ const Dashboard = () => {
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         questions={questions}
+        points={points}
         allQuestions={allQuestions}
+        allPoints={allPoints}
         onActivitiesSave={handleActivitySave}
       />
 
