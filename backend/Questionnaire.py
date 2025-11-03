@@ -8,9 +8,6 @@ TRANSPORT_METHODS = ["Work from home", "Walk/Cycle", "Public transport", "Petrol
 MEAT_CHOICES = ["Beef", "Lamb", "Pork", "Chicken", "Turkey", "Fish"]
 
 
-
-
-
 # --------- Emission Factors ------------
 
 # Transport options kg CO2 / km
