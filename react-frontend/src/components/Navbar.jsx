@@ -7,6 +7,7 @@ const Navbar = ({ username, setIsFormOpen }) => {
   const navigate = useNavigate();
 
   const mainLinks = [
+		{ label: "About", onClick: () => navigate("/about") },
     { label: "Dashboard", onClick: () => navigate("/dashboard") },
     { label: "Statistics", onClick: () => navigate("/stats") },
   ];
