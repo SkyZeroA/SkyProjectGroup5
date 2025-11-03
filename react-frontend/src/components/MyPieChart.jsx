@@ -14,7 +14,7 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions }) {
 
   // Adjust radius/height based on screen width
   const outerRadius = windowWidth < 600 ? 60 : 100;
-  const height = windowWidth < 600 ? 200 : 300;
+  const height = windowWidth < 600 ? 180 : 300;
 
   const data = [
     { name: 'Transport', value: transportEmissions },
