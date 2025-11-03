@@ -4,10 +4,12 @@ const Switch = ({ setOutput, option1, option2 }) => {
   const [isOn, setIsOn] = useState(false);
 
   const toggleSwitch = () => {
-    const newState = !isOn;
-    setIsOn(newState);
+  setIsOn(prev => {
+    const newState = !prev;
     setOutput(newState);
-  };
+    return newState;
+  });
+};
 
   return (
     <div className="flex justify-center items-center">
@@ -17,7 +19,8 @@ const Switch = ({ setOutput, option1, option2 }) => {
         onClick={toggleSwitch}
         className="w-20 h-12 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-colors duration-300"
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") toggleSwitch();
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSwitch();
+          }
         }}
       >
         <div
