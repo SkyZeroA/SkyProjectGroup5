@@ -25,7 +25,7 @@ const Questionnaire = () => {
       );
       console.log("Response:", response.data);
       if (response?.data?.message === "Questionnaire submitted successfully") {
-        navigate("/dashboard");
+        navigate("/about");
       }
     } catch (error) {
       console.error("Error:", error);

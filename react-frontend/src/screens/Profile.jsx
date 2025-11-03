@@ -5,8 +5,9 @@ import  FooterBanner from "../components/FooterBanner";
 import { Avatar, AvatarFallback } from "../components/Avatar";
 import axios from "axios";
 import { Button } from "../components/Button";
-import { useNavigate } from "react-router-dom";
 import Questions from "../components/Questions";
+import Navbar from "../components/Navbar";
+import Popup from "../components/PopUp";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
@@ -14,8 +15,48 @@ const Profile = () => {
   const [avatar, setAvatar] = useState(null);
   const [answers, setAnswers] = useState({})
   const [isEditing, setIsEditing] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [questions, setQuestions] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
 
-  const navigate = useNavigate();
+  const fetchAllQuestions = async () => {
+    try {
+      const response = await axios.get("http://localhost:9099/api/fetch-questions",
+				{ withCredentials: true });
+      setAllQuestions(response.data);
+    } catch (error) {
+      console.error("Error fetching activity questions:", error);
+    }
+  };
+
+  const fetchUserActivities = async () => {
+    try {
+      const response = await axios.get("http://localhost:9099/api/user-activities",
+				{ withCredentials: true });
+      setQuestions(response.data);
+    } catch (error) {
+      console.error("Error fetching user activities:", error);
+    }
+  };
+
+	const handleActivitySave = async (selected) => {
+    try {
+      await axios.post(
+        "http://localhost:9099/api/update-user-activities",
+        { activities: selected },
+        { withCredentials: true }
+      );
+      await fetchUserActivities();
+    } catch (error) {
+      console.error("Error saving user activities:", error);
+    }
+  };
+
+	useEffect(() => {
+		fetchAllQuestions();
+		fetchUserActivities();
+	}, [isFormOpen]);
+
 
   // Gets the username and first name of the current user
   const fetchUserData = async () => {
@@ -91,39 +132,12 @@ const Profile = () => {
   console.log("avatar", avatar)
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
-      <HeaderBanner
-          className="md:fixed"
+      <header className="top-0 z-50 bg-white">
+        <HeaderBanner
           logoAlign="left"
-          navbar={
-            <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
-              <div>
-                <Button
-                  variant="link"
-                  className="text-grey-900"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Dashboard
-                </Button>
-                <Button
-                  variant="link"
-                  className="text-grey-900"
-                  onClick={() => navigate("/stats")}
-                >
-                  Statistics
-                </Button>
-              </div>
-
-              <div className="ml-auto">
-                <Button 
-                  variant="link"
-                  onClick={() => navigate("/")}
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          }
+          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
         />
+      </header>
 
       <main className="flex items-center justify-center min-h-screen">
 				<div className="w-1/3 px-2">
@@ -202,6 +216,15 @@ const Profile = () => {
           </Card>
         </div>
       </main>
+
+      <Popup
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        questions={questions}
+        allQuestions={allQuestions}
+        onActivitiesSave={handleActivitySave}
+      />
+
       <FooterBanner className="md:fixed"/>
     </div>
   );

@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from "./RadioGroup";
 
 const RadioQuestion = ({options, current, setCurrent, question}) => {
 	return (
-		<Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg shadow">
+		<Card className="mx-auto mt-8 max-w-5xl bg-white rounded-lg">
 			<CardContent className="p-6">
 				<h2 className="text-lg md:text-2xl [font-family:'Sky_Text',Helvetica] font-normal text-gray-900 p-2">
 					{question}
