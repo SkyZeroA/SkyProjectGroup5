@@ -64,7 +64,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
   const windowWidth = useWindowWidth();
 
   // --- Dynamic sizing ---
-  const chartHeight = windowWidth < 640 ? 125 : windowWidth < 1024 ? 250 : 275;
+  const chartHeight = windowWidth < 640 ? 125 : windowWidth < 1024 ? 290 : 290;
   const xTickFontSize = windowWidth < 640 ? 10 : 12;
   const yTickFontSize = windowWidth < 640 ? 10 : 12;
   const dotRadius = windowWidth < 640 ? 2 : 4;
@@ -202,7 +202,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
 
       {/* Toggle */}
       <div className="flex justify-center items-center mb-2 space-x-2">
-        <span className={isOn ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 text-sm"}>
+        <span className={isOn ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 sm:text-md text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 sm:text-md text-sm"}>
           Weekly
         </span>
         <button
@@ -213,7 +213,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
         >
           <div className="w-3 h-3 bg-white rounded-full shadow-md"></div>
         </button>
-        <span className={!isOn ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 text-sm"}>
+        <span className={!isOn ? "[font-family:'Sky_Text',Helvetica] font-semibold text-gray-900 sm:text-md text-sm" : "[font-family:'Sky_Text',Helvetica] text-gray-500 sm:text-md text-sm"}>
           Monthly
         </span>
       </div>

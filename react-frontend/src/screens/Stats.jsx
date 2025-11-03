@@ -169,7 +169,7 @@ const Stats = () => {
 
       {/* User Points vs Average */}
       <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
-        <CardContent className="h-full w-full flex flex-col justify-center items-center text-gray-400 text-lg pb-2">
+        <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
           <PointsBarChart isFormOpen={isFormOpen} />
         </CardContent>
       </Card>
