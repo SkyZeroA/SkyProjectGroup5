@@ -81,31 +81,47 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
 
   // --- Fetch data ---
   const fetchDailyRanks = async () => {
-    try {
-      const allDates = isOn
-        ? getWeekDates(currentWeekStart)
-        : getMonthDates(currentMonth);
+  try {
+    // Get all dates for the current week or month
+    const allDates = isOn
+      ? getWeekDates(currentWeekStart)
+      : getMonthDates(currentMonth);
 
-      const startDate = allDates[0];
-      const endDate = allDates[allDates.length - 1];
+    // Get today's date at midnight (for comparison)
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
 
-      const response = await axios.get("http://localhost:9099/api/daily-rank", {
-        params: { period: isOn ? "week" : "month", startDate, endDate },
-        withCredentials: true
-      });
+    // Define start/end for API query
+    const startDate = allDates[0];
+    const endDate = allDates[allDates.length - 1];
 
-      const ranks = response.data.ranks || [];
+    // Fetch rank data for the full period
+    const response = await axios.get("http://localhost:9099/api/daily-rank", {
+      params: { period: isOn ? "week" : "month", startDate, endDate },
+      withCredentials: true
+    });
 
-      const merged = allDates.map((date) => {
-        const found = ranks.find((r) => r.date === date);
-        return { date, rank: found ? found.rank : null };
-      });
+    const ranks = response.data.ranks || [];
 
-      setDailyRanks(merged);
-    } catch (error) {
-      console.error("Failed to fetch daily ranks:", error);
-    }
-  };
+    // Merge fetched data with allDates
+    const merged = allDates.map((date) => {
+      const dateObj = new Date(date);
+      const found = ranks.find((r) => r.date === date);
+
+      // ✅ Only assign rank if date <= today
+      return {
+        date,
+        rank: dateObj <= todayMidnight ? (found ? found.rank : null) : null
+      };
+    });
+
+    setDailyRanks(merged);
+  } catch (error) {
+    console.error("Failed to fetch daily ranks:", error);
+  }
+};
+
+
 
   useEffect(() => {
     fetchDailyRanks();

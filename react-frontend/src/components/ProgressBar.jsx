@@ -18,7 +18,6 @@ const ProgressBar = ({ current, projected }) => {
     };
   }, [percentCurrent]);
 
-  // 🔹 Detect label overlap
   const diff = Math.abs(animatedRightLabel - animatedCurrent);
   const isClose = diff < 5; // 5% or less apart on the bar
 
@@ -55,7 +54,7 @@ const ProgressBar = ({ current, projected }) => {
           style={{
             left: `${animatedCurrent}%`,
             transform: 'translateX(-50%)',
-            top: isClose ? '-10px' : '0px', // 🔹 Move up if too close
+            top: isClose ? '-10px' : '0px', 
           }}
         >
           {current}
@@ -67,7 +66,7 @@ const ProgressBar = ({ current, projected }) => {
           style={{
             left: `${animatedRightLabel}%`,
             transform: 'translateX(-50%)',
-            top: isClose ? '10px' : '0px', // 🔹 Move down if too close
+            top: isClose ? '10px' : '0px', 
           }}
         >
           {projected}
