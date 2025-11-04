@@ -4,7 +4,7 @@ import { Card, CardContent } from "../components/Card";
 import Input from "../components/Input";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SignUp = () => {
@@ -80,10 +80,10 @@ const SignUp = () => {
     }
     const signUpPayload = {
       "first-name": name,
-      "username": username,
-      "email": email,
-      "password": password,
-      "confirm-password": confirmPassword
+      username,
+      email,
+      password,
+      "confirm-password": confirmPassword,
     };
     console.log("Sign Up Payload:", signUpPayload);
 
@@ -131,14 +131,30 @@ const SignUp = () => {
 
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
-      <HeaderBanner className="lg:fixed"/>
+      <header>
+        <HeaderBanner className="md:fixed" logoLinked={false} />
+      </header>
 
-      <main className="flex items-center justify-center min-h-screen">
+      {/* Skip link for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:bg-white focus:p-2 focus:z-50"
+      >
+        Skip to main content
+      </a>
+
+      <main
+        id="main-content"
+        className="flex items-center justify-center min-h-screen"
+      >
         <div className="flex flex-col items-center">
           <Card className="w-[380px] min-h-[544px] rounded-[7px] bg-white shadow-sm transition-all duration-300 ease-in-out mt-[5px]">
             <CardContent className="p-6">
               <div className="text-center mb-8">
-                <h1 className="mb-4 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-transparent text-[38px] leading-[57px]">
+                <h1
+                  id="sign-up-heading"
+                  className="mb-4 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-transparent text-[38px] leading-[57px]"
+                >
                   Hello
                 </h1>
                 <p className="[font-family:'Sky_Text',Helvetica] font-normal text-[17px] leading-[25.5px]">
@@ -147,8 +163,12 @@ const SignUp = () => {
                   <span className="text-[#4a4a4a]"> account</span>
                 </p>
               </div>
-  
-              <div className="space-y-6">
+
+              <form
+                onSubmit={handleSignUp}
+                aria-labelledby="sign-up-heading"
+                className="space-y-6"
+              >
                 <Input
                   id="first-name"
                   type="text"
@@ -163,22 +183,26 @@ const SignUp = () => {
                   id="username"
                   type="text"
                   label="Username"
-                  errorMessage={usernameError}
-                  showError={true}
+                  errorMessage={usernameError || "Enter your username."}
+                  showError={!!usernameError}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  required
+                  aria-describedby="username-error"
                 />
 
                 <Input
                   id="email"
                   type="email"
                   label="Email"
-                  errorMessage={emailError}
-                  showError={true}
+                  errorMessage={emailError || "Enter your email address."}
+                  showError={!!emailError}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
+                  aria-describedby="email-error"
                 />
-  
+
                 <Input
                   id="password"
                   type="password"
@@ -187,22 +211,27 @@ const SignUp = () => {
                   showError={true}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
+                  aria-describedby="password-error"
                 />
 
                 <Input
                   id="confirmPassword"
                   type="password"
                   label="Confirm Password"
-                  errorMessage={confirmPasswordError}
-                  showError={true}
+                  errorMessage={confirmPasswordError || "Re-type your password."}
+                  showError={!!confirmPasswordError}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  aria-describedby="confirm-password-error"
                 />
-  
+
+                {/* Submit button */}
                 <Button
+                  type="submit"
                   variant="default"
-                  className="w-full h-auto py-3 text=[#ffffff] bg-[#000ef5] hover:bg-[#004ef5] [font-family:'Sky_Text',Helvetica] text-[18.5px]"
-                  onClick={handleSignUp}
+                  className="w-full h-auto py-3 text-[#ffffff] bg-[#000ef5] hover:bg-[#004ef5] focus:outline-none focus:ring-2 focus:ring-[#4bad31] focus:ring-offset-2 [font-family:'Sky_Text',Helvetica] text-[18.5px]"
                 >
                   Continue
                 </Button>
@@ -219,18 +248,21 @@ const SignUp = () => {
                   <Button
                     variant="link"
                     className="h-auto p-0 [font-family:'Sky_Text',Helvetica] text-[#000ef5] text-[16.5px] leading-[24.8px]"
-                    onClick={() => {navigate('/')}}
+                    onClick={() => navigate("/")}
+                    aria-label="Already have an account? Sign in here"
                   >
                     Already got an account? Sign in here
                   </Button>
                 </div>
-              </div>
+              </form>
             </CardContent>
           </Card>
         </div>
       </main>
 
-      <FooterBanner className="lg:fixed"/>
+      <footer>
+        <FooterBanner className="lg:fixed" />
+      </footer>
     </div>
   );
 };

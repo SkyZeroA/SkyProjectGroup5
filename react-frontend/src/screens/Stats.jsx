@@ -1,221 +1,175 @@
-import UserRankChart from "../components/UserRankChart";
-import { Avatar, AvatarFallback } from "../components/Avatar";
-import { Card, CardContent } from "../components/Card";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
-import ProgressBar from "../components/ProgressBar";
-import Switch from "../components/Switch"
-import { Button } from "../components/Button";
-import Popup from "../components/PopUp";
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { Card, CardContent } from "../components/Card";
 import MyPieChart from "../components/MyPieChart";
+import CalendarHeatmap from "../components/CalendarHeatMap";
+import UserRankChart from "../components/UserRankChart";
+import PointsBarChart from "../components/PointsBarChart";
+import Navbar from "../components/Navbar";
+import { subscribeActivity } from "../lib/activityBus";
 
 const Stats = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [questions, setQuestions] = useState([]);
+  const [isOn, setIsOn] = useState(false);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
-  const [username, setUsername] = useState([]);
-  const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
-  const [projectedCarbon, setProjectedCarbon] = useState([]);
-  const [currentCarbon, setCurrentCarbon] = useState([])
-  const [isOn, setIsOn] = useState(false);
-  const [allQuestions, setAllQuestions] = useState([]);
   const [transportEmissions, setTransportEmissions] = useState(0);
   const [dietEmissions, setDietEmissions] = useState(0);
   const [heatingEmissions, setHeatingEmissions] = useState(0);
+  const [highestWeekPoints, setHighestWeekPoints] = useState(0);
+  const [highestMonthPoints, setHighestMonthPoints] = useState(0);
+  const [highestWeekUser, setHighestWeekUser] = useState("");
+  const [highestMonthUser, setHighestMonthUser] = useState("");
+  const [userBestWeek, setUserBestWeek] = useState("");
+  const [userBestMonth, setUserBestMonth] = useState("");
 
   const apiUrl = process.env.REACT_APP_API_URL;
-  const navigate = useNavigate();
-
-  const fetchAllQuestions = async () => {
-      await axios.get(`${apiUrl}/api/fetch-questions`, { withCredentials: true })
-      .then(response => {
-        setAllQuestions(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching activity questions:", error);
-      });
-  };
-
-  //Will replace above and be used later when we add preferences for user activities
-  const fetchUserActivities = async () => {
-      await axios.get(`${apiUrl}/api/user-activities`, { withCredentials: true })
-      .then(response => {
-        setQuestions(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching user activities:", error);
-      });
-  };
 
   const fetchData = async () => {
-      await axios.get(`${apiUrl}/api/dashboard`, {withCredentials:true})
-      .then(response => {
-        setWeekData(response.data.weekLeaderboard);
-        setMonthData(response.data.monthLeaderboard);
-        setUsername(response.data.username);
-        setTotalProjectedCarbon(response.data.totalProjectedCarbon)
-        setProjectedCarbon(response.data.projectedCarbon)
-        setCurrentCarbon(response.data.currentCarbon)
-        setTransportEmissions(response.data.transportEmissions)
-        setDietEmissions(response.data.dietEmissions)
-        setHeatingEmissions(response.data.heatingEmissions)
-      }).catch((error) => {
-        console.error("Failed to fetch data from json" , error);
-      });
-    };
-  
+    try {
+      const response = await axios.get(`${apiUrl}/api/stats`, { withCredentials: true });
+      const data = response.data;
+      setWeekData(data.weekLeaderboard);
+      setMonthData(data.monthLeaderboard);
+      setTransportEmissions(data.transportEmissions);
+      setDietEmissions(data.dietEmissions);
+      setHeatingEmissions(data.heatingEmissions);
+      setHighestWeekUser(data.highestWeekUser);
+      setHighestWeekPoints(data.highestWeekPoints);
+      setHighestMonthUser(data.highestMonthUser);
+      setHighestMonthPoints(data.highestMonthPoints);
+      setUserBestWeek(data.userBestWeek);
+      setUserBestMonth(data.userBestMonth);
+    } catch (error) {
+      console.error("Failed to fetch dashboard data:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchUserActivities();
-    fetchAllQuestions();
     fetchData();
-  }, [isFormOpen]);
+  }, []);
 
-  const current = isOn ? weekData : monthData;
-  const leaderboardData = current
-    .sort((a, b) => b.score - a.score)
-    .map((user) => ({
-      ...user,
-      isCurrentUser: user.name === username,
-    }));
-  
+  // subscribe to activity updates published by Navbar's popup
+  useEffect(() => {
+    const unsub = subscribeActivity(() => {
+      setIsFormOpen(prev => !prev);
+    });
+    return unsub;
+  }, []);
 
-  // const handleFormSubmit = async (answers) => {
-  //   console.log("Form submitted with answers:", answers);
-  //   try {
-  //     const response = await axios.post("http://localhost:9099/api/log-activity", answers, { withCredentials: true });
-  //     await fetchData();
-  //     console.log("Server response:", response.data);
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //   }
-  // }
-
-  const handleActivitySave = async (selected) => {
-  try {
-    await axios.post(`${apiUrl}/api/update-user-activities`, { activities: selected }, { withCredentials: true });
-    await fetchUserActivities();
-  } catch (error) {
-    console.error("Error saving user activities:", error);
-  }
-};
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
-      {/* Sticky Header */}
-      <div className="top-0 z-10 bg-white">
+      {/* Header */}
+      <header className="top-0 z-50 bg-white">
         <HeaderBanner
           logoAlign="left"
-          navbar={
-            <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
-              {/* Left content */}
-              <div>
-                <Button 
-                  variant="link"
-                  className="bg-green-500 text-white" 
-                  onClick={() => setIsFormOpen(true)}>
-                  Form
-                </Button>
-                <Button
-                  variant="link"
-                  className="bg-blue-500 text-white"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Dashboard
-                </Button>
-              </div>
-
-              {/* Right content */}
-              <div className="ml-auto">
-                <Button 
-                  variant="link"
-                  onClick={() => navigate("/")}>
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          }
+          navbar={<Navbar />}
         />
-    </div>
+      </header>
+
+      {/* Skip link for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:bg-white focus:p-2 focus:z-50"
+      >
+        Skip to main content
+      </a>
 
       {/* Main Content */}
-      <main className="flex flex-1 px-6 py-6 gap-6">
-        {/* Left Section: Leaderboard */}
-        <div className="w-1/3">
-          <Card className="h-[calc(100vh-96px)] bg-white rounded-lg">
-            <CardContent>
-              <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-center text-[38px] leading-[57px]">
-                  Leaderboard
-              </h1>
-              <Card className="h-[calc(100vh-296px)] bg-neutral-50 rounded-lg overflow-y-auto">
-                <CardContent>
-                <div className="mt-6 space-y-4">
-                  {leaderboardData.map((user) => (
-                    <Card
-                      key={user.name}
-                      className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
-                        user.isCurrentUser
-                          ? "sticky top-0 bottom-0 z-10 border-2 border-green-500"
-                          : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <Avatar className="w-12 h-12 bg-gray-200">
-                          <AvatarFallback className="bg-gray-200 text-black font-bold text-lg">
-                            {user.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-lg font-medium text-gray-900">
-                          {user.name}
-                        </span>
-                      </div>
-                      <span className="text-lg font-medium text-gray-900">
-                        {user.score}
-                      </span>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-              </Card>
-              <div className="flex justify-center items-center mt-8">
-                <span className="mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Monthly</span>
-                  <Switch setOutput={setIsOn} option1={weekData} option2={monthData} />
-                <span className="ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[28px]">Weekly</span>
-              </div>
+      <main id="main-content" className="flex flex-col sm:flex-row flex-1 px-4 sm:px-6 py-6 gap-4 sm:gap-6">
+        {/* Left Section: Charts */}
+        <section className="w-full sm:w-3/4 grid grid-cols-1 sm:grid-cols-2 grid-rows-4 sm:grid-rows-2 gap-4 sm:gap-6" aria-label="Charts and visual statistics">
+          {/* Emissions Pie Chart */}
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
+            <CardContent className="h-full w-full flex flex-col justify-center items-center">
+              <h2 className="[font-family:'Sky_Text',Helvetica] text-xl sm:text-2xl font-bold text-center text-gray-900">
+                Projected Emissions Breakdown
+              </h2>
+              <MyPieChart
+                transportEmissions={transportEmissions}
+                dietEmissions={dietEmissions}
+                heatingEmissions={heatingEmissions}
+              />
             </CardContent>
           </Card>
-        </div>
 
-        {/* Right Section: Tips */}
-        <div className="w-2/3 flex flex-col gap-6 justify-start h-[calc(100vh-96px)]">
-          <Card className=" bg-white rounded-lg shadow">
-            <CardContent>
-                <div className="p-4">
-                  <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[38px]">Projected Carbon Footprint</h1>
-                  <p className="[font-family:'Sky_Text',Helvetica] font-normal text-[24px]">In 2025, you are projected to be responsible for <span className="font-bold">{totalProjectedCarbon} kg</span> of CO2</p>
-
-                  <ProgressBar current={currentCarbon} projected={projectedCarbon} totalProjected={totalProjectedCarbon} className="flex justify-center items-center"/>
-
-                  <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
-                    Currently, you have produced <strong>{currentCarbon} kg</strong> of CO2 so far, which is <strong>{Math.round(projectedCarbon - currentCarbon)} kg Less</strong> than projected for this point in the year!
-                  </p>
-                </div>
+          {/* Calendar Heatmap */}
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full bg-white">
+            <CardContent className="h-full w-full flex flex-col justify-center items-center">
+              <CalendarHeatmap isFormOpen={isFormOpen} />
             </CardContent>
           </Card>
-          <div className="flex gap-6 flex-1 overflow-hidden">
-             <MyPieChart transportEmissions={transportEmissions} dietEmissions={dietEmissions} heatingEmissions={heatingEmissions} />  
-             <UserRankChart isFormOpen={isFormOpen} isOn={isOn} />
-          </div>
-        </div>
+
+          {/* User Rank Chart */}
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
+            <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
+              <UserRankChart 
+                isFormOpen={isFormOpen} 
+                isOn={isOn} 
+                setIsOn={setIsOn} 
+                weekData={weekData} 
+                monthData={monthData} 
+              />
+            </CardContent>
+          </Card>
+
+          {/* User Points Bar Chart */}
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
+            <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
+              <PointsBarChart isFormOpen={isFormOpen} />
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Right Section: Info Cards */}
+        <aside className="w-full sm:w-1/4 flex flex-col gap-4 sm:gap-6" aria-label="User statistics summary">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+              Highest Week Points
+            </h3>
+            <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestWeekUser}</p>
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+              {highestWeekPoints}
+            </p>
+          </Card>
+
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+              Highest Month Points
+            </h3>
+            <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestMonthUser}</p>
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+              {highestMonthPoints}
+            </p>
+          </Card>
+
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+              Your Highest Week Points
+            </h3>
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+              {userBestWeek}
+            </p>
+          </Card>
+
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+            <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
+              Your Highest Month Points
+            </h3>
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+              {userBestMonth}
+            </p>
+          </Card>
+        </aside>
       </main>
 
-      <Popup isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} questions={questions} allQuestions={allQuestions} onActivitiesSave={handleActivitySave} />
-
       {/* Footer */}
-      <FooterBanner />
+      <footer>
+        <FooterBanner />
+      </footer>
     </div>
   );
 };

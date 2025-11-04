@@ -9,6 +9,7 @@ from datetime import datetime
 from backend.Questionnaire import Questionnaire
 from backend.data_access import *
 from backend.helpers import allowed_file
+from backend.ai_functions import generate_tip
 
 
 @app.route('/api/sign-in', methods=['POST'])
@@ -62,7 +63,7 @@ def sign_up():
         return jsonify({"error": "Passwords do not match"}), 401
     else:
         insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
-        print("New user inserted:", session['username'], session['email'])
+        # print("New user inserted:", session['username'], session['email'])
         return jsonify({"message": "Sign up successful"}), 200
 
 
@@ -77,9 +78,9 @@ def questionnaire():
     # print("User email from session:", session['email'])
     email = session['email']
     data = request.get_json()
-    print("Questionnaire data received:", data)
+    # print("Questionnaire data received:", data)
     answers = Questionnaire(data, get_user_id_from_db(email), datetime.today())
-    print(answers.format_answers())
+    # print(answers.format_answers())
     insert_into_questionnaire(answers.format_answers())
     return jsonify({"message": "Questionnaire submitted successfully"}), 200
 
@@ -114,7 +115,7 @@ def fetch_questions():
 def update_user_activities():
     data = request.get_json()
     selected_activities = data.get('activities', [])
-    print("Selected activities received:", selected_activities)
+    # print("Selected activities received:", selected_activities)
     user_id = get_user_id_from_db(session['email'])
     update_user_preferred_activities(user_id, selected_activities)
     return jsonify({"message": "User activities updated successfully"}), 200
@@ -123,14 +124,13 @@ def update_user_activities():
 @app.route('/api/user-activity-counts', methods=['GET'])
 def user_activity_counts():
     user_id = get_user_id_from_db(session['email'])
-    activities = get_users_preferred_activities(user_id)
+    activities = get_users_preferred_activities_no_points(user_id)
     activity_counts = {}
     for activity in activities:
         activity_id = get_activity_id(activity)
         count = get_user_activity_count(user_id, activity_id)
         activity_counts[activity] = count
     return jsonify(activity_counts), 200
-    
 
 @app.route('/api/dashboard', methods=['GET'])
 def dashboard():
@@ -194,6 +194,134 @@ def dashboard():
                    "username": username
                    }), 200
 
+
+BUFFER_SIZE = 5   # number of tips stored in DB
+DISPLAY_COUNT = 3  # number of tips shown to the user
+
+@app.route('/api/initial-ai-tips')
+def generate_initial_tips():
+    email = session["email"]
+    tips = get_tips_from_db(email) or []
+
+    # If user already has tips
+    if tips and len(tips) >= DISPLAY_COUNT:
+        # Return only the last DISPLAY_COUNT
+        return jsonify({
+            "message": "Tips loaded from buffer",
+            "tips": tips[-DISPLAY_COUNT:]
+        }), 200
+
+    # Otherwise, create DISPLAY_COUNT tips
+    tips = [generate_tip(email) for _ in range(DISPLAY_COUNT)]
+    set_tips_in_db(email, tips)
+
+    return jsonify({
+        "message": "Tips generated",
+        "tips": tips
+    }), 200
+
+
+@app.route('/api/ai-tip')
+def generate_ai_tip():
+    email = session["email"]
+    tips = get_tips_from_db(email) or []
+
+    # Generate a new tip
+    new_tip = generate_tip(email)
+    tips.append(new_tip)
+
+    # Keep buffer to max BUFFER_SIZE
+    if len(tips) > BUFFER_SIZE:
+        tips = tips[-BUFFER_SIZE:]  # keep only the most recent BUFFER_SIZE tips
+
+    # Save back to DB
+    set_tips_in_db(email, tips)
+
+    return jsonify({
+        "message": "Tip generated",
+        "tip": new_tip
+    }), 200
+
+
+
+@app.route('/api/stats', methods=['GET'])
+def stats():
+    user_id = get_user_id_from_db(session['email'])
+    email = session['email']
+    username = get_username_from_db(email)
+    week_leaderboard = read_view_table_week()
+    month_leaderboard = read_view_table_month()
+    
+    # Loop over all responses and create questionnaire classes for each
+    questionnaires = []
+    previous_questionnaire = -99
+    current_questionnaire = -99
+    submissions = get_all_questionnaire_submissions(email)
+    for i, submission in enumerate(submissions):
+        # Get first and last keys and extract values from dict
+        keys = list(submission.keys())
+        user_id_key = keys[0]
+        date_key = keys[-1]
+
+        user_id = submission[user_id_key]
+        date = submission[date_key]
+
+        # Rest in dict are answers to questionnaire
+        answers = {k: v for k, v in submission.items() if k not in (user_id_key, date_key)}
+        if i == 0:
+            # Assign earliest questionnaire to Jan 1st so it covers whole year if answers never edited
+            current_questionnaire = Questionnaire(answers, user_id, datetime(2025, 1, 1))
+        else:
+            previous_questionnaire = current_questionnaire
+            previous_questionnaire.set_end_date(date)
+            questionnaires.append(previous_questionnaire)
+            
+            current_questionnaire = Questionnaire(answers, user_id, date)
+    questionnaires.append(current_questionnaire)
+    # print(f"Total questionnaires processed: {len(questionnaires)}")
+
+    total_carbon = 0
+    projected_carbon = 0
+    current_carbon = 0
+    transport_emissions = 0
+    diet_emissions = 0
+    heating_emissions = 0
+    for questionnaire in questionnaires:
+        emissions_dict = questionnaire.calculate_projected_carbon_footprint()
+        total_carbon += emissions_dict["total_projected"]
+        projected_carbon += emissions_dict["projected"]
+        current_carbon += emissions_dict["current"]
+        transport_emissions += emissions_dict["transport_emissions"]
+        diet_emissions += emissions_dict["diet_emissions"]
+        heating_emissions += emissions_dict["heating_emissions"]
+
+    week_data = get_highest_week_points()
+    month_data = get_highest_month_points()
+    highest_week_user = week_data['username']
+    highest_week_points = week_data['points']
+    highest_month_user = month_data['username']
+    highest_month_points = month_data['points']
+    user_highest_week = get_user_highest_week_points(user_id)
+    user_highest_month = get_user_highest_month_points(user_id)
+
+    return jsonify({"message": "Leaderboard send successful",
+                   "weekLeaderboard": week_leaderboard,
+                   "monthLeaderboard": month_leaderboard,
+                   "transportEmissions": transport_emissions,
+                   "dietEmissions": diet_emissions,
+                   "heatingEmissions": heating_emissions,
+                   "totalCarbon": total_carbon,
+                   "projectedCarbon": projected_carbon,
+                   "currentCarbon": current_carbon,
+                   "username": username,
+                   "highestWeekUser": highest_week_user,
+                   "highestWeekPoints": highest_week_points,
+                   "highestMonthUser": highest_month_user,
+                   "highestMonthPoints": highest_month_points,
+                   "userBestWeek": user_highest_week,
+                   "userBestMonth": user_highest_month
+                   }), 200
+
 @app.route('/api/daily-rank', methods=['GET'])
 def daily_rank():
     period = request.args.get('period', 'week')
@@ -206,6 +334,7 @@ def daily_rank():
     ranks = get_user_daily_ranks(user_id, period, start_date, end_date)
     return jsonify({"username": get_username_from_db(email), "ranks": ranks}), 200
 
+
 @app.route('/api/fetch-user-data')
 def fetch_user_data():
     email = session["email"]
@@ -214,7 +343,7 @@ def fetch_user_data():
     first_name = get_first_name_from_db(email)
     avatar_filename = get_avatar_from_db(email)
     avatar = f"/uploads/{avatar_filename}" if avatar_filename else None
-    print(username, first_name)
+    # print(username, first_name)
     return jsonify({"message": "User data fetch successful",
                     "username": username,
                     "firstName": first_name,
@@ -231,7 +360,7 @@ def upload_avatar():
     email = session["email"]
     file = request.files["avatar"]
 
-    print(file)
+    # print(file)
 
     if file and allowed_file(file.filename):
         # Save file in uploads folder
@@ -253,4 +382,39 @@ def fetch_questionnaire_answers():
     answers = get_latest_answers_from_questionnaire(email)
     return jsonify({"message": "Fetching questionnaire answers",
                     "answers": answers}), 200
+
+@app.route('/api/calendar-activity-counts', methods=['GET'])
+def calendar_activity_counts():
+    email = session.get('email')
+    if not email:
+        return jsonify({"error": "User not signed in"}), 401
+
+    user_id = get_user_id_from_db(email)
+    start_date = request.args.get('startDate')
+    end_date = request.args.get('endDate')
+    counts = get_daily_activity_counts(user_id, start_date, end_date)
+
+    return jsonify({"counts": counts}), 200
+
+@app.route('/api/user-points', methods=['GET'])
+def user_points():
+    email = session.get('email')
+    if not email:
+        return jsonify({"error": "User not signed in"}), 401
+
+    user_id = get_user_id_from_db(email)
+    period = request.args.get("period")  # "week" or "month"
+    year = int(request.args.get("year", 2025))
+    month_chunk = int(request.args.get("monthChunk", 0))
+    week_chunk = request.args.get("weekChunk")  # New
+
+    if period == "week":
+        week_chunk = int(week_chunk or 0)  # default to 0
+        data = get_user_week_points(user_id, year, week_chunk)
+    elif period == "month":
+        data = get_user_month_points(user_id, year, month_chunk)
+    else:
+        return jsonify({"error": "Invalid period"}), 400
+
+    return jsonify(data)
 
