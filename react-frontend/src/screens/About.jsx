@@ -93,11 +93,11 @@ const About = () => {
         {/* Intro Card */}
         <Card className="bg-white p-4">
           <CardContent>
-            <h1 className="text-2xl md:text-3xl [font-family:'Sky_Text',Helvetica] font-normal mb-2">
+            <h1 className="text-[26px] md:text-[38px] [font-family:'Sky_Text',Helvetica] font-normal mb-2">
 							Welcome to 
 							<span className="bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]
 							[-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent]"> ClearSky</span></h1>
-            <p className="text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-xl">
+            <p className="text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[16px] md:text-[20px] lg:text-[22px]">
 							ClearSky is your personal companion on the journey to a more sustainable lifestyle.
 							<br />
 							Track your eco-friendly activities, monitor your carbon footprint, and see how you rank on our community leaderboard.
@@ -109,9 +109,9 @@ const About = () => {
 
         <Card className="bg-white p-4">
           <CardContent>
-            <div className="flex gap-6">
+            <div className="flex flex-col md:flex-row gap-6">
               {/* Leaderboard Section - Left Third */}
-              <div className="w-1/3 border-r pr-6">
+              <div className="w-full md:w-1/3 md:border-r md:pr-6">
                 <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]
                 [-webkit-background-clip:text] bg-clip-text 
                 [-webkit-text-fill-color:transparent] [text-fill-color:transparent]
@@ -119,7 +119,7 @@ const About = () => {
                 text-[26px] md:text-[38px] leading-[36px] md:leading-[57px]">
                 Leaderboard
               </h1>
-                <div className="bg-neutral-50 overflow-y-auto rounded-lg p-2 md:p-4 max-h-[calc(100vh-296px)] scroll-py-4 relative">
+                <div className="bg-neutral-50 rounded-lg p-2 md:p-4 max-h-[calc(100vh-296px)] relative">
                   <div className="space-y-3 md:space-y-4">
                   {leaderboardData.map((user) => (
                     <Card
@@ -147,10 +147,10 @@ const About = () => {
                 </div>
               </div>
 
-              {/* Feature Description - Right Two Thirds */}
-              <div className="w-2/3">
-                <h2 className="text-[34px] [font-family:'Sky_Text',Helvetica] font-normal mb-4">Leaderboard</h2>
-                <p className="text-gray-600 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
+              {/* Feature Description - Right Two Thirds (stacks below on mobile) */}
+              <div className="w-full md:w-2/3">
+                <h2 className="text-[26px] md:text-[34px] [font-family:'Sky_Text',Helvetica] font-normal mb-4">Leaderboard</h2>
+                <p className="text-gray-600 [font-family:'Sky_Text',Helvetica] font-normal text-[16px] md:text-[20px] lg:text-[24px]">
                   See how your eco score ranks among others!
                   <br /><br />
                   How it works:
@@ -175,11 +175,11 @@ const About = () => {
 
         <Card className="bg-white p-4">
           <CardContent>
-            <div className="flex gap-6">
+            <div className="flex flex-col md:flex-row gap-6">
               {/* Description - Left Half (matches style of first card) */}
-              <div className="w-1/2 border-r">
-                <h2 className="text-[34px] [font-family:'Sky_Text',Helvetica] font-normal mb-4">Progress Bar</h2>
-                <p className="text-gray-600 [font-family:'Sky_Text',Helvetica] font-normal text-[24px]">
+              <div className="w-full md:w-1/2 md:border-r md:pr-6 order-2 md:order-1">
+                <h2 className="text-[26px] md:text-[34px] [font-family:'Sky_Text',Helvetica] font-normal mb-4">Progress Bar</h2>
+                <p className="text-gray-600 [font-family:'Sky_Text',Helvetica] font-normal text-[16px] md:text-[20px] lg:text-[24px]">
                   Your estimated yearly carbon emissions based on your lifestyle. 
 									<br /><br />
 									How it works: 
@@ -188,8 +188,8 @@ const About = () => {
                 </p>
               </div>
 
-              {/* Progress bar - Right Half */}
-              <div className="w-1/2 flex items-center justify-center">
+              {/* Progress bar - Right Half (stacked above description on mobile) */}
+              <div className="w-full md:w-1/2 flex items-center justify-center order-1 md:order-2">
                 <div className="w-full">
                   <ProgressBar current={30} projected={50} totalProjected={100} />
                 </div>
@@ -200,7 +200,7 @@ const About = () => {
 
         <Card className="bg-white p-4">
           <CardContent>
-          <h2 className="[font-family:'Sky_Text',Helvetica] font-normal text-[34px] mb-4">Frequently Asked Questions</h2>
+          <h2 className="[font-family:'Sky_Text',Helvetica] font-normal text-[26px] md:text-[34px] mb-4">Frequently Asked Questions</h2>
           <div className="flex flex-col">
             {faqs.map((faq, idx) => (
               <FAQCard key={idx} question={faq.question} answer={faq.answer} />

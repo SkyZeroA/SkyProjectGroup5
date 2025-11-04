@@ -7,7 +7,7 @@ const FAQCard = ({ question, answer }) => {
   return (
     <div className="bg-white rounded-lg p-4 border-t border-gray-200">
       <div className="flex items-start gap-4">
-        <h2 className="text-xl [font-family:'Sky_Text',Helvetica] font-normal">
+        <h2 className="text-[16px] md:text-[18px] lg:text-[24px] [font-family:'Sky_Text',Helvetica]">
           {question}
         </h2>
 
@@ -29,11 +29,11 @@ const FAQCard = ({ question, answer }) => {
         id={`faq-${id}`}
         role="region"
         aria-hidden={!open}
-        className={`mt-4 text-gray-700 [font-family:'Sky_Text',Helvetica] transition-all duration-300 overflow-hidden text-lg ${
+        className={`mt-4 text-gray-700 [font-family:'Sky_Text',Helvetica] transition-all duration-300 overflow-hidden ${
           open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <p>{answer}</p>
+        <p className="text-[15px] md:text-[16px] lg:text-[18px]">{answer}</p>
       </div>
     </div>
   );
