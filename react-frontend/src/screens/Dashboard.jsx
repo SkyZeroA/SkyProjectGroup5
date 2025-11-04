@@ -9,6 +9,7 @@ import React, { useState, useEffect } from "react";
 import TipCard from "../components/TipCard";
 import Navbar from "../components/Navbar";
 import { subscribeActivity } from '../lib/activityBus';
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [weekData, setWeekData] = useState([]);
@@ -93,27 +94,6 @@ const Dashboard = () => {
 
   console.log(leaderboardData)
   console.log(currentCarbon, projectedCarbon, totalProjectedCarbon)
-
-  const handleActivitySave = async (selected) => {
-  try {
-    await axios.post(
-      `${apiUrl}/api/update-user-activities`, { activities: selected }, { withCredentials: true });
-    await fetchUserActivities();
-  } catch (error) {
-    console.error("Error saving user activities:", error);
-  }
-};
-
-
-const handleSignOut = async () => {
-  try {
-    await axios.post(`${apiUrl}/api/sign-out`, {}, { withCredentials: true });
-    navigate('/'); // or navigate to login page if you have one
-  } catch (error) {
-    console.error("Error signing out:", error);
-  }
-};
-
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">

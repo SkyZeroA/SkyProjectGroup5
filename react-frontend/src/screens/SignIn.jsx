@@ -12,6 +12,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();

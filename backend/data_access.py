@@ -619,8 +619,8 @@ def get_highest_month_points():
 def get_user_week_points(user_id, year, week_chunk=0):
     db = get_connection()
     cursor = db.cursor(dictionary=True)
-
-    # Select all weeks in the year ordered by start date
+ 
+    # Select all weeks in the given year
     cursor.execute("""
         SELECT weekID, week_start, week_end
         FROM Week
@@ -628,54 +628,65 @@ def get_user_week_points(user_id, year, week_chunk=0):
         ORDER BY week_start ASC
     """, (year,))
     weeks = cursor.fetchall()
-
-    # Determine the 6-week interval
+ 
+    # Determine 6-week interval
     start_index = week_chunk * 6
     end_index = start_index + 6
     weeks_interval = weeks[start_index:end_index]
-
+ 
     result = []
+ 
     for w in weeks_interval:
         week_id = w['weekID']
-
-        # User points
+ 
+        # --- User points (with positive/negative weighting) ---
         cursor.execute("""
-            SELECT SUM(AK.value_points) AS total
-            FROM EcoCounter EC
-            JOIN ActivityKey AK ON EC.activityID = AK.activityID
-            WHERE EC.userID = %s AND EC.weekID = %s
+            SELECT COALESCE(SUM(
+                CASE
+                    WHEN ec.positive_activity = TRUE THEN ak.value_points
+                    WHEN ec.positive_activity = FALSE THEN -ak.value_points
+                END
+            ), 0) AS total
+            FROM EcoCounter ec
+            JOIN ActivityKey ak ON ec.activityID = ak.activityID
+            WHERE ec.userID = %s AND ec.weekID = %s
         """, (user_id, week_id))
         user_points = cursor.fetchone()['total'] or 0
-
-        # Average points
+ 
+        # --- Average points (average of total per user, same weighting) ---
         cursor.execute("""
-            SELECT AVG(sub.total) AS avg_points
+            SELECT COALESCE(AVG(sub.total), 0) AS avg_points
             FROM (
-                SELECT SUM(AK.value_points) AS total
-                FROM EcoCounter EC
-                JOIN ActivityKey AK ON EC.activityID = AK.activityID
-                WHERE EC.weekID = %s
-                GROUP BY EC.userID
+                SELECT 
+                    ec.userID,
+                    SUM(
+                        CASE
+                            WHEN ec.positive_activity = TRUE THEN ak.value_points
+                            WHEN ec.positive_activity = FALSE THEN -ak.value_points
+                        END
+                    ) AS total
+                FROM EcoCounter ec
+                JOIN ActivityKey ak ON ec.activityID = ak.activityID
+                WHERE ec.weekID = %s
+                GROUP BY ec.userID
             ) AS sub
         """, (week_id,))
         average_points = cursor.fetchone()['avg_points'] or 0
-
+ 
         result.append({
             "label": f"Week {week_id}",
             "userPoints": user_points,
             "averagePoints": round(average_points, 2)
         })
-
+ 
     cursor.close()
     db.close()
     return result
 
-
-
 def get_user_month_points(user_id, year, chunk=0):
     db = get_connection()
     cursor = db.cursor(dictionary=True)
-
+ 
     # Determine months for chunk
     start_month = 1 + chunk * 6
     end_month = start_month + 5
@@ -692,38 +703,105 @@ def get_user_month_points(user_id, year, chunk=0):
     for m in months:
         month_id = m['monthID']
         month_label = date(year, m['month'], 1).strftime("%b")
-
-        # User points
+ 
+        # --- User points (with positive/negative weighting) ---
         cursor.execute("""
-            SELECT SUM(AK.value_points) AS total
-            FROM EcoCounter EC
-            JOIN ActivityKey AK ON EC.activityID = AK.activityID
-            WHERE EC.userID = %s AND EC.monthID = %s
+            SELECT COALESCE(SUM(
+                CASE
+                    WHEN ec.positive_activity = TRUE THEN ak.value_points
+                    WHEN ec.positive_activity = FALSE THEN -ak.value_points
+                END
+            ), 0) AS total
+            FROM EcoCounter ec
+            JOIN ActivityKey ak ON ec.activityID = ak.activityID
+            WHERE ec.userID = %s AND ec.monthID = %s
         """, (user_id, month_id))
         user_points = cursor.fetchone()['total'] or 0
-
-        # Average points
+ 
+        # --- Average points (average of total per user, same weighting) ---
         cursor.execute("""
-            SELECT AVG(sub.total) AS avg_points
+            SELECT COALESCE(AVG(sub.total), 0) AS avg_points
             FROM (
-                SELECT SUM(AK.value_points) AS total
-                FROM EcoCounter EC
-                JOIN ActivityKey AK ON EC.activityID = AK.activityID
-                WHERE EC.monthID = %s
-                GROUP BY EC.userID
+                SELECT 
+                    ec.userID,
+                    SUM(
+                        CASE
+                            WHEN ec.positive_activity = TRUE THEN ak.value_points
+                            WHEN ec.positive_activity = FALSE THEN -ak.value_points
+                        END
+                    ) AS total
+                FROM EcoCounter ec
+                JOIN ActivityKey ak ON ec.activityID = ak.activityID
+                WHERE ec.monthID = %s
+                GROUP BY ec.userID
             ) AS sub
         """, (month_id,))
         average_points = cursor.fetchone()['avg_points'] or 0
-
+ 
         result.append({
             "label": month_label,
             "userPoints": user_points,
             "averagePoints": round(average_points, 2)
         })
-
+ 
     cursor.close()
     db.close()
     return result
+
+
+
+# def get_user_month_points(user_id, year, chunk=0):
+#     db = get_connection()
+#     cursor = db.cursor(dictionary=True)
+
+#     # Determine months for chunk
+#     start_month = 1 + chunk * 6
+#     end_month = start_month + 5
+
+#     cursor.execute("""
+#         SELECT monthID, MONTH(month_start) AS month
+#         FROM Month
+#         WHERE YEAR(month_start) = %s AND MONTH(month_start) BETWEEN %s AND %s
+#         ORDER BY month_start ASC
+#     """, (year, start_month, end_month))
+#     months = cursor.fetchall()
+
+#     result = []
+#     for m in months:
+#         month_id = m['monthID']
+#         month_label = date(year, m['month'], 1).strftime("%b")
+
+#         # User points
+#         cursor.execute("""
+#             SELECT SUM(AK.value_points) AS total
+#             FROM EcoCounter EC
+#             JOIN ActivityKey AK ON EC.activityID = AK.activityID
+#             WHERE EC.userID = %s AND EC.monthID = %s
+#         """, (user_id, month_id))
+#         user_points = cursor.fetchone()['total'] or 0
+
+#         # Average points
+#         cursor.execute("""
+#             SELECT AVG(sub.total) AS avg_points
+#             FROM (
+#                 SELECT SUM(AK.value_points) AS total
+#                 FROM EcoCounter EC
+#                 JOIN ActivityKey AK ON EC.activityID = AK.activityID
+#                 WHERE EC.monthID = %s
+#                 GROUP BY EC.userID
+#             ) AS sub
+#         """, (month_id,))
+#         average_points = cursor.fetchone()['avg_points'] or 0
+
+#         result.append({
+#             "label": month_label,
+#             "userPoints": user_points,
+#             "averagePoints": round(average_points, 2)
+#         })
+
+#     cursor.close()
+#     db.close()
+#     return result
 
 def get_user_highest_week_points(user_id):
     db = get_connection()

@@ -63,6 +63,15 @@ const Navbar = () => {
     }
   };
 
+  const handleSignOut = async () => {
+  try {
+    await axios.post(`${apiUrl}/api/sign-out`, {}, { withCredentials: true });
+    navigate('/'); // or navigate to login page if you have one
+  } catch (error) {
+    console.error("Error signing out:", error);
+  }
+};
+
 	useEffect(() => {
 		fetchAllQuestions();
 		fetchUserActivities();
@@ -80,7 +89,7 @@ const Navbar = () => {
 
   const userLinks = [
     { label: username, onClick: () => navigate("/profile") },
-    { label: "Sign Out", onClick: () => navigate("/") },
+    { label: "Sign Out", onClick: handleSignOut },
   ];
 
   return (

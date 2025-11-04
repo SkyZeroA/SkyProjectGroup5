@@ -16,7 +16,6 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   const apiUrl = process.env.REACT_APP_API_URL;
-  const navigate = useNavigate();
 
   // Gets the username and first name of the current user
   const fetchUserData = async () => {

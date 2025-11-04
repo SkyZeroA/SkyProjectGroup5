@@ -55,6 +55,7 @@ const Stats = () => {
   useEffect(() => {
     const unsub = subscribeActivity(() => {
       setIsFormOpen(prev => !prev);
+      fetchData();
     });
     return unsub;
   }, []);

@@ -28,6 +28,9 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
     new Date(new Date().getFullYear(), new Date().getMonth(), 1)
   );
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+
+
   const today = new Date();
   const MIN_DATE = new Date(2025, 0, 1);
 
@@ -38,7 +41,7 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
       const endDate = allDates[allDates.length - 1];
 
       const response = await axios.get(
-        "http://localhost:9099/api/calendar-activity-counts",
+        `${apiUrl}/api/calendar-activity-counts`,
         {
           params: { startDate, endDate },
           withCredentials: true,
