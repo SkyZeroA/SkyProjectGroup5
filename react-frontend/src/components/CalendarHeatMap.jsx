@@ -61,13 +61,11 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
       } catch (error) {
         console.error("Failed to fetch activity data:", error);
       }
-    }, [currentMonth]);
+    }, [currentMonth, isFormOpen]);
 
   useEffect(() => {
-    if (!isFormOpen) {
       fetchActivity();
-    }
-  }, [currentMonth, isFormOpen, fetchActivity]);
+  }, [currentMonth, fetchActivity, isFormOpen]);
 
   const handlePrev = () => {
     setCurrentMonth((prev) => {
