@@ -16,7 +16,7 @@ const SignIn = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@sky\.uk$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 
@@ -29,7 +29,7 @@ const SignIn = () => {
     console.log("Sign In Payload:", signInPayload);
 
     if (!emailRegex.test(email.trim())) {
-      const msg = "Please enter a valid email address.";
+      const msg = "Email must be a valid @sky.uk address.";
       setFormErrors([msg]);
       return;
     }

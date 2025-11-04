@@ -27,7 +27,8 @@ const SignUp = () => {
   // Validation regexes
   const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
   const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@sky\.uk$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   // Each error caught in this function sets the relevant error message and clears the relevant fields
@@ -48,8 +49,8 @@ const SignUp = () => {
       return;
     }
     if (!emailRegex.test(email.trim())) {
-      const msg = "Please enter a valid email address.";
-      setUsernameError("Enter your username.");
+      const msg = "Email must be a valid @sky.uk address.";
+      // setUsernameError("Enter your username.");
       // setEmailError(msg);
       setConfirmPasswordError("Re-type your password.");
       setFormErrors([msg]);
@@ -58,7 +59,7 @@ const SignUp = () => {
 
     if (!passwordRegex.test(password)) {
       const msg = "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
-      setUsernameError("Enter your username.");
+      // setUsernameError("Enter your username.");
       setEmailError("Enter your email address.");
       // setPasswordError(msg);
       // setPassword("");
