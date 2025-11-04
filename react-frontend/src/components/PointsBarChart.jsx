@@ -24,7 +24,7 @@ const useWindowWidth = () => {
   return width;
 };
 
-const PointsBarChart = ({ isFormOpen }) => {
+const PointsBarChart = ({ isFormOpen, colourblind }) => {
   const windowWidth = useWindowWidth(); // 👈 Track screen width
   const currentDate = new Date();
 
@@ -115,6 +115,19 @@ const PointsBarChart = ({ isFormOpen }) => {
     fetchData();
   }, [isWeek, year, monthChunk, weekChunk, isFormOpen]);
 
+  const normalColors = {
+    userPoints: "#8884d8", // purple
+    averagePoints: "#82ca9d", // green
+  };
+
+  const colorBlindColors = {
+    // Chosen from ColorBrewer's color-blind–safe qualitative palette
+    userPoints: "#2b8cbe",   // teal-blue
+    averagePoints: "#f4a582" // light orange
+  };
+
+  const colors = colourblind ? colorBlindColors : normalColors;
+
   // --- Render ---
   return (
     <div className="w-full">
@@ -182,8 +195,8 @@ const PointsBarChart = ({ isFormOpen }) => {
           />
           <Tooltip />
           <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: legendFontSize }} />
-          <Bar dataKey="userPoints" fill="#8884d8" name="User Points" />
-          <Bar dataKey="averagePoints" fill="#82ca9d" name="Average Points" />
+          <Bar dataKey="userPoints" fill={colors.userPoints} name="User Points" />
+          <Bar dataKey="averagePoints" fill={colors.averagePoints} name="Average Points" />
         </BarChart>
       </ResponsiveContainer>
     </div>

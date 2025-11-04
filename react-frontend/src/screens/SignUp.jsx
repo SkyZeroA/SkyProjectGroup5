@@ -132,7 +132,7 @@ const SignUp = () => {
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header>
-        <HeaderBanner className="md:fixed" logoLinked={false} />
+        <HeaderBanner className="md:fixed" logoLinked={false} centerLogo={true} />
       </header>
 
       {/* Skip link for keyboard users */}

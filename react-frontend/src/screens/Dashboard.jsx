@@ -21,9 +21,6 @@ const Dashboard = () => {
   const [isOn, setIsOn] = useState(false);
   const [tips, setTips] = useState([]);
   const [tipsLoading, setTipsLoading] = useState(true);
-  const [transportEmissions, setTransportEmissions] = useState(0);
-  const [dietEmissions, setDietEmissions] = useState(0);
-  const [heatingEmissions, setHeatingEmissions] = useState(0);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();

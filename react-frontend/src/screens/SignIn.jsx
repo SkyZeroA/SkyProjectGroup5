@@ -6,8 +6,9 @@ import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ColorblindToggle from "../components/ColourblindToggle";
 
-const SignIn = () => {
+const SignIn = ({ colorblind, setColorblind }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
@@ -69,7 +70,7 @@ const SignIn = () => {
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header>
-        <HeaderBanner className="md:fixed"  logoLinked={false}/>
+        <HeaderBanner className="md:fixed"  logoLinked={false} colorblindButton={<ColorblindToggle colorblind={colorblind} setColorblind={setColorblind} centerLogo={true} />} />
       </header>
 
       {/* Skip to main content link for keyboard users */}

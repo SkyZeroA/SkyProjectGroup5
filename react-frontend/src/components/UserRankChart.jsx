@@ -60,7 +60,7 @@ const useWindowWidth = () => {
   return width;
 };
 
-const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
+const UserRankChart = ({ isOn, setIsOn, isFormOpen, colourblind }) => {
   const windowWidth = useWindowWidth();
 
   // --- Dynamic sizing ---
@@ -209,7 +209,6 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
     }
   };
 
-  // --- Render ---
   return (
     <div className="w-full">
       <h2 className={`[font-family:'Sky_Text',Helvetica] text-xl sm:text-2xl font-bold text-center text-gray-900 mb-2`}>
@@ -300,7 +299,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
           <Line
             type="linear"
             dataKey="rank"
-            stroke="#4CAF50"
+            stroke={colourblind ? "#2b8cbe" : "#4CAF50"}
             connectNulls={false}
             dot={{ r: dotRadius }}
           />

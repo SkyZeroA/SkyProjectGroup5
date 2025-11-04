@@ -114,6 +114,7 @@ const Stats = ({ colorblind }) => {
                 setIsOn={setIsOn} 
                 weekData={weekData} 
                 monthData={monthData} 
+                colourblind={colorblind}
               />
             </CardContent>
           </Card>
@@ -121,7 +122,7 @@ const Stats = ({ colorblind }) => {
           {/* User Points Bar Chart */}
           <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
-              <PointsBarChart isFormOpen={isFormOpen} />
+              <PointsBarChart isFormOpen={isFormOpen} colourblind={colorblind} />
             </CardContent>
           </Card>
         </section>
