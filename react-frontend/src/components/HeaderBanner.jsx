@@ -24,6 +24,7 @@ const HeaderBanner = ({ className , navbar= null, logoAlign = "center" }) => {
         {navbar}
       </nav>
     )}
+
   </header>
 </div>
 

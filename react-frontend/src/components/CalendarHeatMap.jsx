@@ -22,7 +22,7 @@ const getMonthDates = (monthStart) => {
   return monthDates;
 };
 
-const UserActivityHeatmap = ({ isFormOpen }) => {
+const UserActivityHeatmap = ({ isFormOpen, colorblind }) => {
   const [activityData, setActivityData] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(
     new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -137,6 +137,7 @@ const UserActivityHeatmap = ({ isFormOpen }) => {
             if (!value || value.count === 0) return "color-empty";
             const level = Math.min(4, value.count);
             let classes = `color-github-${level}`;
+            if (colorblind) classes = `color-gitlab-${level}`;
             if (value.isFirstDay) classes += " first-day";
             if (value.isLastDay) classes += " last-day";
             return classes;

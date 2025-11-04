@@ -10,7 +10,7 @@ import UserRankChart from "../components/UserRankChart";
 import PointsBarChart from "../components/PointsBarChart";
 import Navbar from "../components/Navbar";
 
-const Stats = () => {
+const Stats = ({ colorblind }) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [points, setPoints] = useState([]);
@@ -122,6 +122,7 @@ const Stats = () => {
                 transportEmissions={transportEmissions}
                 dietEmissions={dietEmissions}
                 heatingEmissions={heatingEmissions}
+                colorblind={colorblind}
               />
             </CardContent>
           </Card>
@@ -129,7 +130,7 @@ const Stats = () => {
           {/* Calendar Heatmap */}
           <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full">
             <CardContent className="h-full w-full flex flex-col justify-center items-center">
-              <CalendarHeatmap isFormOpen={isFormOpen} />
+              <CalendarHeatmap isFormOpen={isFormOpen} colorblind={colorblind} />
             </CardContent>
           </Card>
 

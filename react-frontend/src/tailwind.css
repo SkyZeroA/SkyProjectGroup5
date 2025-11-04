@@ -127,6 +127,10 @@
     --gradient-end: #4bac31;           /* Gradient end */
     --stats-color: #38a169;          /* Stats color */
     --log-color: #48bb78;           /* Log Activity button color */
+    --log-bg-color: #f0fff4;        /* Log Activity background color */
+    --log-border-color: #38a169;    /* Log Activity border color */
+    --log-text-color: #276749;  /* Log Activity text color */
+    --progress-bar-color: #4BAD31; /* Progress bar color */
 
 
     --color-button-bg: #000ef5;       /* blue button */
@@ -205,6 +209,18 @@
   }
 
   .colorblind {
+    --user-label: #1e8449;          /* User label color */
+    --color-accent: #2d6a2f;        /* Green accent */
+    --gradient-start: #57b35b;      /* Gradient start */
+    --gradient-middle: #3f8740;     /* Gradient middle */
+    --gradient-end: #2f6623;        /* Gradient end */
+    --stats-color: #297d4b;         /* Stats color */
+    --log-color: #2e8c53;           /* Log Activity button color */
+    --log-bg-color: #e6f4ea;        /* Log Activity background color */
+    --log-border-color: #297d4b;    /* Log Activity border color */
+    --log-text-color: #1e4d3c;      /* Log Activity text color */
+    --progress-bar-color: #2f6623;  /* Progress bar color */
+
     --color-primary: #4a4a4a;
     --color-accent: #E69F00;           /* orange instead of green */
     --color-button-bg: #0072B2;        /* colorblind-safe blue */

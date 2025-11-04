@@ -27,7 +27,7 @@ const ProgressBar = ({ current, projected }) => {
       <div className="relative h-[120px] rounded-md overflow-hidden">
         {/* Green bar (background) */}
         <div
-          className="absolute top-0 left-0 h-full bg-[#4BAD31] transition-all duration-[1300ms] ease-in-out"
+          className="absolute top-0 left-0 h-full bg-[var(--progress-bar-color)] transition-all duration-[1300ms] ease-in-out"
           style={{ width: `${animatedGreen}%` }}
         ></div>
 
