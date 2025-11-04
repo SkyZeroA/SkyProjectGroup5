@@ -49,7 +49,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 
 	return (
 		<div
-      className={`transition-opacity duration-300 space-y-6 ${
+      className={`transition-opacity duration-300 space-y-6 text-[14px] md:text-base ${
         isEditing ? "opacity-100 pointer-events-auto" : "opacity-50 pointer-events-none"
       }`}
     >
