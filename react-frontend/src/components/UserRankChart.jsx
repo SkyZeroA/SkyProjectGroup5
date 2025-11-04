@@ -86,6 +86,8 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
     const allDates = isOn
       ? getWeekDates(currentWeekStart)
       : getMonthDates(currentMonth);
+    
+      const apiUrl = process.env.REACT_APP_API_URL;
 
     // Get today's date at midnight (for comparison)
     const todayMidnight = new Date();
@@ -95,8 +97,9 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen }) => {
     const startDate = allDates[0];
     const endDate = allDates[allDates.length - 1];
 
+
     // Fetch rank data for the full period
-    const response = await axios.get("http://localhost:9099/api/daily-rank", {
+    const response = await axios.get(`${apiUrl}/api/daily-rank`, {
       params: { period: isOn ? "week" : "month", startDate, endDate },
       withCredentials: true
     });

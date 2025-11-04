@@ -17,6 +17,18 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // Require SignIn after mocks are set up so module imports pick up the mocks
+// Mock internal UI components to avoid rendering unrelated layout code
+jest.mock('../components/HeaderBanner', () => () => <div>HeaderBanner</div>);
+jest.mock('../components/FooterBanner', () => () => <div>FooterBanner</div>);
+jest.mock('../components/Button', () => ({ Button: ({ children, ...props }) => <button {...props}>{children}</button> }));
+jest.mock('../components/Card', () => ({ Card: ({ children }) => <div>{children}</div>, CardContent: ({ children }) => <div>{children}</div> }));
+jest.mock('../components/Input', () => (props) => (
+  <div>
+    <input aria-label={props.label} value={props.value || ''} onChange={props.onChange} />
+    {props.showError && props.errorMessage ? <div>{props.errorMessage}</div> : null}
+  </div>
+));
+
 const SignIn = require('../screens/SignIn').default;
 
 test('renders the SignIn form with input fields and button', () => {
@@ -35,10 +47,10 @@ test('updates email and password on user input', () => {
     const passwordInput = screen.getByLabelText(/Password/i);
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    fireEvent.change(passwordInput, { target: { value: 'Password1!' } });
 
     expect(emailInput.value).toBe('test@example.com');
-    expect(passwordInput.value).toBe('password123');
+    expect(passwordInput.value).toBe('Password1!');
   });
 
 test('submits form and navigates on successful sign-in', async () => {
@@ -52,15 +64,15 @@ test('submits form and navigates on successful sign-in', async () => {
       target: { value: 'test@example.com' },
     });
     fireEvent.change(screen.getByLabelText(/Password/i), {
-      target: { value: 'password123' },
+      target: { value: 'Password1!' },
     });
 
     fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:9099/api/sign-in',
-        { email: 'test@example.com', password: 'password123' },
+        expect.stringContaining('/api/sign-in'),
+        { email: 'test@example.com', password: 'Password1!' },
         { withCredentials: true }
       );
       // expect(mockNavigate).toHaveBeenCalledWith('/sign-up');
@@ -83,15 +95,15 @@ test('handles incorrect username or password error', async () => {
     target: { value: 'wrong@example.com' },
   });
   fireEvent.change(screen.getByLabelText(/Password/i), {
-    target: { value: 'wrongpassword' },
+    target: { value: 'WrongPass1!' },
   });
 
   fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
 
   await waitFor(() => {
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      'http://localhost:9099/api/sign-in',
-      { email: 'wrong@example.com', password: 'wrongpassword' },
+      expect.stringContaining('/api/sign-in'),
+      { email: 'wrong@example.com', password: 'WrongPass1!' },
       { withCredentials: true }
     );
 

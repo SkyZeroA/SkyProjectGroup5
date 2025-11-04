@@ -11,9 +11,15 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
+  const [formErrors, setFormErrors] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-
+  
+  const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+
+  const emailRegex = /^[^\s@]+@sky\.uk$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -25,28 +31,35 @@ const SignIn = () => {
     };
     console.log("Sign In Payload:", signInPayload);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:9099/api/sign-in",
-        signInPayload,
-        { withCredentials: true }
-      );
-
-      console.log("Sign In Response:", response.data);
-      if (response?.data?.message === "Sign in successful") {
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Sign In Error:", error);
-      if (error.response?.data?.error === "Incorrect username or password") {
-        setPassword("");
-        incrementAttempts();
-        setErrorMessage("Incorrect email or password. Please try again.");
-        document.getElementById("password").focus();
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again later.");
-      }
+    if (!emailRegex.test(email.trim())) {
+      const msg = "Email must be a valid @sky.uk address.";
+      setFormErrors([msg]);
+      return;
     }
+
+    if (!passwordRegex.test(password)) {
+      const msg = "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
+      setFormErrors([msg]);
+      return;
+    }
+
+    // await axios.post("http://localhost:9099/api/sign-in", signInPayload, {withCredentials:true})
+    await axios.post(`${apiUrl}/api/sign-in`, signInPayload, {withCredentials:true})
+      .then((response) => {
+        console.log("Sign In Response:", response.data);
+        if (response?.data?.message === "Sign in successful") {
+          navigate("/dashboard")
+        }
+      })
+      .catch((error) => {
+        if (error.response?.data?.error === "Incorrect username or password") {
+          setEmail("");
+          setPassword("");
+          setFormErrors(["Incorrect username or password."]);
+          incrementAttempts();
+        }
+        console.error("Sign In Error:", error);
+      });
   };
 
   const incrementAttempts = () => {
@@ -56,7 +69,7 @@ const SignIn = () => {
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header>
-        <HeaderBanner className="md:fixed" />
+        <HeaderBanner className="md:fixed"  logoLinked={false}/>
       </header>
 
       {/* Skip to main content link for keyboard users */}
@@ -107,6 +120,7 @@ const SignIn = () => {
                   id="password"
                   type="password"
                   label="Password"
+                  // errorMessage={`${attempts === 0 ? "Enter your password." : "Incorrect password. Please try again."}`}
                   errorMessage="Enter your password."
                   showError={true}
                   value={password}
@@ -133,7 +147,14 @@ const SignIn = () => {
                 >
                   Continue
                 </Button>
-
+                {formErrors.length > 0 && (
+                  <div className="mt-3 text-center">
+                    {formErrors.map((err, i) => (
+                      <p key={i} className="text-sm text-red-600">{err}</p>
+                    ))}
+                  </div>
+                )}
+  
                 <div className="text-center space-y-4">
                   <Button
                     variant="link"

@@ -15,6 +15,18 @@ jest.mock('react-router-dom', () => ({
 
 const SignUp = require('../screens/SignUp').default;
 
+// Mock internal UI components to avoid rendering unrelated layout code
+jest.mock('../components/HeaderBanner', () => () => <div>HeaderBanner</div>);
+jest.mock('../components/FooterBanner', () => () => <div>FooterBanner</div>);
+jest.mock('../components/Button', () => ({ Button: ({ children, ...props }) => <button {...props}>{children}</button> }));
+jest.mock('../components/Card', () => ({ Card: ({ children }) => <div>{children}</div>, CardContent: ({ children }) => <div>{children}</div> }));
+jest.mock('../components/Input', () => (props) => (
+  <div>
+    <input aria-label={props.label} value={props.value || ''} onChange={props.onChange} />
+    {props.showError && props.errorMessage ? <div>{props.errorMessage}</div> : null}
+  </div>
+));
+
 
 test("renders all input fields and buttons", () => {
     render(<SignUp />);
@@ -40,14 +52,14 @@ test("updates form input fields correctly", () => {
     fireEvent.change(nameInput, { target: { value: "harry" } });
     fireEvent.change(usernameInput, { target: { value: "harry123" } });
     fireEvent.change(emailInput, { target: { value: "harry@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "test123" } });
-    fireEvent.change(confirmPasswordInput, { target: { value: "test123" } });
+  fireEvent.change(passwordInput, { target: { value: "Test1234!" } });
+  fireEvent.change(confirmPasswordInput, { target: { value: "Test1234!" } });
 
     expect(nameInput.value).toBe("harry");
     expect(usernameInput.value).toBe("harry123");
     expect(emailInput.value).toBe("harry@example.com");
-    expect(passwordInput.value).toBe("test123");
-    expect(confirmPasswordInput.value).toBe("test123");
+  expect(passwordInput.value).toBe("Test1234!");
+  expect(confirmPasswordInput.value).toBe("Test1234!");
 });
 
 test("successful signup navigates to /questionnaire", async () => {
@@ -60,20 +72,20 @@ test("successful signup navigates to /questionnaire", async () => {
     fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
     fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "harry123" } });
     fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@example.com" } });
-    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: "test123" } });
-    fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "test123" } });
+  fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: "Test1234!" } });
+  fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "Test1234!" } });
 
     fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
-        "http://localhost:9099/api/sign-up",
+        expect.stringContaining('/api/sign-up'),
         {
           "first-name": "harry",
           username: "harry123",
           email: "harry@example.com",
-          password: "test123",
-          "confirm-password": "test123",
+          password: "Test1234!",
+          "confirm-password": "Test1234!",
         },
         { withCredentials: true }
       );
@@ -91,9 +103,12 @@ test("handles username already exists error", async () => {
 
     render(<SignUp />);
 
-    fireEvent.change(screen.getByLabelText(/Username/i), {
-      target: { value: "takenUser" },
-    });
+    // Fill required fields so client-side validation does not prevent the POST
+    fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
+    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "takenUser" } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "taken@example.com" } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: "Test1234!" } });
+    fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "Test1234!" } });
     fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
 
     await waitFor(() => {
@@ -114,9 +129,12 @@ test("handles email already has an account error", async () => {
 
     render(<SignUp />);
 
-    fireEvent.change(screen.getByLabelText(/Email/i), {
-      target: { value: "harry@example.com" },
-    });
+    // Fill required fields so client-side validation does not prevent the POST
+    fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
+    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "harry123" } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@example.com" } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: "Test1234!" } });
+    fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "Test1234!" } });
     fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
 
     await waitFor(() => {
@@ -137,16 +155,21 @@ test("handles passwords do not match error", async () => {
 
     render(<SignUp />);
 
+    // Fill required fields but make passwords mismatch so client-side validation catches it
+    fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
+    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "harry123" } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@example.com" } });
     fireEvent.change(screen.getByLabelText(/^Password$/i), {
-      target: { value: "password1" },
+      target: { value: "Password1!" },
     });
     fireEvent.change(screen.getByLabelText(/Confirm Password/i), {
-      target: { value: "password2" },
+      target: { value: "Password2!" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
 
     await waitFor(() => {
-      expect(mockedAxios.post).toHaveBeenCalled();
+      // Client-side validation should prevent a POST and show the mismatch message
+      expect(mockedAxios.post).not.toHaveBeenCalled();
       expect(
         screen.getByText(/Passwords do not match. Please re-type./i)
       ).toBeInTheDocument();

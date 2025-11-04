@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
-
+import io
 from flask import session
 from backend import app
 
@@ -84,19 +84,6 @@ class TestFlaskAPI(TestCase):
         self.assertIn("Incorrect username or password", response.get_data(as_text=True))
 
 
-
-    # def test_questionnaire_submission(self):
-    #     with self.app.session_transaction() as sess:
-    #         sess['email'] = "harry@example.com"
-    #
-    #     response = self.app.post('/api/questionnaire', json={
-    #         "Q1": "Yes",
-    #         "Q2": "No",
-    #         "Q3": "Sometimes"
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn("Questionnaire submitted successfully", response.get_data(as_text=True))
-
     # Mock the function that inserts questionnaire data into the database
     @patch('backend.routes.insert_into_questionnaire')
     @patch('backend.routes.get_user_id_from_db')
@@ -112,7 +99,7 @@ class TestFlaskAPI(TestCase):
             with self.app.session_transaction() as sess:
                 sess['email'] = "harry@example.com"
 
-            response = self.app.post('/api/questionnaire', json={
+            response = self.app.post('/api/set-questionnaire', json={
                 "Q1": "Yes",
                 "Q2": "No",
                 "Q3": "Sometimes"
@@ -121,14 +108,6 @@ class TestFlaskAPI(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn("Questionnaire submitted successfully", response.get_data(as_text=True))
             mock_insert_questionnaire.assert_called_once_with((1, "Yes", "No", "Sometimes"))
-
-    # def test_user_activities(self):
-    #     with self.app.session_transaction() as sess:
-    #         sess['email'] = "harry@example.com"
-    #
-    #     response = self.app.get('/api/user-activities')
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIsInstance(response.get_json(), list)
 
     # Mock the functions used in the /api/user-activities route
     @patch('backend.routes.get_users_preferred_activities')
@@ -146,16 +125,6 @@ class TestFlaskAPI(TestCase):
         self.assertIsInstance(response.get_json(), list)
         self.assertEqual(response.get_json(), ["Recycling", "Walking"])
 
-    # def test_log_activity(self):
-    #     with self.app.session_transaction() as sess:
-    #         sess['email'] = "harry@example.com"
-    #
-    #     response = self.app.post('/api/log-activity', json={
-    #         "Cycling": 2,
-    #         "Walking": 1
-    #     })
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn("Activity logged successfully", response.get_data(as_text=True))
 
     @patch('backend.routes.insert_user_activity')
     @patch('backend.routes.get_activity_id')
@@ -197,25 +166,28 @@ class TestFlaskAPI(TestCase):
     @patch('backend.routes.get_username_from_db')
     @patch('backend.routes.read_view_table_week')
     @patch('backend.routes.read_view_table_month')
-    @patch('backend.routes.get_answers_from_questionnaire')
+    @patch('backend.routes.get_all_questionnaire_submissions')
     @patch('backend.routes.Questionnaire')
-    def test_dashboard(self, mock_questionnaire_class, mock_get_answers, mock_month, mock_week, mock_get_username):
+    def test_dashboard(self, mock_questionnaire_class, mock_get_submissions, mock_month, mock_week, mock_get_username):
         mock_get_username.return_value = "Harry"
         mock_week.return_value = [{"rank": 1, "username": "Harry", "score": 100}]
         mock_month.return_value = [{"rank": 1, "username": "Harry", "score": 400}]
-        mock_get_answers.return_value = (["Yes", "No", "Sometimes"], 1)
 
-        # Mock Questionnaire instance and its method
+        # Return a single submission dict: insert user_id first and date last to match routes processing
+        from datetime import datetime
+        mock_get_submissions.return_value = [
+            {"user_id": 1, "Q1": "Yes", "Q2": "No", "Q3": "Sometimes", "date": datetime(2025, 1, 1)}
+        ]
+
+        # Mock Questionnaire instance and its projected-carbon return values
         mock_questionnaire_instance = MagicMock()
-        # mock_questionnaire_instance.calculate_projected_carbon_footprint.return_value = {
-        #     "annual_total": 1200,
-        #     "current_to_date": 300
-        # }
-
         mock_questionnaire_instance.calculate_projected_carbon_footprint.return_value = {
-            "annual_total": 1200,
+            "total_projected": 1200,
             "projected": 1200,
-            "current": 300
+            "current": 300,
+            "transport_emissions": 0,
+            "diet_emissions": 0,
+            "heating_emissions": 0
         }
 
         mock_questionnaire_class.return_value = mock_questionnaire_instance
@@ -230,16 +202,54 @@ class TestFlaskAPI(TestCase):
         self.assertIn("weekLeaderboard", data)
         self.assertIn("monthLeaderboard", data)
         self.assertIn("username", data)
-        self.assertIn("totalProjectedCarbon", data)
+        # Routes returns totalCarbon/projectedCarbon/currentCarbon keys
+        self.assertIn("totalCarbon", data)
         self.assertIn("projectedCarbon", data)
         self.assertIn("currentCarbon", data)
 
         self.assertEqual(data["username"], "Harry")
         self.assertEqual(data["weekLeaderboard"], [{"rank": 1, "username": "Harry", "score": 100}])
         self.assertEqual(data["monthLeaderboard"], [{"rank": 1, "username": "Harry", "score": 400}])
-        self.assertEqual(data["totalProjectedCarbon"], 1200)
+        self.assertEqual(data["totalCarbon"], 1200)
         self.assertEqual(data["projectedCarbon"], 1200)
         self.assertEqual(data["currentCarbon"], 300)
+
+    def test_fetch_questionnaire_answers_endpoint(self):
+        with patch('backend.routes.get_latest_answers_from_questionnaire', return_value={"transportMethod": 1}):
+            with self.app.session_transaction() as sess:
+                sess['email'] = 'a@b.com'
+            resp = self.app.get('/api/fetch-questionnaire-answers')
+            assert resp.status_code == 200
+            data = resp.get_json()
+            assert 'answers' in data
+
+    def test_daily_rank_not_signed_in(self):
+        # No session email -> 401
+        resp = self.app.get('/api/daily-rank')
+        assert resp.status_code == 401
+
+    @patch('backend.routes.allowed_file')
+    def test_upload_avatar_invalid(self, mock_allowed):
+        mock_allowed.return_value = False
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'a@b.com'
+
+        data = {'avatar': (io.BytesIO(b'abc'), 'bad.exe')}
+        resp = self.app.post('/api/upload-avatar', data=data, content_type='multipart/form-data')
+        assert resp.status_code == 400
+
+    @patch('backend.routes.allowed_file')
+    @patch('backend.routes.update_user_avatar')
+    def test_upload_avatar_success(self, mock_update, mock_allowed):
+        mock_allowed.return_value = True
+        mock_update.return_value = None
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'a@b.com'
+
+        data = {'avatar': (io.BytesIO(b'xyz'), 'good.png')}
+        resp = self.app.post('/api/upload-avatar', data=data, content_type='multipart/form-data')
+        # Should either succeed with 200 or 400 depending on filesystem permissions; assert 200
+        assert resp.status_code == 200
 
 # if __name__ == '__main__':
 #     unittest.main()

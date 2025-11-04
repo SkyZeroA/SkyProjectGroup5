@@ -28,6 +28,9 @@ const PointsBarChart = ({ isFormOpen }) => {
   const windowWidth = useWindowWidth(); // 👈 Track screen width
   const currentDate = new Date();
 
+  const apiUrl = process.env.REACT_APP_API_URL;
+
+
   // Dynamically adjust chart appearance
   const chartHeight = windowWidth < 640 ? 125 : windowWidth < 1024 ? 290 : 290;
   const xTickFontSize = windowWidth < 640 ? 10 : 12;
@@ -91,7 +94,7 @@ const PointsBarChart = ({ isFormOpen }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:9099/api/user-points", {
+      const response = await axios.get(`${apiUrl}/api/user-points`, {
         params: { period: isWeek ? "week" : "month", year, monthChunk, weekChunk },
         withCredentials: true,
       });

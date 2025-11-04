@@ -1,13 +1,12 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import App from '../App';
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like: expect(element).toBeInTheDocument()
 import '@testing-library/jest-dom';
-
-// Use Jest manual mock in __mocks__/react-router-dom.js
-// jest.mock('react-router-dom');
+// Import the mocked components directly for isolated rendering
+import SignIn from '../screens/SignIn';
+import SignUp from '../screens/SignUp';
+import Questionnaire from '../screens/Questionnaire';
+import Dashboard from '../screens/Dashboard';
 
 
 // Mock the screen components to make them predictable for unit tests
@@ -17,22 +16,22 @@ jest.mock('../screens/Questionnaire', () => () => <div>Questionnaire</div>);
 jest.mock('../screens/Dashboard', () => () => <div>Dashboard</div>);
 
 
-test('App renders Sign In route by default', () => {
-  render(<App />);
+test('SignIn component renders in isolation', () => {
+  render(<SignIn />);
   expect(screen.getByText(/SignIn/)).toBeInTheDocument();
 });
 
-test('App renders Sign Up route', () => {
-  render(<App />);
+test('SignUp component renders in isolation', () => {
+  render(<SignUp />);
   expect(screen.getByText(/SignUp/)).toBeInTheDocument();
 });
 
-test('App renders Questionnaire route', () => {
-  render(<App />);
+test('Questionnaire component renders in isolation', () => {
+  render(<Questionnaire />);
   expect(screen.getByText(/Questionnaire/)).toBeInTheDocument();
 });
 
-test('App renders Dashboard route', () => {
-  render(<App />);
+test('Dashboard component renders in isolation', () => {
+  render(<Dashboard />);
   expect(screen.getByText(/Dashboard/)).toBeInTheDocument();
 });

@@ -4,51 +4,33 @@ import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import ProgressBar from "../components/ProgressBar";
 import Switch from "../components/Switch";
-import Popup from "../components/PopUp";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import TipCard from "../components/TipCard";
 import Navbar from "../components/Navbar";
+import { subscribeActivity } from '../lib/activityBus';
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [questions, setQuestions] = useState([]);
-  const [points, setPoints] = useState([]);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
-  const [username, setUsername] = useState([]);
+  const [username, setUsername] = useState("");
   const [totalProjectedCarbon, setTotalProjectedCarbon] = useState([]);
   const [projectedCarbon, setProjectedCarbon] = useState([]);
   const [currentCarbon, setCurrentCarbon] = useState([]);
   const [isOn, setIsOn] = useState(false);
-  const [allQuestions, setAllQuestions] = useState([]);
-  const [allPoints, setAllPoints] = useState([]);
   const [tips, setTips] = useState([]);
   const [tipsLoading, setTipsLoading] = useState(true);
+  const [transportEmissions, setTransportEmissions] = useState(0);
+  const [dietEmissions, setDietEmissions] = useState(0);
+  const [heatingEmissions, setHeatingEmissions] = useState(0);
 
-  const fetchAllQuestions = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-      setAllQuestions(response.data.map(question => question.name));
-      setAllPoints(response.data.map(question => question.points));
-    } catch (error) {
-      console.error("Error fetching activity questions:", error);
-    }
-  };
-
-  const fetchUserActivities = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
-      setQuestions(response.data.map(activity => activity.name));
-      setPoints(response.data.map(activity => activity.points));
-    } catch (error) {
-      console.error("Error fetching user activities:", error);
-    }
-  };
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:9099/api/dashboard", { withCredentials: true });
+      const response = await axios.get(`${apiUrl}/api/dashboard`, { withCredentials: true });
       setWeekData(response.data.weekLeaderboard);
       setMonthData(response.data.monthLeaderboard);
       setUsername(response.data.username);
@@ -56,15 +38,22 @@ const Dashboard = () => {
       setProjectedCarbon(response.data.projectedCarbon);
       setCurrentCarbon(response.data.currentCarbon);
     } catch (error) {
+      navigate('/questionnaire')
       console.error("Failed to fetch dashboard data:", error);
     }
   };
 
   useEffect(() => {
-    fetchUserActivities();
-    fetchAllQuestions();
     fetchData();
-  }, [isFormOpen]);
+  }, []);
+
+  // subscribe to activity updates published by Navbar's popup
+  useEffect(() => {
+    const unsub = subscribeActivity(() => {
+      fetchData();
+    });
+    return unsub;
+  }, []);
 
   useEffect(() => {
     const fetchInitialTips = async () => {
@@ -103,18 +92,8 @@ const Dashboard = () => {
       isCurrentUser: user.name === username,
     }));
 
-  const handleActivitySave = async (selected) => {
-    try {
-      await axios.post(
-        "http://localhost:9099/api/update-user-activities",
-        { activities: selected },
-        { withCredentials: true }
-      );
-      await fetchUserActivities();
-    } catch (error) {
-      console.error("Error saving user activities:", error);
-    }
-  };
+  console.log(leaderboardData)
+  console.log(currentCarbon, projectedCarbon, totalProjectedCarbon)
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -122,7 +101,7 @@ const Dashboard = () => {
       <div className="top-0 z-50 bg-white">
         <HeaderBanner
           logoAlign="left"
-          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
+          navbar={<Navbar />}
         />
       </div>
 
@@ -158,7 +137,7 @@ const Dashboard = () => {
 												<Avatar className="w-12 h-12 bg-gray-200">
 													{user.avatarFilename ? (
                             <img
-                              src={`http://localhost:9099/uploads/${user.avatarFilename}`}
+                              src={`${apiUrl}/uploads/${user.avatarFilename}`}
                               alt="User avatar"
                               className="w-full h-full object-cover"
                             />
@@ -245,17 +224,6 @@ const Dashboard = () => {
           </Card>
         </div>
       </main>
-
-
-      <Popup
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        questions={questions}
-        points={points}
-        allQuestions={allQuestions}
-        allPoints={allPoints}
-        onActivitiesSave={handleActivitySave}
-      />
 
       <FooterBanner />
     </div>

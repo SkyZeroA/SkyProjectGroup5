@@ -1,10 +1,19 @@
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
-from datetime import date
+from datetime import date, datetime
+import os
 from backend.data_access import (init_db, init_insert,insert_new_user, get_user_id_from_db, get_username_from_db,
                                  check_password, insert_into_questionnaire, read_user_table,
                                  read_view_table_week, read_view_table_month, get_current_week_number, get_current_month_number,
                                  get_users_preferred_activities, get_activity_id, get_all_activity_names, insert_user_activity)
+
+
+from backend.data_access import (
+    get_db_connect_kwargs,
+    get_latest_answers_from_questionnaire,
+    get_all_questionnaire_submissions,
+    get_user_daily_ranks,
+)
 
 # Sample test data
 TEST_EMAIL = "harry@example.com"
@@ -100,15 +109,17 @@ class TestDatabaseFunctions(TestCase):
 
     # Validate leaderboard data format (Week).
     def test_read_view_table_week(self):
-        self.mock_cursor.fetchall.return_value = [("user1", 10), ("user2", 20)]
+        # Each row should be (username, avatarFilename, totalPoints)
+        self.mock_cursor.fetchall.return_value = [("user1", "avatar1.png", 10), ("user2", "avatar2.png", 20)]
         result = read_view_table_week()
-        self.assertEqual(result, [{"name": "user1", "score": 10}, {"name": "user2", "score": 20}])
+        self.assertEqual(result, [{"name": "user1", "avatarFilename": "avatar1.png", "score": 10}, {"name": "user2", "avatarFilename": "avatar2.png", "score": 20}])
 
     # Validate leaderboard data format (Month).
     def test_read_view_table_month(self):
-        self.mock_cursor.fetchall.return_value = [("user1", 30), ("user2", 40)]
+        # Each row should be (username, avatarFilename, totalPoints)
+        self.mock_cursor.fetchall.return_value = [("user1", "avatar1.png", 30), ("user2", "avatar2.png", 40)]
         result = read_view_table_month()
-        self.assertEqual(result, [{"name": "user1", "score": 30}, {"name": "user2", "score": 40}])
+        self.assertEqual(result, [{"name": "user1", "avatarFilename": "avatar1.png", "score": 30}, {"name": "user2", "avatarFilename": "avatar2.png", "score": 40}])
 
     # Ensure correct week ID is returned.
     def test_get_current_week_number(self):
@@ -146,6 +157,81 @@ class TestDatabaseFunctions(TestCase):
         insert_user_activity(1, 2, 3, 4, True)
         self.mock_cursor.execute.assert_called_once()
         self.mock_conn.commit.assert_called_once()
+
+# ===================================
+
+    def test_get_db_connect_kwargs_port_handling(self):
+        # No DB_PORT -> omitted
+        with patch.dict(os.environ, {}, clear=False):
+            kwargs = get_db_connect_kwargs()
+            assert 'port' not in kwargs
+
+        # With numeric DB_PORT -> integer
+        with patch.dict(os.environ, {'DB_PORT': '3306'}, clear=False):
+            kwargs = get_db_connect_kwargs()
+            assert isinstance(kwargs.get('port'), int)
+
+        # With non-numeric DB_PORT -> kept as string
+        with patch.dict(os.environ, {'DB_PORT': 'notint'}, clear=False):
+            kwargs = get_db_connect_kwargs()
+            assert kwargs.get('port') == 'notint'
+
+    @patch('mysql.connector.connect')
+    def test_get_latest_answers_none(self, mock_connect):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connect.return_value = mock_conn
+        mock_conn.cursor.return_value = mock_cursor
+        # Simulate no answers
+        mock_cursor.fetchone.return_value = None
+        # Patch get_user_id_from_db so that the function uses a valid id
+        with patch('backend.data_access.get_user_id_from_db', return_value=1):
+            res = get_latest_answers_from_questionnaire('noone@example.com')
+            assert res == []
+
+    @patch('mysql.connector.connect')
+    def test_get_all_questionnaire_submissions_conversion(self, mock_connect):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connect.return_value = mock_conn
+        mock_conn.cursor.return_value = mock_cursor
+
+        # Simulate two rows returned by the DB
+        row_date = datetime(2025, 1, 1)
+        mock_cursor.fetchall.return_value = [
+            (1, 2, 3, 4, 5, 6, row_date),
+        ]
+        # ensure get_user_id_from_db will be called inside function; patch it to return 42
+        with patch('backend.data_access.get_user_id_from_db', return_value=42):
+            subs = get_all_questionnaire_submissions('user@example.com')
+            assert isinstance(subs, list)
+            assert subs[0]['userId'] == 42
+            assert subs[0]['dateSubmitted'] == row_date
+
+    @patch('mysql.connector.connect')
+    def test_get_user_daily_ranks_basic(self, mock_connect):
+        mock_conn = MagicMock()
+        mock_cursor = MagicMock()
+        mock_connect.return_value = mock_conn
+        # Make cursor behave as dictionary=True is passed
+        mock_conn.cursor.return_value = mock_cursor
+
+        # Simulate daily_scores: two users over two days
+        d1 = date(2025, 1, 1)
+        d2 = date(2025, 1, 2)
+        mock_cursor.fetchall.return_value = [
+            {"user_id": 1, "date": d1, "total_score": 10},
+            {"user_id": 2, "date": d1, "total_score": 5},
+            {"user_id": 1, "date": d2, "total_score": 0},
+            {"user_id": 2, "date": d2, "total_score": 7},
+        ]
+
+        ranks = get_user_daily_ranks(1, period="week", start_date="2025-01-01", end_date="2025-01-02")
+        # Expect ranks list for two days
+        assert len(ranks) == 2
+        assert ranks[0]['date'] == d1.isoformat()
+        # user 1 should be rank 1 on first day
+        assert ranks[0]['rank'] == 1
 
 # if __name__ == '__main__':
 #     unittest.main()

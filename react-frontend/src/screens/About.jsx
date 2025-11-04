@@ -1,60 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import FooterBanner from '../components/FooterBanner';
-import Popup from '../components/PopUp';
 import { Card, CardContent } from '../components/Card';
 import Navbar from '../components/Navbar';
-import axios from 'axios';
 import { Avatar, AvatarFallback } from '../components/Avatar';
 import ProgressBar from '../components/ProgressBar';
 import FAQCard from '../components/FAQCard';
 
 const About = () => {
-	const [isFormOpen, setIsFormOpen] = useState(false);
-	const [questions, setQuestions] = useState([]);
-	const [allQuestions, setAllQuestions] = useState([]);
-	const [username, setUsername] = useState("");
-	const [points, setPoints] = useState([]);
-	const [allPoints, setAllPoints] = useState([]);
-
-  const fetchAllQuestions = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-      setAllQuestions(response.data.map(activity => activity.name));
-      setAllPoints(response.data.map(activity => activity.points));
-    } catch (error) {
-      console.error("Error fetching activity questions:", error);
-    }
-  };
-
-  const fetchUserActivities = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
-      setQuestions(response.data.map(activity => activity.name));
-      setPoints(response.data.map(activity => activity.points));
-    } catch (error) {
-      console.error("Error fetching user activities:", error);
-    }
-  };
-
-	const handleActivitySave = async (selected) => {
-    try {
-      await axios.post(
-        "http://localhost:9099/api/update-user-activities",
-        { activities: selected },
-        { withCredentials: true }
-      );
-      await fetchUserActivities();
-    } catch (error) {
-      console.error("Error saving user activities:", error);
-    }
-  };
-
-	useEffect(() => {
-		fetchAllQuestions();
-		fetchUserActivities();
-	}, [isFormOpen]);
-
 
 	// Dummy leaderboard data
 	const leaderboardData = [
@@ -86,7 +39,7 @@ const About = () => {
       <header className="top-0 z-50 bg-white">
         <HeaderBanner
           logoAlign="left"
-          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
+          navbar={<Navbar />}
         />
       </header>
 
@@ -211,17 +164,6 @@ const About = () => {
           </CardContent>
         </Card>
       </main>
-
-      {/* Popup Form */}
-      <Popup
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        questions={questions}
-				points={points}
-				allPoints={allPoints}
-        allQuestions={allQuestions}
-        onActivitiesSave={handleActivitySave}
-      />
 
       {/* Footer */}
       <footer>

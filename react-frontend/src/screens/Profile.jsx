@@ -7,7 +7,6 @@ import axios from "axios";
 import { Button } from "../components/Button";
 import Questions from "../components/Questions";
 import Navbar from "../components/Navbar";
-import Popup from "../components/PopUp";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
@@ -15,52 +14,12 @@ const Profile = () => {
   const [avatar, setAvatar] = useState(null);
   const [answers, setAnswers] = useState({})
   const [isEditing, setIsEditing] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [questions, setQuestions] = useState([]);
-  const [allQuestions, setAllQuestions] = useState([]);
 
-  const fetchAllQuestions = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/fetch-questions",
-				{ withCredentials: true });
-      setAllQuestions(response.data);
-    } catch (error) {
-      console.error("Error fetching activity questions:", error);
-    }
-  };
-
-  const fetchUserActivities = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/user-activities",
-				{ withCredentials: true });
-      setQuestions(response.data);
-    } catch (error) {
-      console.error("Error fetching user activities:", error);
-    }
-  };
-
-	const handleActivitySave = async (selected) => {
-    try {
-      await axios.post(
-        "http://localhost:9099/api/update-user-activities",
-        { activities: selected },
-        { withCredentials: true }
-      );
-      await fetchUserActivities();
-    } catch (error) {
-      console.error("Error saving user activities:", error);
-    }
-  };
-
-	useEffect(() => {
-		fetchAllQuestions();
-		fetchUserActivities();
-	}, [isFormOpen]);
-
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // Gets the username and first name of the current user
   const fetchUserData = async () => {
-    await axios.get("http://localhost:9099/api/fetch-user-data", { withCredentials: true })
+    await axios.get(`${apiUrl}/api/fetch-user-data`, { withCredentials: true })
       .then(response => {
         setUsername(response.data.username);
         setFirstName(response.data.firstName);
@@ -72,7 +31,7 @@ const Profile = () => {
   };
 
   const fetchQuestionnaireData = async () => {
-    await axios.get("http://localhost:9099/api/fetch-questionnaire-answers", { withCredentials: true })
+    await axios.get(`${apiUrl}/api/fetch-questionnaire-answers`, { withCredentials: true })
       .then(response => {
         setAnswers(response.data.answers);
       })
@@ -85,7 +44,7 @@ const Profile = () => {
   const handleQuestionnaireUpdate = async () => {
     if (isEditing) {
     console.log("Submitting Answers:", answers);
-    await axios.post("http://localhost:9099/api/set-questionnaire", answers, { withCredentials: true })
+    await axios.post(`${apiUrl}/api/set-questionnaire`, answers, { withCredentials: true })
       .then((response) => {
         console.log("Response:", response.data);
       })
@@ -109,7 +68,7 @@ const Profile = () => {
 
       try {
         const res = await axios.post(
-          "http://localhost:9099/api/upload-avatar",
+          `${apiUrl}/api/upload-avatar`,
           formData,
           { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -136,7 +95,7 @@ const Profile = () => {
         <HeaderBanner
           className="md:fixed"
           logoAlign="left"
-          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
+          navbar={<Navbar />}
         />
       </header>
 
@@ -149,7 +108,8 @@ const Profile = () => {
                   <Avatar className="w-40 h-40 md:w-[250px] md:h-[250px] bg-gray-200 overflow-hidden">
                     {avatar && avatar !== 'None' ? (
                       <img
-                        src={`http://localhost:9099${avatar}`}
+                        // src={`http://localhost:9099${avatar}`}
+                        src={`${apiUrl}${avatar}`}
                         alt="User avatar"
                         className="w-full h-full object-cover"
                       />
@@ -217,14 +177,6 @@ const Profile = () => {
           </Card>
         </div>
       </main>
-
-      <Popup
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        questions={questions}
-        allQuestions={allQuestions}
-        onActivitiesSave={handleActivitySave}
-      />
 
       <FooterBanner className="md:fixed"/>
     </div>

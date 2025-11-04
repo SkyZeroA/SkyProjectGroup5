@@ -3,23 +3,18 @@ import axios from "axios";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import { Card, CardContent } from "../components/Card";
-import Popup from "../components/PopUp";
 import MyPieChart from "../components/MyPieChart";
 import CalendarHeatmap from "../components/CalendarHeatMap";
 import UserRankChart from "../components/UserRankChart";
 import PointsBarChart from "../components/PointsBarChart";
 import Navbar from "../components/Navbar";
+import { subscribeActivity } from "../lib/activityBus";
 
 const Stats = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [questions, setQuestions] = useState([]);
-  const [points, setPoints] = useState([]);
-  const [allQuestions, setAllQuestions] = useState([]);
-  const [allPoints, setAllPoints] = useState([]);
   const [isOn, setIsOn] = useState(false);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
-  const [username, setUsername] = useState("");
   const [transportEmissions, setTransportEmissions] = useState(0);
   const [dietEmissions, setDietEmissions] = useState(0);
   const [heatingEmissions, setHeatingEmissions] = useState(0);
@@ -30,33 +25,14 @@ const Stats = () => {
   const [userBestWeek, setUserBestWeek] = useState("");
   const [userBestMonth, setUserBestMonth] = useState("");
 
-  const fetchAllQuestions = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-      setAllQuestions(response.data.map(activity => activity.name));
-      setAllPoints(response.data.map(activity => activity.points));
-    } catch (error) {
-      console.error("Error fetching activity questions:", error);
-    }
-  };
-
-  const fetchUserActivities = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
-      setQuestions(response.data.map(activity => activity.name));
-      setPoints(response.data.map(activity => activity.points));
-    } catch (error) {
-      console.error("Error fetching user activities:", error);
-    }
-  };
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:9099/api/stats", { withCredentials: true });
+      const response = await axios.get(`${apiUrl}/api/stats`, { withCredentials: true });
       const data = response.data;
       setWeekData(data.weekLeaderboard);
       setMonthData(data.monthLeaderboard);
-      setUsername(data.username);
       setTransportEmissions(data.transportEmissions);
       setDietEmissions(data.dietEmissions);
       setHeatingEmissions(data.heatingEmissions);
@@ -72,23 +48,18 @@ const Stats = () => {
   };
 
   useEffect(() => {
-    fetchUserActivities();
-    fetchAllQuestions();
     fetchData();
-  }, [isFormOpen]);
+  }, []);
 
-  const handleActivitySave = async (selected) => {
-    try {
-      await axios.post(
-        "http://localhost:9099/api/update-user-activities",
-        { activities: selected },
-        { withCredentials: true }
-      );
-      await fetchUserActivities();
-    } catch (error) {
-      console.error("Error saving user activities:", error);
-    }
-  };
+  // subscribe to activity updates published by Navbar's popup
+  useEffect(() => {
+    const unsub = subscribeActivity(() => {
+      setIsFormOpen(prev => !prev);
+      fetchData();
+    });
+    return unsub;
+  }, []);
+
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -96,7 +67,7 @@ const Stats = () => {
       <header className="top-0 z-50 bg-white">
         <HeaderBanner
           logoAlign="left"
-          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
+          navbar={<Navbar />}
         />
       </header>
 
@@ -195,17 +166,6 @@ const Stats = () => {
           </Card>
         </aside>
       </main>
-
-      {/* Popup Form */}
-      <Popup
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        questions={questions}
-        points={points}
-        allQuestions={allQuestions}
-        allPoints={allPoints}
-        onActivitiesSave={handleActivitySave}
-      />
 
       {/* Footer */}
       <footer>

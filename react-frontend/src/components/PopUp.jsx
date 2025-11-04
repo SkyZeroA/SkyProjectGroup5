@@ -9,10 +9,12 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
     const [selectedActivities, setSelectedActivities] = useState([]);
     const [isEditingActivities, setIsEditingActivities] = useState(false);
 
+    const apiUrl = process.env.REACT_APP_API_URL;
+
     useEffect(() => {
       const fetchActivityCounts = async () => {
         try {
-          const response = await axios.get("http://localhost:9099/api/user-activity-counts", { withCredentials: true });
+          const response = await axios.get(`${apiUrl}/api/user-activity-counts`, { withCredentials: true });
           setAnswers(response.data || {});
         } catch (error) {
           console.error("Error fetching activity counts:", error);
@@ -41,7 +43,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
 
   const handleSubmit = async (question, isPositive) => {
     try {
-      const response = await axios.post("http://localhost:9099/api/log-activity", {question, isPositive}, { withCredentials: true });
+      const response = await axios.post(`${apiUrl}/api/log-activity`, {question, isPositive}, { withCredentials: true });
       console.log("Server response:", response.data);
     } catch (error) {
       console.error("Error logging activity:", error);
