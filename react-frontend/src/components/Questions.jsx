@@ -58,7 +58,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 					{ value: 0, label: "Work from Home" },
 					{ value: 1, label: "Walk/Cycle" },
 					{ value: 2, label: "Public Transport (Bus/Train)" },
-					{ value: 3, label: "Car (Petrol/Diesel)" },
+					{ value: 3, label: "Car (Petrol/ Diesel)" },
 					{ value: 4, label: "Car (Electric)" },
 				]}
 				current={transportMethod}
