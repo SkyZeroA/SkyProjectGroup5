@@ -32,6 +32,7 @@ const TipCard = ({ tip, onDelete }) => {
             {tip}
           </div>
           <button
+            aria-label="Delete Tip"
             onMouseEnter={() => setIsHoveringDelete(true)}
             onMouseLeave={() => setIsHoveringDelete(false)}
             onClick={handleDelete}

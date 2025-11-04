@@ -315,6 +315,14 @@ def get_current_month_number():
 def get_users_preferred_activities(user_id):
     db = get_connection()
     cursor = db.cursor()
+    cursor.execute("SELECT ak.activity_name, ak.value_points FROM UserActivity ua JOIN ActivityKey ak ON ua.activityID = ak.activityID WHERE ua.userID = %s", (user_id,))
+    activities = [{"name": row[0], "points": int(row[1])} for row in cursor.fetchall()]
+    close_connection(db)
+    return activities
+
+def get_users_preferred_activities_no_points(user_id):
+    db = get_connection()
+    cursor = db.cursor()
     cursor.execute("SELECT ak.activity_name FROM UserActivity ua JOIN ActivityKey ak ON ua.activityID = ak.activityID WHERE ua.userID = %s", (user_id,))
     activities = [row[0] for row in cursor.fetchall()]
     close_connection(db)
@@ -324,8 +332,8 @@ def get_users_preferred_activities(user_id):
 def get_all_activity_names():
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT activity_name FROM ActivityKey")
-    activities = [row[0] for row in cursor.fetchall()]
+    cursor.execute("SELECT activity_name, value_points FROM ActivityKey")
+    activities = [{"name": row[0], "points": int(row[1])} for row in cursor.fetchall()]
     close_connection(db)
     return activities
 
@@ -555,7 +563,7 @@ def get_highest_month_points():
                         LIMIT 1;
                         """)
     result = cursor.fetchone()
-    print(result)
+    # print(result)
     close_connection(db)
     if result:
         user_id, points = result

@@ -17,13 +17,16 @@ const RadioQuestion = ({options, current, setCurrent, question}) => {
 						" [font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(13px,2vw,16px)] leading-[22.5px]"
 					}>
 					{options.map((option) => (
-						<div key={option.value} className="flex items-center gap-3 min-w-[120px] min-h-[50px] justify-center">
-							<span className="text-sm md:text-base cursor-pointer [font-family:'Sky_Text',Helvetica] font-normal">
+						<div
+							key={option.value}
+							className="flex items-center justify-between gap-2 w-36 lg:w-28 min-h-[50px] px-3 mx-auto"
+						>
+							<span className="text-sm md:text-base cursor-pointer [font-family:'Sky_Text',Helvetica] font-normal mr-2 whitespace-normal break-words">
 								{option.label}
 							</span>
 							<RadioGroupItem
 								value={option.value}
-								id={option.value}
+								id={String(option.value)}
 								className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
 							/>
 						</div>

@@ -72,7 +72,7 @@ def questionnaire():
     # print("User email from session:", session['email'])
     email = session['email']
     data = request.get_json()
-    print("Questionnaire data received:", data)
+    # print("Questionnaire data received:", data)
     answers = Questionnaire(data, get_user_id_from_db(email), datetime.today())
     # print(answers.format_answers())
     insert_into_questionnaire(answers.format_answers())
@@ -118,7 +118,7 @@ def update_user_activities():
 @app.route('/api/user-activity-counts', methods=['GET'])
 def user_activity_counts():
     user_id = get_user_id_from_db(session['email'])
-    activities = get_users_preferred_activities(user_id)
+    activities = get_users_preferred_activities_no_points(user_id)
     activity_counts = {}
     for activity in activities:
         activity_id = get_activity_id(activity)
