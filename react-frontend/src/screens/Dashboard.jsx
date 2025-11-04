@@ -51,6 +51,7 @@ const Dashboard = () => {
   };
 
   const fetchData = async () => {
+
       await axios.get(`${apiUrl}/api/dashboard`, {withCredentials:true})
       .then(response => {
         setWeekData(response.data.weekLeaderboard);
@@ -63,6 +64,7 @@ const Dashboard = () => {
         setDietEmissions(response.data.dietEmissions)
         setHeatingEmissions(response.data.heatingEmissions)
       }).catch((error) => {
+          navigate('/questionnaire')
         console.error("Failed to fetch data from json" , error);
       });
     };
@@ -93,6 +95,17 @@ const Dashboard = () => {
     console.error("Error saving user activities:", error);
   }
 };
+
+
+const handleSignOut = async () => {
+  try {
+    await axios.post(`${apiUrl}/api/sign-out`, {}, { withCredentials: true });
+    navigate('/'); // or navigate to login page if you have one
+  } catch (error) {
+    console.error("Error signing out:", error);
+  }
+};
+
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -130,7 +143,8 @@ const Dashboard = () => {
                 </Button>
                 <Button 
                   variant="link"
-                  onClick={() => navigate("/")}
+                  // onClick={() => navigate("/")}
+                  onClick={handleSignOut}
                 >
                   Sign Out
                 </Button>

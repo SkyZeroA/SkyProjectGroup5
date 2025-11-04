@@ -66,6 +66,12 @@ def sign_up():
         return jsonify({"message": "Sign up successful"}), 200
 
 
+@app.route('/api/sign-out', methods=['POST'])
+def sign_out():
+    session.clear()
+    return jsonify({"message": "Sign out successful"}), 200
+
+
 @app.route('/api/set-questionnaire', methods=['POST'])
 def questionnaire():
     # print("User email from session:", session['email'])
