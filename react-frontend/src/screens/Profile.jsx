@@ -134,6 +134,7 @@ const Profile = () => {
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header className="top-0 z-50 bg-white">
         <HeaderBanner
+          className="md:fixed"
           logoAlign="left"
           navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
         />
