@@ -120,6 +120,25 @@
 
 @layer base {
   :root {
+    --user-label: #22c55e;          /* User label color */
+    --color-accent: #4bad31;          /* green accent */
+    --gradient-start: #6eee87;         /* Gradient start */
+    --gradient-middle: #59c754;        /* Gradient middle */
+    --gradient-end: #4bac31;           /* Gradient end */
+    --stats-color: #38a169;          /* Stats color */
+    --log-color: #48bb78;           /* Log Activity button color */
+
+
+    --color-button-bg: #000ef5;       /* blue button */
+    --color-button-bg-hover: #004ef5; /* button hover */
+    --color-button-text: #ffffff;     /* button text */
+    --background: #f9fafb;            /* Page background */
+    --card: #ffffff;                   /* Card background */
+    --foreground: #4a4a4a;            /* Primary text */
+
+    --destructive: #dc2626;            /* Error messages */
+
+
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
@@ -183,6 +202,52 @@
     --ring: 216 34% 17%;
 
     --radius: 0.5rem;
+  }
+
+  .colorblind {
+    --color-primary: #4a4a4a;
+    --color-accent: #E69F00;           /* orange instead of green */
+    --color-button-bg: #0072B2;        /* colorblind-safe blue */
+    --color-button-bg-hover: #005EA3;  /* darker hover */
+    --color-button-text: #ffffff;
+    --gradient-start: #A6CEE3;
+    --gradient-middle: #1F78B4;
+    --gradient-end: #B2DF8A;
+
+
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --border: 210 40% 80%;
+    --input: 210 40% 80%;
+
+    --card: transparent;
+    --card-foreground: 0 0% 0%;
+
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 0 0% 0%;
+
+    --accent: 40 90% 50%; /* colorblind-safe accent */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --ring: 40 90% 50%;
+    --radius: 0.5rem;
+
+    --gradient-start: #A6CEE3;
+    --gradient-middle: #1F78B4;
+    --gradient-end: #B2DF8A;
   }
 }
 

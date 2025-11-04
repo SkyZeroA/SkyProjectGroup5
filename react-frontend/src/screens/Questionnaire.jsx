@@ -56,7 +56,7 @@ const Questionnaire = () => {
           <CardContent>
             <h1
               id="questionnaire-heading"
-              className="mb-4 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-transparent text-[38px] text-center leading-[57px]"
+              className="mb-4 bg-[linear-gradient(90deg,var(--gradient-start)_0%,var(--gradient-middle)_50%,var(--gradient-end)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent] [font-family:'Sky_Text',Helvetica] font-normal text-transparent text-[38px] text-center leading-[57px]"
             >
               Welcome to ClearSky
             </h1>
@@ -98,7 +98,7 @@ const Questionnaire = () => {
             <Button
               type="submit"
               variant="link"
-              className="w-64 bg-[#7399ff] hover:bg-[#5577dd] text-white rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-[#4bad31] focus:ring-offset-2"
+              className="w-64 bg-[#7399ff] hover:bg-[#5577dd] text-white rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2"
             >
               Continue
             </Button>

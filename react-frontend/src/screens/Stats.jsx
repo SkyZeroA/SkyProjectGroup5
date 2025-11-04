@@ -33,7 +33,7 @@ const Stats = () => {
   const fetchAllQuestions = async () => {
     try {
       const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-      setAllQuestions(response.data.map(activity => activity.activity_name));
+      setAllQuestions(response.data.map(activity => activity.name));
       setAllPoints(response.data.map(activity => activity.points));
     } catch (error) {
       console.error("Error fetching activity questions:", error);
@@ -43,7 +43,7 @@ const Stats = () => {
   const fetchUserActivities = async () => {
     try {
       const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
-      setQuestions(response.data.map(activity => activity.activity_name));
+      setQuestions(response.data.map(activity => activity.name));
       setPoints(response.data.map(activity => activity.points));
     } catch (error) {
       console.error("Error fetching user activities:", error);
@@ -161,7 +161,7 @@ const Stats = () => {
               Highest Week Points
             </h3>
             <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestWeekUser}</p>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {highestWeekPoints}
             </p>
           </Card>
@@ -171,7 +171,7 @@ const Stats = () => {
               Highest Month Points
             </h3>
             <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestMonthUser}</p>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {highestMonthPoints}
             </p>
           </Card>
@@ -180,7 +180,7 @@ const Stats = () => {
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Week Points
             </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {userBestWeek}
             </p>
           </Card>
@@ -189,7 +189,7 @@ const Stats = () => {
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Month Points
             </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {userBestMonth}
             </p>
           </Card>

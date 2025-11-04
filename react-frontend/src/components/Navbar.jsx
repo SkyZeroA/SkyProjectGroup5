@@ -37,7 +37,7 @@ const Navbar = ({ username, setIsFormOpen }) => {
       <div className="flex justify-center flex-grow md:flex-grow-0">
         <Button
           variant="link"
-          className="text-green-500 whitespace-nowrap"
+          className="text-[var(--log-color)] whitespace-nowrap"
           onClick={() => setIsFormOpen(true)}
         >
           Log your Activities
