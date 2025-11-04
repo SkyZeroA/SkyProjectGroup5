@@ -26,14 +26,14 @@ const HeaderBanner = ({
             {/* Left spacer */}
             <div className="flex-1"></div>
 
-            {/* Centered logo */}
-            <Link to="/dashboard" className="mx-auto">
+            {/* Centered logo - NOT clickable on sign in/up */}
+            <div className="mx-auto">
               <img
                 className="h-[40px] w-auto object-contain"
                 alt="Sky Zero Logo"
                 src="/image-5.png"
               />
-            </Link>
+            </div>
 
             {/* Right side: optional colorblind toggle */}
             <div className="flex-1 flex justify-end">
@@ -41,7 +41,7 @@ const HeaderBanner = ({
             </div>
           </>
         ) : (
-          // === Default layout (logo on left) ===
+          // === Default layout (logo on left, clickable) ===
           <>
             <Link to="/dashboard" className="cursor-pointer">
               <img
@@ -62,5 +62,3 @@ const HeaderBanner = ({
 };
 
 export default HeaderBanner;
-
-
