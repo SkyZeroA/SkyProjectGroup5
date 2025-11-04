@@ -3,23 +3,18 @@ import axios from "axios";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import { Card, CardContent } from "../components/Card";
-import Popup from "../components/PopUp";
 import MyPieChart from "../components/MyPieChart";
 import CalendarHeatmap from "../components/CalendarHeatMap";
 import UserRankChart from "../components/UserRankChart";
 import PointsBarChart from "../components/PointsBarChart";
 import Navbar from "../components/Navbar";
+import { subscribeActivity } from "../lib/activityBus";
 
 const Stats = ({ colorblind }) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [questions, setQuestions] = useState([]);
-  const [points, setPoints] = useState([]);
-  const [allQuestions, setAllQuestions] = useState([]);
-  const [allPoints, setAllPoints] = useState([]);
   const [isOn, setIsOn] = useState(false);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
-  const [username, setUsername] = useState("");
   const [transportEmissions, setTransportEmissions] = useState(0);
   const [dietEmissions, setDietEmissions] = useState(0);
   const [heatingEmissions, setHeatingEmissions] = useState(0);
@@ -30,33 +25,14 @@ const Stats = ({ colorblind }) => {
   const [userBestWeek, setUserBestWeek] = useState("");
   const [userBestMonth, setUserBestMonth] = useState("");
 
-  const fetchAllQuestions = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-      setAllQuestions(response.data.map(activity => activity.name));
-      setAllPoints(response.data.map(activity => activity.points));
-    } catch (error) {
-      console.error("Error fetching activity questions:", error);
-    }
-  };
-
-  const fetchUserActivities = async () => {
-    try {
-      const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
-      setQuestions(response.data.map(activity => activity.name));
-      setPoints(response.data.map(activity => activity.points));
-    } catch (error) {
-      console.error("Error fetching user activities:", error);
-    }
-  };
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:9099/api/stats", { withCredentials: true });
+      const response = await axios.get(`${apiUrl}/api/stats`, { withCredentials: true });
       const data = response.data;
       setWeekData(data.weekLeaderboard);
       setMonthData(data.monthLeaderboard);
-      setUsername(data.username);
       setTransportEmissions(data.transportEmissions);
       setDietEmissions(data.dietEmissions);
       setHeatingEmissions(data.heatingEmissions);
@@ -72,23 +48,18 @@ const Stats = ({ colorblind }) => {
   };
 
   useEffect(() => {
-    fetchUserActivities();
-    fetchAllQuestions();
     fetchData();
-  }, [isFormOpen]);
+  }, []);
 
-  const handleActivitySave = async (selected) => {
-    try {
-      await axios.post(
-        "http://localhost:9099/api/update-user-activities",
-        { activities: selected },
-        { withCredentials: true }
-      );
-      await fetchUserActivities();
-    } catch (error) {
-      console.error("Error saving user activities:", error);
-    }
-  };
+  // subscribe to activity updates published by Navbar's popup
+  useEffect(() => {
+    const unsub = subscribeActivity(() => {
+      setIsFormOpen(prev => !prev);
+      fetchData();
+    });
+    return unsub;
+  }, []);
+
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -96,7 +67,7 @@ const Stats = ({ colorblind }) => {
       <header className="top-0 z-50 bg-white">
         <HeaderBanner
           logoAlign="left"
-          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
+          navbar={<Navbar />}
         />
       </header>
 
@@ -113,7 +84,7 @@ const Stats = ({ colorblind }) => {
         {/* Left Section: Charts */}
         <section className="w-full sm:w-3/4 grid grid-cols-1 sm:grid-cols-2 grid-rows-4 sm:grid-rows-2 gap-4 sm:gap-6" aria-label="Charts and visual statistics">
           {/* Emissions Pie Chart */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center">
               <h2 className="[font-family:'Sky_Text',Helvetica] text-xl sm:text-2xl font-bold text-center text-gray-900">
                 Projected Emissions Breakdown
@@ -128,14 +99,14 @@ const Stats = ({ colorblind }) => {
           </Card>
 
           {/* Calendar Heatmap */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center">
               <CalendarHeatmap isFormOpen={isFormOpen} colorblind={colorblind} />
             </CardContent>
           </Card>
 
           {/* User Rank Chart */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
               <UserRankChart 
                 isFormOpen={isFormOpen} 
@@ -148,7 +119,7 @@ const Stats = ({ colorblind }) => {
           </Card>
 
           {/* User Points Bar Chart */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
               <PointsBarChart isFormOpen={isFormOpen} />
             </CardContent>
@@ -157,7 +128,7 @@ const Stats = ({ colorblind }) => {
 
         {/* Right Section: Info Cards */}
         <aside className="w-full sm:w-1/4 flex flex-col gap-4 sm:gap-6" aria-label="User statistics summary">
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Highest Week Points
             </h3>
@@ -167,7 +138,7 @@ const Stats = ({ colorblind }) => {
             </p>
           </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Highest Month Points
             </h3>
@@ -177,7 +148,7 @@ const Stats = ({ colorblind }) => {
             </p>
           </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Week Points
             </h3>
@@ -186,7 +157,7 @@ const Stats = ({ colorblind }) => {
             </p>
           </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Month Points
             </h3>
@@ -196,17 +167,6 @@ const Stats = ({ colorblind }) => {
           </Card>
         </aside>
       </main>
-
-      {/* Popup Form */}
-      <Popup
-        isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        questions={questions}
-        points={points}
-        allQuestions={allQuestions}
-        allPoints={allPoints}
-        onActivitiesSave={handleActivitySave}
-      />
 
       {/* Footer */}
       <footer>

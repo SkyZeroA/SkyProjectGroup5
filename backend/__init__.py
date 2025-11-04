@@ -1,22 +1,46 @@
 import os
 from flask import Flask
 from flask_cors import CORS
+from pathlib import Path
 
-template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..', 'frontend', 'templates'))
+# template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..', 'frontend', 'templates'))
+# app = Flask(__name__, template_folder=template_dir)
 
-app = Flask(__name__, template_folder=template_dir)
+# Load environment variables
+# ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
+# if ENV == 'production':
+#     allowed_origins = ["https://your-production-domain.com"]
+# else:
+#     allowed_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
+    env_filename = f'env'
+
+    env_path = Path(__file__).resolve().parents[0] / env_filename
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
+except Exception:
+    pass
+
+allowed_origins = os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+
+app = Flask(__name__)
 app.config.update(
     SESSION_COOKIE_NAME="session",
     SESSION_COOKIE_SAMESITE="Lax",    # Allows cross-origin cookie usage
-    SESSION_COOKIE_SECURE=False        # Must be False if not using HTTPS locally
+    # SESSION_COOKIE_SECURE=False        # Must be False if not using HTTPS locally
+    SESSION_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
 )
 
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 from . import routes
-
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
+CORS(app, supports_credentials=True, origins=allowed_origins)
+# CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
 
 # --------- For avatar image uploading ---------------
 

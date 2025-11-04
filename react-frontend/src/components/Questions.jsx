@@ -49,7 +49,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 
 	return (
 		<div
-      className={`transition-opacity duration-300 space-y-6 ${
+      className={`transition-opacity duration-300 space-y-6 text-[14px] md:text-base ${
         isEditing ? "opacity-100 pointer-events-auto" : "opacity-50 pointer-events-none"
       }`}
     >
@@ -58,7 +58,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 					{ value: 0, label: "Work from Home" },
 					{ value: 1, label: "Walk/Cycle" },
 					{ value: 2, label: "Public Transport (Bus/Train)" },
-					{ value: 3, label: "Car (Petrol/Diesel)" },
+					{ value: 3, label: "Car (Petrol/ Diesel)" },
 					{ value: 4, label: "Car (Electric)" },
 				]}
 				current={transportMethod}

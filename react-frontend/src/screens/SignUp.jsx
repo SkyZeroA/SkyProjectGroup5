@@ -14,24 +14,70 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [usernameError, setUsernameError] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [usernameError, setUsernameError] = useState("Enter your username.");
+  const [emailError, setEmailError] = useState("Enter your email address.");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("Re-type your password.");
+  const [firstNameError, setFirstNameError] = useState("Enter your first name.");
+  const [passwordError, setPasswordError] = useState("Enter your password.");
+  const [formErrors, setFormErrors] = useState([]);
 
-  const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate()
 
+  // Validation regexes
+  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
+  const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
+  // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@sky\.uk$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  // Each error caught in this function sets the relevant error message and clears the relevant fields
+  // This is so if the user makes two mistakes, one after the other, they will not see both error messages, only the one relevant to their most recent mistake
   const handleSignUp = async (e) => {
     e.preventDefault();
+    // Client-side validation
+    if (!nameRegex.test(name.trim())) {
+      const msg = "First name must be at least 3 characters and may not include numbers, letters, spaces, hyphens or apostrophes.";
+      // setFirstNameError(msg);
+      setFormErrors([msg]);
+      return;
+    }
+    if (!usernameRegex.test(username.trim())) {
+      const msg = "Username must be 3-16 characters and may include letters, numbers, underscores or hyphens.";
+      // setUsernameError(msg);
+      setFormErrors([msg]);
+      return;
+    }
+    if (!emailRegex.test(email.trim())) {
+      const msg = "Email must be a valid @sky.uk address.";
+      // setUsernameError("Enter your username.");
+      // setEmailError(msg);
+      setConfirmPasswordError("Re-type your password.");
+      setFormErrors([msg]);
+      return;
+    }
 
-    // Reset previous error messages
-    setUsernameError("");
-    setNameError("");
-    setEmailError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
+    if (!passwordRegex.test(password)) {
+      const msg = "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
+      // setUsernameError("Enter your username.");
+      setEmailError("Enter your email address.");
+      // setPasswordError(msg);
+      // setPassword("");
+      // setConfirmPassword("");
+      setFormErrors([msg]);
+      return;
+    }
 
+    if (password !== confirmPassword) {
+      const msg = "Passwords do not match. Please re-type.";
+      setUsernameError("Enter your username.");
+      setEmailError("Enter your email address.");
+      // setConfirmPasswordError(msg);
+      // setPassword("");
+      // setConfirmPassword("");
+      setFormErrors([msg]);
+      return;
+    }
     const signUpPayload = {
       "first-name": name,
       username,
@@ -41,43 +87,52 @@ const SignUp = () => {
     };
     console.log("Sign Up Payload:", signUpPayload);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:9099/api/sign-up",
-        signUpPayload,
-        { withCredentials: true }
-      );
-      console.log("Sign Up Response:", response.data);
-      if (response?.data?.message === "Sign up successful") {
-        navigate("/questionnaire");
-      }
-    } catch (error) {
-      console.error("Sign Up Error:", error);
-      if (error.response?.status === 401) {
-        const errMsg = error.response?.data?.error;
-        if (errMsg === "Username already exists") {
-          setUsernameError("Username already exists. Please choose another.");
-          setUsername("");
-          setPassword("");
-          setConfirmPassword("");
-        } else if (errMsg === "Email already has an account") {
-          setEmailError("Email already has an account. Please use another.");
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-        } else if (errMsg === "Passwords do not match") {
-          setConfirmPasswordError("Passwords do not match. Please re-type.");
-          setPassword("");
-          setConfirmPassword("");
+    await axios.post(`${apiUrl}/api/sign-up`, signUpPayload, {withCredentials:true})
+      .then((response) => {
+        console.log("Sign In Response:", response.data);
+        if (response?.data?.message === "Sign up successful") {
+          setFormErrors([]);
+          navigate("/questionnaire")
         }
-      }
-    }
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          if (error.response?.data?.error === "Username already exists") {
+            // Handle username already exists error
+            setUsernameError("Username already exists. Please choose another.");
+            setEmailError("Enter your email address.");
+            setConfirmPasswordError("Re-type your password.");
+            setUsername("");
+            setPassword("");
+            setConfirmPassword("");
+
+          } else if (error.response?.data?.error === "Email already has an account") {
+            // Handle email already has an account error
+            setUsernameError("Enter your username.");
+            setEmailError("Email already has an account. Please use another.");
+            setConfirmPasswordError("Re-type your password.");
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+            setFormErrors([]);
+
+          } else if (error.response?.data?.error === "Passwords do not match") {
+            // Handle passwords do not match error
+            setUsernameError("Enter your username.");
+            setEmailError("Enter your email address.");
+            setConfirmPasswordError("Passwords do not match. Please re-type.");
+            setPassword("");
+            setConfirmPassword("");
+          }
+        }
+        console.error("Sign Up Error:", error);
+      });
   };
 
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header>
-        <HeaderBanner className="lg:fixed" />
+        <HeaderBanner className="md:fixed" logoLinked={false} />
       </header>
 
       {/* Skip link for keyboard users */}
@@ -118,12 +173,10 @@ const SignUp = () => {
                   id="first-name"
                   type="text"
                   label="First Name"
-                  errorMessage={nameError || "Enter your first name."}
-                  showError={!!nameError}
+                  errorMessage={firstNameError}
+                  showError={true}
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  aria-describedby="first-name-error"
+                  onChange={(e) => { setName(e.target.value)}}
                 />
 
                 <Input
@@ -154,8 +207,8 @@ const SignUp = () => {
                   id="password"
                   type="password"
                   label="Password"
-                  errorMessage={passwordError || "Enter your password."}
-                  showError={!!passwordError}
+                  errorMessage={passwordError}
+                  showError={true}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -183,6 +236,14 @@ const SignUp = () => {
                   Continue
                 </Button>
 
+                {formErrors.length > 0 && (
+                  <div className="mt-3 text-center">
+                    {formErrors.map((err, i) => (
+                      <p key={i} className="text-sm text-red-600">{err}</p>
+                    ))}
+                  </div>
+                )}
+  
                 <div className="text-center">
                   <Button
                     variant="link"

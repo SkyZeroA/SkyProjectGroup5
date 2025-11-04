@@ -9,6 +9,8 @@ import Questions from "../components/Questions";
 
 const Questionnaire = () => {
   const [answers, setAnswers] = useState({});
+
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [submissionError, setSubmissionError] = useState("");
   const navigate = useNavigate();
 
@@ -19,13 +21,13 @@ const Questionnaire = () => {
     console.log("Submitting Answers:", answers);
     try {
       const response = await axios.post(
-        "http://localhost:9099/api/set-questionnaire",
+        `${apiUrl}/api/set-questionnaire`,
         answers,
         { withCredentials: true }
       );
       console.log("Response:", response.data);
       if (response?.data?.message === "Questionnaire submitted successfully") {
-        navigate("/dashboard");
+        navigate("/about");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -39,7 +41,7 @@ const Questionnaire = () => {
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
       <header className="top-0 z-10 bg-white shadow-md">
-        <HeaderBanner />
+        <HeaderBanner  logoLinked={false}/>
       </header>
 
       {/* Skip link for keyboard users */}
