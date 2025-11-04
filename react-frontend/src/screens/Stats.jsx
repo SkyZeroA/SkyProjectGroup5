@@ -113,7 +113,7 @@ const Stats = () => {
         {/* Left Section: Charts */}
         <section className="w-full sm:w-3/4 grid grid-cols-1 sm:grid-cols-2 grid-rows-4 sm:grid-rows-2 gap-4 sm:gap-6" aria-label="Charts and visual statistics">
           {/* Emissions Pie Chart */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center">
               <h2 className="[font-family:'Sky_Text',Helvetica] text-xl sm:text-2xl font-bold text-center text-gray-900">
                 Projected Emissions Breakdown
@@ -127,14 +127,14 @@ const Stats = () => {
           </Card>
 
           {/* Calendar Heatmap */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center">
               <CalendarHeatmap isFormOpen={isFormOpen} />
             </CardContent>
           </Card>
 
           {/* User Rank Chart */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
               <UserRankChart 
                 isFormOpen={isFormOpen} 
@@ -147,7 +147,7 @@ const Stats = () => {
           </Card>
 
           {/* User Points Bar Chart */}
-          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden">
+          <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
               <PointsBarChart isFormOpen={isFormOpen} />
             </CardContent>
@@ -156,7 +156,7 @@ const Stats = () => {
 
         {/* Right Section: Info Cards */}
         <aside className="w-full sm:w-1/4 flex flex-col gap-4 sm:gap-6" aria-label="User statistics summary">
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Highest Week Points
             </h3>
@@ -166,7 +166,7 @@ const Stats = () => {
             </p>
           </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Highest Month Points
             </h3>
@@ -176,7 +176,7 @@ const Stats = () => {
             </p>
           </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Week Points
             </h3>
@@ -185,7 +185,7 @@ const Stats = () => {
             </p>
           </Card>
 
-          <Card className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
+          <Card className="bg-white rounded-lg p-4 sm:p-6 flex-1 flex flex-col justify-between">
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Month Points
             </h3>

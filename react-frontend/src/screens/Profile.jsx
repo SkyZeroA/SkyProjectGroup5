@@ -5,8 +5,9 @@ import  FooterBanner from "../components/FooterBanner";
 import { Avatar, AvatarFallback } from "../components/Avatar";
 import axios from "axios";
 import { Button } from "../components/Button";
-import { useNavigate } from "react-router-dom";
 import Questions from "../components/Questions";
+import Navbar from "../components/Navbar";
+import Popup from "../components/PopUp";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
@@ -14,8 +15,48 @@ const Profile = () => {
   const [avatar, setAvatar] = useState(null);
   const [answers, setAnswers] = useState({})
   const [isEditing, setIsEditing] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [questions, setQuestions] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
 
-  const navigate = useNavigate();
+  const fetchAllQuestions = async () => {
+    try {
+      const response = await axios.get("http://localhost:9099/api/fetch-questions",
+				{ withCredentials: true });
+      setAllQuestions(response.data);
+    } catch (error) {
+      console.error("Error fetching activity questions:", error);
+    }
+  };
+
+  const fetchUserActivities = async () => {
+    try {
+      const response = await axios.get("http://localhost:9099/api/user-activities",
+				{ withCredentials: true });
+      setQuestions(response.data);
+    } catch (error) {
+      console.error("Error fetching user activities:", error);
+    }
+  };
+
+	const handleActivitySave = async (selected) => {
+    try {
+      await axios.post(
+        "http://localhost:9099/api/update-user-activities",
+        { activities: selected },
+        { withCredentials: true }
+      );
+      await fetchUserActivities();
+    } catch (error) {
+      console.error("Error saving user activities:", error);
+    }
+  };
+
+	useEffect(() => {
+		fetchAllQuestions();
+		fetchUserActivities();
+	}, [isFormOpen]);
+
 
   // Gets the username and first name of the current user
   const fetchUserData = async () => {
@@ -91,47 +132,21 @@ const Profile = () => {
   console.log("avatar", avatar)
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
-      <HeaderBanner
+      <header className="top-0 z-50 bg-white">
+        <HeaderBanner
           className="md:fixed"
           logoAlign="left"
-          navbar={
-            <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
-              <div>
-                <Button
-                  variant="link"
-                  className="text-grey-900"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Dashboard
-                </Button>
-                <Button
-                  variant="link"
-                  className="text-grey-900"
-                  onClick={() => navigate("/stats")}
-                >
-                  Statistics
-                </Button>
-              </div>
-
-              <div className="ml-auto">
-                <Button 
-                  variant="link"
-                  onClick={() => navigate("/")}
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          }
+          navbar={<Navbar username={username} setIsFormOpen={setIsFormOpen} />}
         />
+      </header>
 
-      <main className="flex items-center justify-center min-h-screen">
-				<div className="w-1/3 px-2">
-          <Card className="bg-white min-h-[815px] rounded-lg">
+      <main className="flex flex-col md:flex-row items-center justify-center min-h-screen px-4 md:px-0">
+        <div className="w-full md:w-1/3 px-2 mb-6 md:mb-0">
+          <Card className="bg-white min-h-[auto] md:min-h-[815px] rounded-lg">
             <CardContent className="p-6">
               <div className="flex flex-col items-center justify-center py-10 space-y-4">
                 <div className="relative flex flex-col items-center">
-                  <Avatar className="w-[250px] h-[250px] bg-gray-200 overflow-hidden">
+                  <Avatar className="w-40 h-40 md:w-[250px] md:h-[250px] bg-gray-200 overflow-hidden">
                     {avatar && avatar !== 'None' ? (
                       <img
                         src={`http://localhost:9099${avatar}`}
@@ -139,8 +154,8 @@ const Profile = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <AvatarFallback className="bg-gray-200 text-black font-bold text-[50px]">
-                        {username.charAt(0)}
+                      <AvatarFallback className="bg-gray-200 text-black font-bold text-[24px] md:text-[50px]">
+                        {username ? username.charAt(0) : ''}
                       </AvatarFallback>
                     )}
                   </Avatar>
@@ -163,22 +178,22 @@ const Profile = () => {
                   </label>
                 </div>
 
-                <span className="pt-5 text-xl font-semibold [font-family:'Sky_Text',Helvetica]">
+                <span className="pt-5 text-lg md:text-xl font-semibold [font-family:'Sky_Text',Helvetica]">
                   Hi {firstName}!
                 </span>
-                <span className="[font-family:'Sky_Text',Helvetica] text-gray-900">
+                <span className="[font-family:'Sky_Text',Helvetica] text-gray-900 text-sm md:text-base">
                   Username: {username}
                 </span>
               </div>
             </CardContent>
           </Card>
         </div>
-				<div className="w-2/3 px-2">
-          <Card className="bg-white rounded-lg h-[815px] flex items-center justify-center">
-            <div className="bg-white rounded-lg h-[95%] w-[95%] overflow-hidden">
+        <div className="w-full md:w-2/3 px-2">
+          <Card className="bg-white rounded-lg h-auto md:h-[815px] flex items-start md:items-center justify-center">
+            <div className="bg-white rounded-lg h-auto md:h-[95%] w-full md:w-[95%] overflow-hidden">
               <CardContent className="h-full p-6 overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
-                  <h1 className="text-[34px] [font-family:'Sky_Text',Helvetica]">
+                  <h1 className="text-[20px] md:text-[34px] [font-family:'Sky_Text',Helvetica]">
                     Your Lifestyle Questionnaire
                   </h1>
 
@@ -202,6 +217,15 @@ const Profile = () => {
           </Card>
         </div>
       </main>
+
+      <Popup
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        questions={questions}
+        allQuestions={allQuestions}
+        onActivitiesSave={handleActivitySave}
+      />
+
       <FooterBanner className="md:fixed"/>
     </div>
   );

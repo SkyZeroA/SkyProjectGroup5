@@ -4,6 +4,7 @@ import Questionnaire from './screens/Questionnaire';
 import Dashboard from './screens/Dashboard';
 import Stats from './screens/Stats';
 import Profile from './screens/Profile';
+import About from './screens/About';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path='/stats' element={<Stats />} />
+        <Route path='/about' element={<About />} />
       </Routes>
     </Router>
   );
