@@ -563,7 +563,7 @@ def get_highest_month_points():
                         LIMIT 1;
                         """)
     result = cursor.fetchone()
-    print(result)
+    # print(result)
     close_connection(db)
     if result:
         user_id, points = result

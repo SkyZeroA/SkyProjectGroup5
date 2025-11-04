@@ -72,7 +72,7 @@ def questionnaire():
     # print("User email from session:", session['email'])
     email = session['email']
     data = request.get_json()
-    print("Questionnaire data received:", data)
+    # print("Questionnaire data received:", data)
     answers = Questionnaire(data, get_user_id_from_db(email), datetime.today())
     # print(answers.format_answers())
     insert_into_questionnaire(answers.format_answers())
