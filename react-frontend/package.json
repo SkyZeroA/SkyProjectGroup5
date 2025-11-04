@@ -13,9 +13,11 @@
     "lucide": "^0.545.0",
     "lucide-react": "^0.545.0",
     "react": "^19.2.0",
+    "react-calendar-heatmap": "^1.10.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.4",
     "react-scripts": "5.0.1",
+    "recharts": "^3.3.0",
     "tailwind-merge": "^3.3.1",
     "web-vitals": "^2.1.4"
   },
@@ -49,4 +51,3 @@
     "tailwindcss": "^3.4.18"
   }
 }
-

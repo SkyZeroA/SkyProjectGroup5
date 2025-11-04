@@ -96,6 +96,23 @@ const Profile = () => {
           logoAlign="left"
           navbar={
             <div className="w-full flex items-center [font-family:'Sky_Text',Helvetica] text-[16.5px] leading-[24.8px]">
+              <div>
+                <Button
+                  variant="link"
+                  className="text-grey-900"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  variant="link"
+                  className="text-grey-900"
+                  onClick={() => navigate("/stats")}
+                >
+                  Statistics
+                </Button>
+              </div>
+
               <div className="ml-auto">
                 <Button 
                   variant="link"
@@ -178,7 +195,7 @@ const Profile = () => {
                 </div>
 
                 <div className="py-4 space-y-6">
-                  <Questions initialAnswers={answers} isEditing={isEditing} />
+                  <Questions onAnswersChange={setAnswers} initialAnswers={answers} isEditing={isEditing} />
                 </div>
               </CardContent>
             </div>

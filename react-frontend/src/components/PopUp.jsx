@@ -4,7 +4,7 @@ import React, {useState, useEffect} from "react";
 import { Card, CardContent } from "./Card";
 import axios from "axios";
 
-const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave }) => {
+const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints, onActivitiesSave }) => {
     const [answers, setAnswers] = useState({});
     const [selectedActivities, setSelectedActivities] = useState([]);
     const [isEditingActivities, setIsEditingActivities] = useState(false);
@@ -97,8 +97,9 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                       : "grid-cols-1"
                   }`}
               >
-                {allQuestions.map((activity) => {
+                {allQuestions.map((activity, index) => {
                   const isSelected = selectedActivities.includes(activity);
+                  const points = allPoints[index];
                   return (
                     <div
                       key={activity}
@@ -112,6 +113,7 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">{activity}</span>
+                        <span className="text-xs font-light">({points} pts)</span>
                         {isSelected && (
                           <svg
                             className="w-5 h-5 text-green-600"
@@ -147,36 +149,41 @@ const PopupForm = ({ isOpen, onClose, questions, allQuestions, onActivitiesSave 
                       No activities set. Click "Edit Activities" below to add some.
                     </p>
                   ) : (
-                    questions.map((question) => (
-                      <div key={question} className="mb-2">
-                        <label className="block mb-2 font-medium text-gray-800">{question}</label>
-                        <div className="flex items-center gap-3">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (Number(answers[question] || 0) > 0) {
-                                decrement(question);
-                                handleSubmit(question, 0);
-                              }
-                            }}
-                            className="bg-gray-200 px-3 py-1 rounded text-lg"
-                          >
-                            −
-                          </button>
-                          <span className="text-lg w-8 text-center">{answers[question]}</span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              increment(question);
-                              handleSubmit(question, 1);
-                            }}
-                            className="bg-gray-200 px-3 py-1 rounded text-lg"
-                          >
-                            +
-                          </button>
+                    questions.map((question, index) => {
+                      const questionPoints = points[index] || 0;
+                      return (
+                        <div key={question} className="mb-2">
+                          <label className="block mb-2 font-medium text-gray-800">
+                            {question} ({questionPoints} pts)
+                          </label>
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if ((answers[question] || 0) > 0) {
+                                  decrement(question);
+                                  handleSubmit(question, 0);
+                                }
+                              }}
+                              className="bg-gray-200 px-3 py-1 rounded text-lg"
+                            >
+                              −
+                            </button>
+                            <span className="text-lg w-8 text-center">{answers[question] || 0}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                increment(question);
+                                handleSubmit(question, 1);
+                              }}
+                              className="bg-gray-200 px-3 py-1 rounded text-lg"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </form>
