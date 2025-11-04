@@ -19,7 +19,7 @@ const RadioQuestion = ({options, current, setCurrent, question}) => {
 					{options.map((option) => (
 						<div
 							key={option.value}
-							className="flex items-center justify-between gap-3 w-36 md:w-48 min-h-[50px] px-3 mx-auto"
+							className="flex items-center justify-between gap-2 w-36 lg:w-28 min-h-[50px] px-3 mx-auto"
 						>
 							<span className="text-sm md:text-base cursor-pointer [font-family:'Sky_Text',Helvetica] font-normal mr-2 whitespace-normal break-words">
 								{option.label}
