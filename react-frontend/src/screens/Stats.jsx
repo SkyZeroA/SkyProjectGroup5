@@ -33,7 +33,7 @@ const Stats = () => {
   const fetchAllQuestions = async () => {
     try {
       const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
-      setAllQuestions(response.data.map(activity => activity.activity_name));
+      setAllQuestions(response.data.map(activity => activity.name));
       setAllPoints(response.data.map(activity => activity.points));
     } catch (error) {
       console.error("Error fetching activity questions:", error);
@@ -43,7 +43,7 @@ const Stats = () => {
   const fetchUserActivities = async () => {
     try {
       const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
-      setQuestions(response.data.map(activity => activity.activity_name));
+      setQuestions(response.data.map(activity => activity.name));
       setPoints(response.data.map(activity => activity.points));
     } catch (error) {
       console.error("Error fetching user activities:", error);
