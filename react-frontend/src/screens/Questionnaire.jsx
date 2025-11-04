@@ -39,7 +39,7 @@ const Questionnaire = () => {
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
       <header className="top-0 z-10 bg-white shadow-md">
-        <HeaderBanner />
+        <HeaderBanner  logoLinked={false}/>
       </header>
 
       {/* Skip link for keyboard users */}

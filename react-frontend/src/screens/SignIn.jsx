@@ -56,7 +56,7 @@ const SignIn = () => {
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header>
-        <HeaderBanner className="md:fixed" />
+        <HeaderBanner className="md:fixed"  logoLinked={false}/>
       </header>
 
       {/* Skip to main content link for keyboard users */}
