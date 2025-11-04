@@ -14,12 +14,14 @@ const About = () => {
 	const [questions, setQuestions] = useState([]);
 	const [allQuestions, setAllQuestions] = useState([]);
 	const [username, setUsername] = useState("");
+	const [points, setPoints] = useState([]);
+	const [allPoints, setAllPoints] = useState([]);
 
-	const fetchAllQuestions = async () => {
+  const fetchAllQuestions = async () => {
     try {
-      const response = await axios.get("http://localhost:9099/api/fetch-questions",
-				{ withCredentials: true });
-      setAllQuestions(response.data);
+      const response = await axios.get("http://localhost:9099/api/fetch-questions", { withCredentials: true });
+      setAllQuestions(response.data.map(activity => activity.name));
+      setAllPoints(response.data.map(activity => activity.points));
     } catch (error) {
       console.error("Error fetching activity questions:", error);
     }
@@ -27,9 +29,9 @@ const About = () => {
 
   const fetchUserActivities = async () => {
     try {
-      const response = await axios.get("http://localhost:9099/api/user-activities",
-				{ withCredentials: true });
-      setQuestions(response.data);
+      const response = await axios.get("http://localhost:9099/api/user-activities", { withCredentials: true });
+      setQuestions(response.data.map(activity => activity.name));
+      setPoints(response.data.map(activity => activity.points));
     } catch (error) {
       console.error("Error fetching user activities:", error);
     }
@@ -215,6 +217,8 @@ const About = () => {
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
         questions={questions}
+				points={points}
+				allPoints={allPoints}
         allQuestions={allQuestions}
         onActivitiesSave={handleActivitySave}
       />
