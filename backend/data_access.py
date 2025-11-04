@@ -3,18 +3,17 @@ from pathlib import Path
 from datetime import date, timedelta, datetime
 import os
 
-# Optionally load backend/.env so local .env.development or .env.production
-# copied to backend/.env is respected during local runs. If python-dotenv is not
-# available this will silently be skipped and environment variables must be set
-# externally (for example by the hosting environment or CI).
+# Load environment variables
 try:
     from dotenv import load_dotenv
-    env_path = Path(__file__).resolve().parent / '.env'
+    ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
+    env_filename = f'env.{ENV}'
+
+    env_path = Path(__file__).resolve().parents[0] / env_filename
     if env_path.exists():
         load_dotenv(dotenv_path=env_path)
 except Exception:
     pass
-
 
 def get_db_connect_kwargs():
     """Return kwargs suitable for `mysql.connector.connect(**kwargs)`.
