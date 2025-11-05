@@ -11,7 +11,7 @@ VALUES
 ('Fiona', 'fifi', 'fiona@example.com', 'pass6'),
 ('George', 'geo7', 'george@example.com', 'pass7'),
 ('Hannah', 'hannie', 'hannah@example.com', 'pass8'),
-('Test', 'tester', 'test@example.com', 'password'),
+('Test', 'tester', 'test@sky.uk', 'Password1!'),
 ('Ian', 'ian88', 'ian@example.com', 'pass9'),
 ('Kyle', 'kyle_k', 'kyle@example.com', 'pass11'),
 ('Laura', 'laurie', 'laura@example.com', 'pass12'),
