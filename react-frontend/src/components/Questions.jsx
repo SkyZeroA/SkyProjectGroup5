@@ -9,6 +9,10 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
   const [dietDays, setDietDays] = useState(0);
   const [meats, setMeats] = useState(0);
   const [heatingHours, setHeatingHours] = useState(0);
+  const [turnOffDevices, setTurnOffDevices] = useState(0);
+  const [recycle, setRecycle] = useState(0);
+  const [reuseable, setReuseable] = useState(0);
+  const [foodWaste, setFoodWaste] = useState(0);
 	
 	// Keeps track of current question
   // Used to make numbers consistent with conditionally displayed questions
@@ -22,6 +26,10 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
       setDietDays(initialAnswers.dietDays ?? 0);
       setMeats(initialAnswers.meats ?? 0);
       setHeatingHours(initialAnswers.heatingHours ?? 0);
+	  setTurnOffDevices(initialAnswers.turnOffDevices ?? 0);
+	  setRecycle(initialAnswers.recycle ?? 0);
+	  setReuseable(initialAnswers.reuseable ?? 0);
+	  setFoodWaste(initialAnswers.foodWaste ?? 0);
     }
   }, [initialAnswers]);
 
@@ -35,6 +43,10 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
         dietDays,
         meats,
         heatingHours,
+		turnOffDevices,
+		recycle,
+		reuseable,
+		foodWaste
       });
     }
   }, [
@@ -44,6 +56,10 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 		dietDays, 
 		meats, 
 		heatingHours,
+		turnOffDevices,
+		recycle,
+		reuseable,
+		foodWaste,
 		onAnswersChange
 	]);
 
@@ -120,6 +136,53 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 			current={heatingHours}
 			setCurrent={setHeatingHours}
 			question={`Question ${questionNumber++}: How many hours per day do you have your heating on in winter?`}
+			/>
+
+			<RadioQuestion 
+				options={[
+					{ value: 0, label: "Always" },
+					{ value: 1, label: "Most of the time" },
+					{ value: 2, label: "Sometimes" },
+					{ value: 3, label: "Rarely" },
+				]}
+				current={turnOffDevices}
+				setCurrent={setTurnOffDevices}
+				question={`Question ${questionNumber++}: How often do you switch off electronic devices (monitor, laptop, tv) after use?`}
+			/>
+
+			<RadioQuestion 
+				options={[
+					{ value: 0, label: "Always" },
+					{ value: 1, label: "Most of the time" },
+					{ value: 2, label: "Sometimes" },
+					{ value: 3, label: "Rarely" },
+				]}
+				current={recycle}
+				setCurrent={setRecycle}
+				question={`Question ${questionNumber++}: How often do you recycle items like paper, plastic, and cans?`}
+			/>
+
+			<RadioQuestion 
+				options={[
+					{ value: 0, label: "Always" },
+					{ value: 1, label: "Most of the time" },
+					{ value: 2, label: "Sometimes" },
+					{ value: 3, label: "Rarely" },
+				]}
+				current={reuseable}
+				setCurrent={setReuseable}
+				question={`Question ${questionNumber++}: How often do you use reusable bottles, coffee cups, or shopping bags?`}
+			/>
+
+			<RadioQuestion 
+				options={[
+					{ value: 0, label: "Rarely" },
+					{ value: 1, label: "Sometimes" },
+					{ value: 2, label: "Often" },
+				]}
+				current={foodWaste}
+				setCurrent={setFoodWaste}
+				question={`Question ${questionNumber++}: How often do you end up with leftover or wasted food?`}
 			/>
 		</div>
 	);
