@@ -20,17 +20,33 @@ const About = () => {
 	// FAQs
 	const faqs = [
 		{
-			question: "How is my carbon footprint calculated?",
-			answer: "Your carbon footprint is estimated based on your lifestyle choices and activities logged in the app."
+			question: "Why do you ask about my lifestyle habits?",
+			answer: "These questions are used to calculate a predicted carbon footprint for the year. "
 		},
 		{
-			question: "How often should I update my activities?",
-			answer: "For the most accurate tracking, we recommend updating your activities daily or weekly."
+			question: "Can I skip questions or answer later?",
+			answer: "Yes, you can skip questions and if your circumstances change, you can edit your responses in the profile section "
 		},
 		{
-			question: "Can I change my answers in the questionnaire later?",
-			answer: "Yes, you can update your questionnaire responses at any time through your profile settings."
+			question: "What does my Projected Carbon Footprint mean?",
+			answer: "Your projected carbon footprint is the expected amount of carbon you will produce based on the answers to the initial lifestyle questionnaire."
 		},
+		{
+			question: "Why are there colour indicators on my carbon bar?",
+			answer: "The grey section of the bar indicates the amount of carbon you have currently emitted. The green section is the amount of carbon you have saved, when compared to your predicted yearly footprint, by completing your carbon saving activities. It is worth noting that only actions that improve upon your current lifestyle will affect this."
+		},
+		{
+			question: "What does my score represent?",
+			answer: "Your leaderboard score represents the accumulation of points due to completing your carbon saving actions. This can be viewed as a weekly or monthly total using the toggle."
+		},
+		{
+			question: "How do I add my daily eco actions?",
+			answer: "In the 'Log your activities' tab on the homepage, you can select the daily activities which apply to you. The selected activities will then appear which will allow you to log the number of times you have completed each action."
+		},
+		{
+			question: "How are my tips generated?",
+			answer: "An AI Agent is given your lifestyle information and uses this to generate relevant, actionable tips specific to you."
+		}
 	];	
 
 	return (

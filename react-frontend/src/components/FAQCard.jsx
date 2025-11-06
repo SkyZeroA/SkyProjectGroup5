@@ -17,7 +17,7 @@ const FAQCard = ({ question, answer }) => {
         </h2>
 
         <div
-          className="flex-none flex items-center justify-center w-9 h-9 rounded-md border border-gray-200 bg-white text-gray-700"
+          className="flex-none flex items-center justify-center w-9 h-9 bg-transparent text-gray-700"
           aria-hidden="true"
         >
           <span className="text-xl font-bold leading-none select-none">{open ? '−' : '+'}</span>
