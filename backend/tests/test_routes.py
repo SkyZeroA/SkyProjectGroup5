@@ -7,8 +7,12 @@ from backend import app
 class TestFlaskAPI(TestCase):
 
     def setUp(self):
-        self.app = app.test_client()
-        self.app.testing = True
+        app.config['SECRET_KEY'] = 'test-secret'
+        app.config['TESTING'] = True
+        app.config['WTF_CSRF_ENABLED'] = False
+        self.app = app.test_client(use_cookies=True)
+
+
 
     # Test for Successful Sign-Up (200 OK)
     @patch('backend.routes.read_user_table')
@@ -21,11 +25,11 @@ class TestFlaskAPI(TestCase):
         mock_insert_new_user.return_value = None
 
         response = self.app.post('/api/sign-up', json={
-            "email": "harry@example.com",
+            "email": "harry@sky.uk",
             "first-name": "harry",
             "username": "harrySky",
-            "password": "test123",
-            "confirm-password": "test123"
+            "password": "Password1!",
+            "confirm-password": "Password1!"
         })
         self.assertEqual(response.status_code, 200)
         self.assertIn("Sign up successful", response.get_data(as_text=True))
@@ -36,11 +40,11 @@ class TestFlaskAPI(TestCase):
         mock_read_user_table.return_value = (["harrySky"], [])
 
         response = self.app.post('/api/sign-up', json={
-            "email": "harry@example.com",
+            "email": "harry@sky.uk",
             "first-name": "harry",
             "username": "harrySky",
-            "password": "test123",
-            "confirm-password": "test123"
+            "password": "Password1!",
+            "confirm-password": "Password1!"
         })
 
         self.assertEqual(response.status_code, 401)
@@ -52,11 +56,11 @@ class TestFlaskAPI(TestCase):
     def test_sign_up_password_mismatch(self, mock_read_user_table):
         mock_read_user_table.return_value = ([], [])
         response = self.app.post('/api/sign-up', json={
-            "email": "user@example.com",
+            "email": "user@sky.uk",
             "first-name": "User",
             "username": "user123",
-            "password": "pass1",
-            "confirm-password": "pass2"
+            "password": "Password1!",
+            "confirm-password": "Password2!"
         })
         self.assertEqual(response.status_code, 401)
         self.assertIn("Passwords do not match", response.get_data(as_text=True))
@@ -66,8 +70,8 @@ class TestFlaskAPI(TestCase):
     def test_sign_in_success(self, mock_check_password):
         mock_check_password.return_value = True
         response = self.app.post('/api/sign-in', json={
-            "email": "harry@example.com",
-            "password": "test123"
+            "email": "harry@sky.uk",
+            "password": "Password1!"
         })
         self.assertEqual(response.status_code, 200)
         self.assertIn("Sign in successful", response.get_data(as_text=True))
@@ -77,8 +81,8 @@ class TestFlaskAPI(TestCase):
     def test_sign_in_failure(self,mock_check_password):
         mock_check_password.return_value = False
         response = self.app.post('/api/sign-in', json={
-            "email": "harry@example.com",
-            "password": "wrongpass"
+            "email": "harry@sky.uk",
+            "password": "Password11111!"
         })
         self.assertEqual(response.status_code, 401)
         self.assertIn("Incorrect username or password", response.get_data(as_text=True))
@@ -131,22 +135,17 @@ class TestFlaskAPI(TestCase):
     @patch('backend.routes.get_current_month_number')
     @patch('backend.routes.get_current_week_number')
     @patch('backend.routes.get_user_id_from_db')
-    def test_log_activity(self, mock_get_user_id, mock_get_week, mock_get_month, mock_get_activity_id,
-                                  mock_insert_activity):
+    @patch('backend.routes.g', new_callable=MagicMock)
+    def test_log_activity(self, mock_g, mock_get_user_id, mock_get_week, mock_get_month, mock_get_activity_id, mock_insert_activity):
+        mock_g.user_id = 1
         mock_get_user_id.return_value = 1
         mock_get_week.return_value = 42
         mock_get_month.return_value = 10
-        # mock_get_activity_id.side_effect = lambda name: {"Cycling": 101, "Walking": 102}[name]
-        mock_get_activity_id.return_value = 101  # Assuming "Cycling" maps to 101
+        mock_get_activity_id.return_value = 101
         mock_insert_activity.return_value = None
 
         with self.app.session_transaction() as sess:
-            sess['email'] = "harry@example.com"
-
-        # response = self.app.post('/api/log-activity', json={
-        #     "Cycling": 2,
-        #     "Walking": 1
-        # })
+            sess['email'] = "harry@sky.uk"
 
         response = self.app.post('/api/log-activity', json={
             "question": "Cycling",
@@ -155,8 +154,8 @@ class TestFlaskAPI(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Activity logged successfully", response.get_data(as_text=True))
-        # self.assertEqual(mock_insert_activity.call_count, 3)  # 2 Cycling + 1 Walking
         mock_insert_activity.assert_called_once_with(1, 101, 42, 10, True)
+
 
     def test_fetch_questions(self):
         # Mock backend DB call to avoid real DB connection

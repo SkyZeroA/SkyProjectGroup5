@@ -16,10 +16,10 @@ from backend.data_access import (
 )
 
 # Sample test data
-TEST_EMAIL = "harry@example.com"
+TEST_EMAIL = "harry@sky.uk"
 TEST_FIRST_NAME = "Harry"
 TEST_USERNAME = "harrySky"
-TEST_PASSWORD = "test123"
+TEST_PASSWORD = "Password1!"
 
 class TestDatabaseFunctions(TestCase):
 
@@ -189,7 +189,7 @@ class TestDatabaseFunctions(TestCase):
         mock_cursor.fetchone.return_value = None
         # Patch get_user_id_from_db so that the function uses a valid id
         with patch('backend.data_access.get_user_id_from_db', return_value=1):
-            res = get_latest_answers_from_questionnaire('noone@example.com')
+            res = get_latest_answers_from_questionnaire(1)
             assert res == []
 
     @patch('mysql.connector.connect')
@@ -206,7 +206,7 @@ class TestDatabaseFunctions(TestCase):
         ]
         # ensure get_user_id_from_db will be called inside function; patch it to return 42
         with patch('backend.data_access.get_user_id_from_db', return_value=42):
-            subs = get_all_questionnaire_submissions('user@example.com')
+            subs = get_all_questionnaire_submissions(42)
             assert isinstance(subs, list)
             assert subs[0]['userId'] == 42
             assert subs[0]['dateSubmitted'] == row_date
