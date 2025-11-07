@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from pathlib import Path
+from flask_wtf import CSRFProtect
 
 # template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..', 'frontend', 'templates'))
 # app = Flask(__name__, template_folder=template_dir)
@@ -28,19 +29,26 @@ except Exception:
 allowed_origins = os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', os.urandom(32))
+
 app.config.update(
     SESSION_COOKIE_NAME="session",
     SESSION_COOKIE_SAMESITE="Lax",    # Allows cross-origin cookie usage
-    # SESSION_COOKIE_SECURE=False        # Must be False if not using HTTPS locally
     SESSION_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
 )
 
-SECRET_KEY = os.urandom(32)
-app.config['SECRET_KEY'] = SECRET_KEY
+
+csrf = CSRFProtect(app)
+
+
+CORS(app,
+    supports_credentials=True,
+    origins=allowed_origins,
+    allow_headers=["Content-Type", "X-CSRFToken", "X-CSRF-Token"],
+)
 
 from . import routes
-CORS(app, supports_credentials=True, origins=allowed_origins)
-# CORS(app, supports_credentials=True, origins=["http://localhost:3000"])
+
 
 # --------- For avatar image uploading ---------------
 

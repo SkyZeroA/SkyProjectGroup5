@@ -1,16 +1,25 @@
 import os
-from flask import request, session, jsonify, send_from_directory
+from flask import request, session, jsonify, send_from_directory, g
 from backend import app
 from hashlib import sha256
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from flask_wtf.csrf import generate_csrf
 
 
+from backend.decorators import login_required
 from backend.Questionnaire import Questionnaire
 from backend.data_access import *
 from backend.helpers import allowed_file
 from backend.ai_functions import generate_tip
 
+
+@app.route('/api/csrf-token', methods=['GET'])
+def get_csrf_token():
+    # Returns a CSRF token to single-page apps. The token is also stored in the session
+    # by Flask-WTF's generate_csrf, so CSRFProtect will validate incoming requests
+    token = generate_csrf()
+    return jsonify({"csrf_token": token}), 200
 
 @app.route('/api/sign-in', methods=['POST'])
 def sign_in():
@@ -74,34 +83,34 @@ def sign_out():
 
 
 @app.route('/api/set-questionnaire', methods=['POST'])
+@login_required
 def questionnaire():
     # print("User email from session:", session['email'])
-    email = session['email']
     data = request.get_json()
-    print("Questionnaire data received:", data)
-    answers = Questionnaire(data, get_user_id_from_db(email), datetime.today())
+    # print("Questionnaire data received:", data)
+    answers = Questionnaire(data, g.user_id, datetime.today())
     # print(answers.format_answers())
     insert_into_questionnaire(answers.format_answers())
     return jsonify({"message": "Questionnaire submitted successfully"}), 200
 
 
 @app.route('/api/user-activities', methods=['GET'])
+@login_required
 def user_activities():
-    user_id = get_user_id_from_db(session['email'])
-    activities = get_users_preferred_activities(user_id)
+    activities = get_users_preferred_activities(g.user_id)
     return jsonify(activities), 200
 
 
 @app.route('/api/log-activity', methods=['POST'])
+@login_required
 def log_activity():
     data = request.get_json()
-    user_id = get_user_id_from_db(session['email'])
     week_number = get_current_week_number()
     month_number = get_current_month_number()
     question = data.get('question')
     isPositive = data.get('isPositive')
     activity_id = get_activity_id(question)
-    insert_user_activity(user_id, activity_id, week_number, month_number, isPositive)
+    insert_user_activity(g.user_id, activity_id, week_number, month_number, isPositive)
     return jsonify({"message": "Activity logged successfully"}), 200
 
 
@@ -112,30 +121,30 @@ def fetch_questions():
 
 
 @app.route('/api/update-user-activities', methods=['POST'])
+@login_required
 def update_user_activities():
     data = request.get_json()
     selected_activities = data.get('activities', [])
     # print("Selected activities received:", selected_activities)
-    user_id = get_user_id_from_db(session['email'])
-    update_user_preferred_activities(user_id, selected_activities)
+    update_user_preferred_activities(g.user_id, selected_activities)
     return jsonify({"message": "User activities updated successfully"}), 200
 
 
 @app.route('/api/user-activity-counts', methods=['GET'])
+@login_required
 def user_activity_counts():
-    user_id = get_user_id_from_db(session['email'])
-    activities = get_users_preferred_activities_no_points(user_id)
+    activities = get_users_preferred_activities_no_points(g.user_id)
     activity_counts = {}
     for activity in activities:
         activity_id = get_activity_id(activity)
-        count = get_user_activity_count(user_id, activity_id)
+        count = get_user_activity_count(g.user_id, activity_id)
         activity_counts[activity] = count
     return jsonify(activity_counts), 200
 
 @app.route('/api/dashboard', methods=['GET'])
+@login_required
 def dashboard():
-    email = session['email']
-    username = get_username_from_db(email)
+    username = get_username_from_db(g.user_id)
     week_leaderboard = read_view_table_week()
     month_leaderboard = read_view_table_month()
     
@@ -143,7 +152,7 @@ def dashboard():
     questionnaires = []
     previous_questionnaire = -99
     current_questionnaire = -99
-    submissions = get_all_questionnaire_submissions(email)
+    submissions = get_all_questionnaire_submissions(g.user_id)
     for i, submission in enumerate(submissions):
         # Get first and last keys and extract values from dict
         keys = list(submission.keys())
@@ -211,9 +220,9 @@ BUFFER_SIZE = 5   # number of tips stored in DB
 DISPLAY_COUNT = 3  # number of tips shown to the user
 
 @app.route('/api/initial-ai-tips')
+@login_required
 def generate_initial_tips():
-    email = session["email"]
-    tips = get_tips_from_db(email) or []
+    tips = get_tips_from_db(g.user_id) or []
 
     # If user already has tips
     if tips and len(tips) >= DISPLAY_COUNT:
@@ -224,8 +233,8 @@ def generate_initial_tips():
         }), 200
 
     # Otherwise, create DISPLAY_COUNT tips
-    tips = [generate_tip(email) for _ in range(DISPLAY_COUNT)]
-    set_tips_in_db(email, tips)
+    tips = [generate_tip(g.user_id) for _ in range(DISPLAY_COUNT)]
+    set_tips_in_db(g.user_id, tips)
 
     return jsonify({
         "message": "Tips generated",
@@ -234,12 +243,12 @@ def generate_initial_tips():
 
 
 @app.route('/api/ai-tip')
+@login_required
 def generate_ai_tip():
-    email = session["email"]
-    tips = get_tips_from_db(email) or []
+    tips = get_tips_from_db(g.user_id) or []
 
     # Generate a new tip
-    new_tip = generate_tip(email)
+    new_tip = generate_tip(g.user_id)
     tips.append(new_tip)
 
     # Keep buffer to max BUFFER_SIZE
@@ -247,7 +256,7 @@ def generate_ai_tip():
         tips = tips[-BUFFER_SIZE:]  # keep only the most recent BUFFER_SIZE tips
 
     # Save back to DB
-    set_tips_in_db(email, tips)
+    set_tips_in_db(g.user_id, tips)
 
     return jsonify({
         "message": "Tip generated",
@@ -257,10 +266,9 @@ def generate_ai_tip():
 
 
 @app.route('/api/stats', methods=['GET'])
+@login_required
 def stats():
-    user_id = get_user_id_from_db(session['email'])
-    email = session['email']
-    username = get_username_from_db(email)
+    username = get_username_from_db(g.user_id)
     week_leaderboard = read_view_table_week()
     month_leaderboard = read_view_table_month()
     
@@ -268,7 +276,7 @@ def stats():
     questionnaires = []
     previous_questionnaire = -99
     current_questionnaire = -99
-    submissions = get_all_questionnaire_submissions(email)
+    submissions = get_all_questionnaire_submissions(g.user_id)
     for i, submission in enumerate(submissions):
         # Get first and last keys and extract values from dict
         keys = list(submission.keys())
@@ -347,25 +355,21 @@ def stats():
                    }), 200
 
 @app.route('/api/daily-rank', methods=['GET'])
+@login_required
 def daily_rank():
     period = request.args.get('period', 'week')
     start_date = request.args.get('startDate')
     end_date = request.args.get('endDate')
-    email = session.get('email')
-    if not email:
-        return jsonify({"error": "User not signed in"}), 401
-    user_id = get_user_id_from_db(email)
-    ranks = get_user_daily_ranks(user_id, period, start_date, end_date)
-    return jsonify({"username": get_username_from_db(email), "ranks": ranks}), 200
+    ranks = get_user_daily_ranks(g.user_id, period, start_date, end_date)
+    return jsonify({"username": get_username_from_db(g.user_id), "ranks": ranks}), 200
 
 
 @app.route('/api/fetch-user-data')
+@login_required
 def fetch_user_data():
-    email = session["email"]
-
-    username = get_username_from_db(email)
-    first_name = get_first_name_from_db(email)
-    avatar_filename = get_avatar_from_db(email)
+    username = get_username_from_db(g.user_id)
+    first_name = get_first_name_from_db(g.user_id)
+    avatar_filename = get_avatar_from_db(g.user_id)
     avatar = f"/uploads/{avatar_filename}" if avatar_filename else None
     # print(username, first_name)
     return jsonify({"message": "User data fetch successful",
@@ -380,8 +384,8 @@ def uploaded_file(filename):
 
 
 @app.route('/api/upload-avatar', methods=['POST'])
+@login_required
 def upload_avatar():
-    email = session["email"]
     file = request.files["avatar"]
 
     # print(file)
@@ -393,7 +397,7 @@ def upload_avatar():
         file.save(filepath)
 
         # Store filename in db
-        update_user_avatar(email, filename)
+        update_user_avatar(g.user_id, filename)
 
         return jsonify({"message": "Avatar uploaded successfully"}), 200
 
@@ -401,32 +405,25 @@ def upload_avatar():
 
 
 @app.route('/api/fetch-questionnaire-answers')
+@login_required
 def fetch_questionnaire_answers():
-    email = session["email"]
-    answers = get_latest_answers_from_questionnaire(email)
+    answers = get_latest_answers_from_questionnaire(g.user_id)
     return jsonify({"message": "Fetching questionnaire answers",
                     "answers": answers}), 200
 
-@app.route('/api/calendar-activity-counts', methods=['GET'])
-def calendar_activity_counts():
-    email = session.get('email')
-    if not email:
-        return jsonify({"error": "User not signed in"}), 401
 
-    user_id = get_user_id_from_db(email)
+@app.route('/api/calendar-activity-counts', methods=['GET'])
+@login_required
+def calendar_activity_counts():
     start_date = request.args.get('startDate')
     end_date = request.args.get('endDate')
-    counts = get_daily_activity_counts(user_id, start_date, end_date)
+    counts = get_daily_activity_counts(g.user_id, start_date, end_date)
 
     return jsonify({"counts": counts}), 200
 
 @app.route('/api/user-points', methods=['GET'])
+@login_required
 def user_points():
-    email = session.get('email')
-    if not email:
-        return jsonify({"error": "User not signed in"}), 401
-
-    user_id = get_user_id_from_db(email)
     period = request.args.get("period")  # "week" or "month"
     year = int(request.args.get("year", 2025))
     month_chunk = int(request.args.get("monthChunk", 0))
@@ -434,9 +431,9 @@ def user_points():
 
     if period == "week":
         week_chunk = int(week_chunk or 0)  # default to 0
-        data = get_user_week_points(user_id, year, week_chunk)
+        data = get_user_week_points(g.user_id, year, week_chunk)
     elif period == "month":
-        data = get_user_month_points(user_id, year, month_chunk)
+        data = get_user_month_points(g.user_id, year, month_chunk)
     else:
         return jsonify({"error": "Invalid period"}), 400
 

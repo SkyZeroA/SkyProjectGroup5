@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './Button';
 import axios from 'axios';
+import { ensureCsrfToken } from '../lib/csrf';
 import { publishActivity } from '../lib/activityBus';
 import Popup from './PopUp';
 
@@ -50,6 +51,7 @@ const Navbar = () => {
 
   const handleActivitySave = async (selected) => {
     try {
+      await ensureCsrfToken(apiUrl);
       await axios.post(
         `${apiUrl}/api/update-user-activities`,
         { activities: selected },
@@ -65,6 +67,7 @@ const Navbar = () => {
 
   const handleSignOut = async () => {
   try {
+    await ensureCsrfToken(apiUrl);
     await axios.post(`${apiUrl}/api/sign-out`, {}, { withCredentials: true });
     navigate('/'); // or navigate to login page if you have one
   } catch (error) {

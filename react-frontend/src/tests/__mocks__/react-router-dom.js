@@ -32,4 +32,8 @@ function Link({ children, to, className, ...props }) {
   return React.createElement('a', { href: to || '#', className, ...props }, children);
 }
 
-module.exports = { BrowserRouter, Routes, Route, MemoryRouter, useLocation, Navigate, useNavigate, Link };
+const exportsObj = { BrowserRouter, Routes, Route, MemoryRouter, useLocation, Navigate, useNavigate, Link };
+// support both CommonJS and ES module interop for tests that use ESM imports
+exportsObj.__esModule = true;
+exportsObj.default = exportsObj;
+module.exports = exportsObj;

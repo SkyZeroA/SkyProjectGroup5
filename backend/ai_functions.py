@@ -38,8 +38,8 @@ def is_similar_tip(new_tip, previous_tips, threshold=0.75):
     return False
 
 
-def convert_db_to_prompt(email):
-    answers = get_latest_answers_from_questionnaire(email)
+def convert_db_to_prompt(user_id):
+    answers = get_latest_answers_from_questionnaire(user_id)
     questionnaire = Questionnaire(answers, 0, datetime.today())
     lifestyle_dict = questionnaire.format_prompt()
 
@@ -54,12 +54,12 @@ def convert_db_to_prompt(email):
     return pseudo_prompt
 
 
-def generate_tip(email):
+def generate_tip(user_id):
     # Fetch the user's buffer from the DB
-    tip_buffer = get_tips_from_db(email) or []
+    tip_buffer = get_tips_from_db(user_id) or []
 
     # Convert user questionnaire to pseudo-prompt
-    prompt = convert_db_to_prompt(email)
+    prompt = convert_db_to_prompt(user_id)
 
     system_prompt = f"""
         You are an expert in low-carbon lifestyles.
@@ -88,7 +88,7 @@ def generate_tip(email):
     # Check semantic similarity
     if tip in tip_buffer or is_similar_tip(tip, tip_buffer):
         print("Tip too similar — regenerating...")
-        return generate_tip(email)  # Regenerate until we get a unique one
+        return generate_tip(user_id)  # Regenerate until we get a unique one
 
     return tip
 

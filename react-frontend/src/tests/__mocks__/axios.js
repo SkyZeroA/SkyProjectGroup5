@@ -5,4 +5,7 @@ const axios = {
   create: () => axios,
 };
 
+// support both CommonJS and ES module interop for tests that use ESM imports
+axios.__esModule = true;
+axios.default = axios;
 module.exports = axios;

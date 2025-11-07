@@ -51,13 +51,11 @@ htmlcov/
 .coverage.*
 .cache
 nosetests.xml
-coverage.xml
 *.cover
 *.py.cover
 .hypothesis/
 .pytest_cache/
 cover/
-coverage/
 
 # Translations
 *.mo
@@ -235,8 +233,6 @@ node_modules/
 .pnp.js
 
 # testing
-/coverage
-coverage/
 
 # production
 /build

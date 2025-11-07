@@ -7,8 +7,12 @@ from backend import app
 class TestFlaskAPI(TestCase):
 
     def setUp(self):
-        self.app = app.test_client()
-        self.app.testing = True
+        app.config['SECRET_KEY'] = 'test-secret'
+        app.config['TESTING'] = True
+        app.config['WTF_CSRF_ENABLED'] = False
+        self.app = app.test_client(use_cookies=True)
+
+
 
     # Test for Successful Sign-Up (200 OK)
     @patch('backend.routes.read_user_table')
@@ -21,11 +25,11 @@ class TestFlaskAPI(TestCase):
         mock_insert_new_user.return_value = None
 
         response = self.app.post('/api/sign-up', json={
-            "email": "harry@example.com",
+            "email": "harry@sky.uk",
             "first-name": "harry",
             "username": "harrySky",
-            "password": "test123",
-            "confirm-password": "test123"
+            "password": "Password1!",
+            "confirm-password": "Password1!"
         })
         self.assertEqual(response.status_code, 200)
         self.assertIn("Sign up successful", response.get_data(as_text=True))
@@ -36,11 +40,11 @@ class TestFlaskAPI(TestCase):
         mock_read_user_table.return_value = (["harrySky"], [])
 
         response = self.app.post('/api/sign-up', json={
-            "email": "harry@example.com",
+            "email": "harry@sky.uk",
             "first-name": "harry",
             "username": "harrySky",
-            "password": "test123",
-            "confirm-password": "test123"
+            "password": "Password1!",
+            "confirm-password": "Password1!"
         })
 
         self.assertEqual(response.status_code, 401)
@@ -52,11 +56,11 @@ class TestFlaskAPI(TestCase):
     def test_sign_up_password_mismatch(self, mock_read_user_table):
         mock_read_user_table.return_value = ([], [])
         response = self.app.post('/api/sign-up', json={
-            "email": "user@example.com",
+            "email": "user@sky.uk",
             "first-name": "User",
             "username": "user123",
-            "password": "pass1",
-            "confirm-password": "pass2"
+            "password": "Password1!",
+            "confirm-password": "Password2!"
         })
         self.assertEqual(response.status_code, 401)
         self.assertIn("Passwords do not match", response.get_data(as_text=True))
@@ -66,8 +70,8 @@ class TestFlaskAPI(TestCase):
     def test_sign_in_success(self, mock_check_password):
         mock_check_password.return_value = True
         response = self.app.post('/api/sign-in', json={
-            "email": "harry@example.com",
-            "password": "test123"
+            "email": "harry@sky.uk",
+            "password": "Password1!"
         })
         self.assertEqual(response.status_code, 200)
         self.assertIn("Sign in successful", response.get_data(as_text=True))
@@ -77,8 +81,8 @@ class TestFlaskAPI(TestCase):
     def test_sign_in_failure(self,mock_check_password):
         mock_check_password.return_value = False
         response = self.app.post('/api/sign-in', json={
-            "email": "harry@example.com",
-            "password": "wrongpass"
+            "email": "harry@sky.uk",
+            "password": "Password11111!"
         })
         self.assertEqual(response.status_code, 401)
         self.assertIn("Incorrect username or password", response.get_data(as_text=True))
@@ -131,22 +135,17 @@ class TestFlaskAPI(TestCase):
     @patch('backend.routes.get_current_month_number')
     @patch('backend.routes.get_current_week_number')
     @patch('backend.routes.get_user_id_from_db')
-    def test_log_activity(self, mock_get_user_id, mock_get_week, mock_get_month, mock_get_activity_id,
-                                  mock_insert_activity):
+    @patch('backend.routes.g', new_callable=MagicMock)
+    def test_log_activity(self, mock_g, mock_get_user_id, mock_get_week, mock_get_month, mock_get_activity_id, mock_insert_activity):
+        mock_g.user_id = 1
         mock_get_user_id.return_value = 1
         mock_get_week.return_value = 42
         mock_get_month.return_value = 10
-        # mock_get_activity_id.side_effect = lambda name: {"Cycling": 101, "Walking": 102}[name]
-        mock_get_activity_id.return_value = 101  # Assuming "Cycling" maps to 101
+        mock_get_activity_id.return_value = 101
         mock_insert_activity.return_value = None
 
         with self.app.session_transaction() as sess:
-            sess['email'] = "harry@example.com"
-
-        # response = self.app.post('/api/log-activity', json={
-        #     "Cycling": 2,
-        #     "Walking": 1
-        # })
+            sess['email'] = "harry@sky.uk"
 
         response = self.app.post('/api/log-activity', json={
             "question": "Cycling",
@@ -155,13 +154,15 @@ class TestFlaskAPI(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Activity logged successfully", response.get_data(as_text=True))
-        # self.assertEqual(mock_insert_activity.call_count, 3)  # 2 Cycling + 1 Walking
         mock_insert_activity.assert_called_once_with(1, 101, 42, 10, True)
 
+
     def test_fetch_questions(self):
-        response = self.app.get('/api/fetch-questions')
-        self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.get_json(), list)
+        # Mock backend DB call to avoid real DB connection
+        with patch('backend.routes.get_all_activity_names', return_value=[]):
+            response = self.app.get('/api/fetch-questions')
+            self.assertEqual(response.status_code, 200)
+            self.assertIsInstance(response.get_json(), list)
 
     @patch('backend.routes.get_username_from_db')
     @patch('backend.routes.read_view_table_week')
@@ -250,6 +251,173 @@ class TestFlaskAPI(TestCase):
         resp = self.app.post('/api/upload-avatar', data=data, content_type='multipart/form-data')
         # Should either succeed with 200 or 400 depending on filesystem permissions; assert 200
         assert resp.status_code == 200
+
+    def test_csrf_token_endpoint(self):
+        # csrf token endpoint should return a token
+        resp = self.app.get('/api/csrf-token')
+        assert resp.status_code == 200
+        data = resp.get_json()
+        assert 'csrf_token' in data
+
+    @patch('backend.routes.g', new_callable=MagicMock)
+    @patch('backend.routes.update_user_preferred_activities')
+    @patch('backend.routes.get_user_id_from_db')
+    def test_update_user_activities(self, mock_get_user_id, mock_update_prefs, mock_g):
+        mock_g.user_id = 1
+        mock_get_user_id.return_value = 1
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'a@b.com'
+
+        resp = self.app.post('/api/update-user-activities', json={'activities': ['Walking', 'Recycling']})
+        self.assertEqual(resp.status_code, 200)
+        mock_update_prefs.assert_called_once_with(1, ['Walking', 'Recycling'])
+
+    @patch('backend.routes.get_users_preferred_activities_no_points')
+    @patch('backend.routes.get_activity_id')
+    @patch('backend.routes.get_user_activity_count')
+    def test_user_activity_counts(self, mock_count, mock_get_id, mock_get_activities):
+        mock_get_activities.return_value = ['Recycling']
+        mock_get_id.return_value = 7
+        mock_count.return_value = 3
+
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'a@b.com'
+
+        resp = self.app.get('/api/user-activity-counts')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(data, {'Recycling': 3})
+
+    @patch('backend.routes.get_tips_from_db')
+    def test_initial_ai_tips_loaded_from_buffer(self, mock_get_tips):
+        # If buffer has >= DISPLAY_COUNT, endpoint should return last DISPLAY_COUNT
+        mock_get_tips.return_value = ['t1', 't2', 't3', 't4']
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'a@b.com'
+
+        resp = self.app.get('/api/initial-ai-tips')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertIn('tips', data)
+        self.assertEqual(data['tips'], ['t2', 't3', 't4'])
+
+    @patch('backend.routes.get_tips_from_db')
+    @patch('backend.routes.generate_tip')
+    @patch('backend.routes.set_tips_in_db')
+    def test_initial_ai_tips_generated(self, mock_set_tips, mock_generate, mock_get_tips):
+        mock_get_tips.return_value = []
+        mock_generate.return_value = 'generated'
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'a@b.com'
+
+        resp = self.app.get('/api/initial-ai-tips')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(data['message'], 'Tips generated')
+        self.assertEqual(len(data['tips']), 3)
+
+    @patch('backend.routes.get_tips_from_db')
+    @patch('backend.routes.generate_tip')
+    @patch('backend.routes.set_tips_in_db')
+    def test_ai_tip_generates_and_saves(self, mock_set_tips, mock_generate, mock_get_tips):
+        mock_get_tips.return_value = ['existing']
+        mock_generate.return_value = 'new_tip'
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'a@b.com'
+
+        resp = self.app.get('/api/ai-tip')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(data.get('tip'), 'new_tip')
+        mock_set_tips.assert_called()
+
+    @patch('backend.routes.get_user_id_from_db')
+    @patch('backend.routes.get_username_from_db')
+    @patch('backend.routes.read_view_table_week')
+    @patch('backend.routes.read_view_table_month')
+    @patch('backend.routes.get_all_questionnaire_submissions')
+    @patch('backend.routes.Questionnaire')
+    @patch('backend.routes.get_highest_week_points')
+    @patch('backend.routes.get_highest_month_points')
+    @patch('backend.routes.get_user_highest_week_points')
+    @patch('backend.routes.get_user_highest_month_points')
+    def test_stats(self, mock_user_high_month, mock_user_high_week, mock_high_month, mock_high_week, mock_questionnaire_class, mock_get_submissions, mock_read_month, mock_read_week, mock_get_username, mock_get_user_id):
+        mock_get_user_id.return_value = 1
+        mock_get_username.return_value = 'Harry'
+        mock_read_week.return_value = [{'rank':1,'username':'Harry','score':100}]
+        mock_read_month.return_value = [{'rank':1,'username':'Harry','score':400}]
+
+        from datetime import datetime
+        mock_get_submissions.return_value = [
+            {'user_id':1, 'Q1':'Yes', 'date': datetime(2025,1,1)}
+        ]
+
+        mock_questionnaire_instance = MagicMock()
+        mock_questionnaire_instance.calculate_projected_carbon_footprint.return_value = {
+            'total_projected': 1200,
+            'projected': 1200,
+            'current': 300,
+            'transport_emissions': 0,
+            'diet_emissions': 0,
+            'heating_emissions': 0
+        }
+        mock_questionnaire_class.return_value = mock_questionnaire_instance
+        mock_high_week.return_value = {'username':'Harry','points':100}
+        mock_high_month.return_value = {'username':'Harry','points':400}
+        mock_user_high_week.return_value = 10
+        mock_user_high_month.return_value = 20
+
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'harry@example.com'
+
+        resp = self.app.get('/api/stats')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertIn('weekLeaderboard', data)
+        self.assertIn('monthLeaderboard', data)
+        self.assertIn('username', data)
+
+    @patch('backend.routes.get_username_from_db')
+    @patch('backend.routes.get_first_name_from_db')
+    @patch('backend.routes.get_avatar_from_db')
+    def test_fetch_user_data(self, mock_avatar, mock_first, mock_user):
+        mock_user.return_value = 'harry'
+        mock_first.return_value = 'Harry'
+        mock_avatar.return_value = 'avatar.png'
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'harry@example.com'
+
+        resp = self.app.get('/api/fetch-user-data')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertEqual(data.get('avatar'), '/uploads/avatar.png')
+
+    @patch('backend.routes.get_daily_activity_counts')
+    def test_calendar_activity_counts(self, mock_counts):
+        mock_counts.return_value = {'2025-01-01': 2}
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'harry@example.com'
+
+        resp = self.app.get('/api/calendar-activity-counts?startDate=2025-01-01&endDate=2025-01-31')
+        self.assertEqual(resp.status_code, 200)
+        data = resp.get_json()
+        self.assertIn('counts', data)
+
+    @patch('backend.routes.get_user_week_points')
+    @patch('backend.routes.get_user_month_points')
+    def test_user_points(self, mock_month_points, mock_week_points):
+        mock_week_points.return_value = {'points': 5}
+        mock_month_points.return_value = {'points': 20}
+        with self.app.session_transaction() as sess:
+            sess['email'] = 'harry@example.com'
+
+        resp_week = self.app.get('/api/user-points?period=week&year=2025&weekChunk=0')
+        self.assertEqual(resp_week.status_code, 200)
+        self.assertEqual(resp_week.get_json(), {'points': 5})
+
+        resp_month = self.app.get('/api/user-points?period=month&year=2025&monthChunk=0')
+        self.assertEqual(resp_month.status_code, 200)
+        self.assertEqual(resp_month.get_json(), {'points': 20})
 
 # if __name__ == '__main__':
 #     unittest.main()

@@ -12,7 +12,8 @@ from backend.Questionnaire import (
 )
 
 class TestQuestionnaire(unittest.TestCase):
-    def test_calculate_projected_carbon_footprint(self):
+    @patch('backend.Questionnaire.get_user_activity_count_total')
+    def test_calculate_projected_carbon_footprint(self, mock_counts):
         # Mock answers: keys must match Questionnaire.format_answers expectations
         answers = {
             "transportMethod": 3,  # Car (Petrol/Diesel)
@@ -26,6 +27,7 @@ class TestQuestionnaire(unittest.TestCase):
         user_id = "123"
         # Provide a stable start date for deterministic progress calculations
         start_date = datetime(2025, 1, 1)
+        mock_counts.return_value = []
         q = Questionnaire(answers, user_id, start_date)
 
         result = q.calculate_projected_carbon_footprint()
