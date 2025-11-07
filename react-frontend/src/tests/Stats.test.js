@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 jest.mock('axios');
@@ -53,3 +53,16 @@ test('renders stats summary cards with data from API', async () => {
     expect(screen.getByText('40')).toBeInTheDocument();
   });
 });
+
+test('Switch toggles and calls setOutput', () => {
+  const setOutput = jest.fn();
+  const Switch = require('../components/Switch').default;
+  render(<Switch setOutput={setOutput} option1="A" option2="B" />);
+
+  const btn = screen.getByRole('switch');
+  fireEvent.click(btn);
+  expect(setOutput).toHaveBeenCalledWith(true);
+  fireEvent.click(btn);
+  expect(setOutput).toHaveBeenCalledWith(false);
+});
+

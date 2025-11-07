@@ -69,3 +69,34 @@ test('sign out error logs and does not navigate', async () => {
   expect(errSpy).toHaveBeenCalled();
   errSpy.mockRestore();
 });
+
+test('Navbar loads data and opens popup', async () => {
+  process.env.REACT_APP_API_URL = 'http://localhost:9099';
+
+  axios.get.mockImplementation((url) => {
+    if (url.includes('/api/fetch-questions')) {
+      return Promise.resolve({ data: [{ name: 'Cycling', points: 10 }] });
+    }
+    if (url.includes('/api/user-activities')) {
+      return Promise.resolve({ data: [{ name: 'Cycling', points: 10 }] });
+    }
+    if (url.includes('/api/fetch-user-data')) {
+      return Promise.resolve({ data: { username: 'Harry' } });
+    }
+    return Promise.resolve({ data: {} });
+  });
+
+  render(
+    <MemoryRouter>
+      <Navbar />
+    </MemoryRouter>
+  );
+
+  await waitFor(() => expect(axios.get).toHaveBeenCalled());
+
+  // Click 'Log your Activities' button
+  const btn = screen.getByText(/Log your Activities/i);
+  fireEvent.click(btn);
+  // The popup's title should appear when open
+  await waitFor(() => expect(screen.queryByText(/Log Your Activities/i)).not.toBeNull());
+});

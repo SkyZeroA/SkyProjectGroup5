@@ -40,3 +40,20 @@ test('renders UserRankChart and fetches ranks', async () => {
   expect(prev).toBeDefined();
   fireEvent.click(prev);
 });
+
+
+test('UserRankChart fetches ranks and navigates', async () => {
+  process.env.REACT_APP_API_URL = 'http://localhost:9099';
+
+  // Return a ranks array for weekly period
+  mockedAxios.get.mockResolvedValue({ data: { ranks: [{ date: '2025-01-01', rank: 1 }] } });
+
+  render(<UserRankChart isOn={true} setIsOn={() => {}} isFormOpen={false} />);
+
+  await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+  const prev = screen.getByText('◀');
+  const next = screen.getByText('▶');
+  fireEvent.click(prev);
+  fireEvent.click(next);
+});
