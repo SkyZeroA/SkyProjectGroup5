@@ -29,7 +29,7 @@ except Exception:
 allowed_origins = os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', os.urandom(32))
 
 app.config.update(
     SESSION_COOKIE_NAME="session",
@@ -37,7 +37,7 @@ app.config.update(
     SESSION_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
 )
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', os.urandom(32))
+
 csrf = CSRFProtect(app)
 
 
