@@ -78,7 +78,7 @@ def questionnaire():
     # print("User email from session:", session['email'])
     email = session['email']
     data = request.get_json()
-    # print("Questionnaire data received:", data)
+    print("Questionnaire data received:", data)
     answers = Questionnaire(data, get_user_id_from_db(email), datetime.today())
     # print(answers.format_answers())
     insert_into_questionnaire(answers.format_answers())
@@ -173,6 +173,10 @@ def dashboard():
     transport_emissions = 0
     diet_emissions = 0
     heating_emissions = 0
+    turn_off_devices_emissions = 0
+    recycle_emissions = 0
+    reusable_emissions = 0
+    food_waste_emissions = 0
     for questionnaire in questionnaires:
         emissions_dict = questionnaire.calculate_projected_carbon_footprint()
         total_carbon += emissions_dict["total_projected"]
@@ -181,6 +185,10 @@ def dashboard():
         transport_emissions += emissions_dict["transport_emissions"]
         diet_emissions += emissions_dict["diet_emissions"]
         heating_emissions += emissions_dict["heating_emissions"]
+        turn_off_devices_emissions += emissions_dict["turn_off_devices_emissions"]
+        recycle_emissions += emissions_dict["recycle_emissions"]
+        reusable_emissions += emissions_dict["reusable_emissions"]
+        food_waste_emissions += emissions_dict["food_waste_emissions"]
 
     return jsonify({"message": "Leaderboard send successful",
                    "weekLeaderboard": week_leaderboard,
@@ -188,6 +196,10 @@ def dashboard():
                    "transportEmissions": transport_emissions,
                    "dietEmissions": diet_emissions,
                    "heatingEmissions": heating_emissions,
+                    "turnOffDevicesEmissions": turn_off_devices_emissions,
+                   "recycleEmissions": recycle_emissions,
+                    "reusableEmissions": reusable_emissions,
+                    "foodWasteEmissions": food_waste_emissions,
                    "totalCarbon": total_carbon,
                    "projectedCarbon": projected_carbon,
                    "currentCarbon": current_carbon,
@@ -286,6 +298,10 @@ def stats():
     transport_emissions = 0
     diet_emissions = 0
     heating_emissions = 0
+    turn_off_devices_emissions = 0
+    recycle_emissions = 0
+    reusable_emissions = 0
+    food_waste_emissions = 0
     for questionnaire in questionnaires:
         emissions_dict = questionnaire.calculate_projected_carbon_footprint()
         total_carbon += emissions_dict["total_projected"]
@@ -294,6 +310,10 @@ def stats():
         transport_emissions += emissions_dict["transport_emissions"]
         diet_emissions += emissions_dict["diet_emissions"]
         heating_emissions += emissions_dict["heating_emissions"]
+        turn_off_devices_emissions += emissions_dict["turn_off_devices_emissions"]
+        recycle_emissions += emissions_dict["recycle_emissions"]
+        reusable_emissions += emissions_dict["reusable_emissions"]
+        food_waste_emissions += emissions_dict["food_waste_emissions"]
 
     week_data = get_highest_week_points()
     month_data = get_highest_month_points()
@@ -310,6 +330,10 @@ def stats():
                    "transportEmissions": transport_emissions,
                    "dietEmissions": diet_emissions,
                    "heatingEmissions": heating_emissions,
+                   "turnOffDevicesEmissions": turn_off_devices_emissions,
+                   "recycleEmissions": recycle_emissions,
+                   "reusableEmissions": reusable_emissions,
+                   "foodWasteEmissions": food_waste_emissions,
                    "totalCarbon": total_carbon,
                    "projectedCarbon": projected_carbon,
                    "currentCarbon": current_carbon,

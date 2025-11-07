@@ -151,7 +151,7 @@ def insert_into_questionnaire(questionnaire):
     placeholders = ", ".join(["%s"] * answers)
     cursor.execute(f"""
                    INSERT INTO QuestionnaireResponse
-                   (userId, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours)
+                   (userId, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours, turnOffDevices, recycle, reusable, foodWaste)
                    VALUES ({placeholders})
                    """, questionnaire)
     db.commit()
@@ -164,7 +164,7 @@ def get_latest_answers_from_questionnaire(email):
     user_id = get_user_id_from_db(email)
     cursor.execute("""
         SELECT
-        transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours
+        transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours, turnOffDevices, recycle, reusable, foodWaste
         FROM QuestionnaireResponse
         WHERE userID = %s
         ORDER BY dateSubmitted DESC
@@ -180,7 +180,11 @@ def get_latest_answers_from_questionnaire(email):
                     "officeDays": response[2], 
                     "dietDays": response[3],
                     "meats": response[4],
-                    "heatingHours": response[5]}
+                    "heatingHours": response[5],
+                    "turnOffDevices": response[6],
+                    "recycle": response[7],
+                    "reusable": response[8],
+                    "foodWaste": response[9]}
         return response
 
 
@@ -197,6 +201,10 @@ def get_all_questionnaire_submissions(email):
             dietDays,
             meats,
             heatingHours,
+            turnOffDevices,
+            recycle,
+            reusable,
+            foodWaste,
             dateSubmitted
         FROM QuestionnaireResponse
         WHERE userID = %s
@@ -217,7 +225,11 @@ def get_all_questionnaire_submissions(email):
             "dietDays": row[3],
             "meats": row[4],
             "heatingHours": row[5],
-            "dateSubmitted": row[6]
+            "turnOffDevices": row[6],
+            "recycle": row[7],
+            "reusable": row[8],
+            "foodWaste": row[9],
+            "dateSubmitted": row[10]
         })
 
     return submissions
@@ -574,7 +586,10 @@ def get_highest_week_points():
                             SELECT 
                                 e.weekID,
                                 e.userID,
-                                SUM(a.value_points) AS weekly_points
+                                SUM(CASE
+                                    WHEN e.positive_activity = TRUE THEN a.value_points
+                                    WHEN e.positive_activity = FALSE THEN -a.value_points
+                                END) AS weekly_points
                             FROM EcoCounter e
                             JOIN ActivityKey a ON e.activityID = a.activityID
                             GROUP BY e.weekID, e.userID
@@ -598,7 +613,10 @@ def get_highest_month_points():
                             SELECT 
                                 e.monthID,
                                 e.userID,
-                                SUM(a.value_points) AS monthly_points
+                                SUM(CASE
+                                    WHEN e.positive_activity = TRUE THEN a.value_points
+                                    WHEN e.positive_activity = FALSE THEN -a.value_points
+                                END) AS monthly_points
                             FROM EcoCounter e
                             JOIN ActivityKey a ON e.activityID = a.activityID
                             GROUP BY e.monthID, e.userID

@@ -21,6 +21,10 @@ CREATE TABLE IF NOT EXISTS QuestionnaireResponse (
     dietDays INT NOT NULL,     
     meats INT NOT NULL,      
     heatingHours INT NOT NULL,
+    turnOffDevices INT NOT NULL,
+    recycle INT NOT NULL,
+    reusable INT NOT NULL,
+    foodWaste INT NOT NULL,
     FOREIGN KEY(userID) REFERENCES User(userID)
 );
 

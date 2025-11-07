@@ -26,28 +26,28 @@ VALUES
 
 
 INSERT IGNORE INTO QuestionnaireResponse 
-(userID, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours) 
+(userID, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours, turnOffDevices, recycle, reusable, foodWaste) 
 VALUES
-(1, 3, 4, 6, 3, 2, 8),
-(2, 0, 0, 0, 4, 3, 5),
-(3, 1, 2, 1, 1, 5, 7),
-(4, 4, 1, 7, 5, 4, 9),
-(5, 2, 2, 3, 7, 1, 4),
-(6, 0, 0, 0, 6, 2, 6),
-(7, 3, 5, 2, 5, 3, 9),
-(8, 4, 0, 0, 3, 2, 10),
-(9, 1, 4, 3, 1, 0, 7),
-(10, 2, 1, 6, 6, 4, 8),
-(11, 3, 3, 4, 2, 5, 6),
-(12, 0, 0, 0, 1, 3, 3),
-(13, 1, 5, 5, 5, 4, 11),
-(14, 2, 4, 7, 7, 2, 9),
-(15, 4, 2, 2, 3, 1, 4),
-(16, 0, 0, 0, 4, 2, 6),
-(17, 3, 3, 4, 2, 5, 8),
-(18, 2, 0, 0, 5, 3, 9),
-(19, 4, 5, 6, 6, 4, 7),
-(20, 3, 5, 3, 1, 3, 3);
+(1, 3, 4, 6, 3, 2, 8, 3, 3, 3, 2),
+(2, 0, 0, 0, 4, 3, 5, 2, 1, 0, 0),
+(3, 1, 2, 1, 1, 5, 7, 3, 3, 2, 1),
+(4, 4, 1, 7, 5, 4, 9, 3, 3, 3, 2),
+(5, 2, 2, 3, 7, 1, 4, 3, 3, 3, 2),
+(6, 0, 0, 0, 6, 2, 6, 3, 3, 2, 1),
+(7, 3, 5, 2, 5, 3, 9, 3, 3, 3, 2),
+(8, 4, 0, 0, 3, 2, 10, 3, 3, 3, 2),
+(9, 1, 4, 3, 1, 0, 7, 3, 3, 3, 2),
+(10, 2, 1, 6, 6, 4, 8, 3, 3, 3, 2),
+(11, 3, 3, 4, 2, 5, 6, 3, 3, 3, 1),
+(12, 0, 0, 0, 1, 3, 3, 2, 1, 0, 0),
+(13, 1, 5, 5, 5, 4, 11, 3, 3, 3, 2),
+(14, 2, 4, 7, 7, 2, 9, 3, 3, 3, 2),
+(15, 4, 2, 2, 3, 1, 4, 3, 3, 3, 2),
+(16, 0, 0, 0, 4, 2, 6, 3, 3, 2, 1),
+(17, 3, 3, 4, 2, 5, 8, 3, 3, 3, 2),
+(18, 2, 0, 0, 5, 3, 9, 3, 3, 3, 2),
+(19, 4, 5, 6, 6, 4, 7, 3, 3, 3, 2),
+(20, 3, 5, 3, 1, 3, 3, 3, 3, 3, 2);
 
 INSERT IGNORE INTO Week (weekID, week_start, week_end) VALUES
 (1, '2025-01-06', '2025-01-12'),
@@ -126,29 +126,40 @@ Assumptions:
   10.0, 8.0, 2.0, 1.6, 2.4, 1.4 = 25.4 / 6 = ~4.23 kg CO2 saved per day
 - Avg hours of heating saved per day when turning off heating: 5hrs https://heatable.co.uk/boiler-advice/how-many-hours-a-day-should-heating-be-on
 
-Bike to work: 0.25 kg/km * 20 km = 5 kg/day -> 10 points             
-Day Without heating on: 2 kg/hr * 5 hrs = 10 kg/day -> 20 points
+Bike to work: 0.25 kg/km * 20 km = 5 kg/day -> 10 points     
+Day without Heating On: 2 kg/hr * 5 hrs = 10 kg/day -> 20 points
+Lower heating by 1°C: 1 kg/day -> 2 point        
 Walk to work: 0.25 kg/km * 20 km = 5 kg/day -> 10 points
 Public transport: (0.25 - 0.05) * 32 km = 6.4 kg/day -> 13 points
 Extra WFH day: 0.25 kg/km * 32 km = 8 kg/day -> 16 points
 Carpool w 1 other: 0.25 * 32 km * 0.5 = 4 kg/day -> 8 points
 Avoid meat: 4.23 kg/day -> 8 points
-Carpool w 2 others: 0.25 * 32 km * 0.66 = 5.2 kg/day -> 11 points
-Carpool w 3 others: 0.25 * 32 km * 0.75 = 6 kg/day -> 12 points
+Take stairs instead of elevator: 0.2 kg/day -> 1 point
+Reusable water bottle: 0.05 kg/day -> 1 point
+Air dry over tumble dry: 0.5 kg/day -> 1 point
+Reusable shopping bags: 0.02 kg/day -> 1 point
+Donate items: 0.2 kg/day -> 1 point
+Recycle plastic, can or glass: 0.05 kg/day -> 1 point
+Buy second-hand item: 0.8 kg/day -> 2 points
 
 */
 
-
 INSERT IGNORE INTO ActivityKey (activityID, activity_name, value_points) VALUES
 (1, 'Bike to work', 10),
-(2, 'Day Without heating on', 20),
+(2, 'Day without Heating On', 20),
 (3, 'Walk to work', 10),
 (4, 'Public transport', 13),
 (5, 'Extra WFH day', 16),
 (6, 'Carpool w 1 other', 8),
 (7, 'Avoid meat', 8),
-(8, 'Carpool w 2 others', 11),
-(9, 'Carpool w 3 others', 12);
+(8, 'Take stairs instead of elevator', 1),
+(9, 'Reusable water bottle', 1),
+(10, 'Air dry over tumble dry', 1),
+(11, 'Reusable shopping bags', 1),
+(12, 'Donate items', 1),
+(13, 'Recycle plastic, can or glass', 1),
+(14, 'Buy second-hand item', 2),
+(15, 'Lower heating by 1°C', 2);
 
 INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity, date_done) VALUES
 (1, 41, 10, 5, TRUE, '2025-10-14'),
