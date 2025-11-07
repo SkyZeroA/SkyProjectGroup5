@@ -7,13 +7,28 @@ pipeline {
   }
 
   environment {
-    OPENAI_API_KEY = credentials('OPENAI_API_KEY')
+    MY_ENV_FILE = credentials('Team5Env')
   }
 
   stages {
     stage('Checkout') {
       steps {
         git branch: 'main', url: 'https://github.com/SkyZeroA/SkyProjectGroup5.git'
+      }
+    }
+
+    stage('Load Environment Variables') {
+      steps {
+        // Copy .env file from Jenkins secret and export variables
+        sh '''
+        echo "Loading environment variables..."
+        cp "$MY_ENV_FILE" .env
+        set -a
+        source .env
+        set +a
+        echo "Environment variables loaded:"
+        grep -v '^#' .env || true
+        '''
       }
     }
 
@@ -29,7 +44,9 @@ pipeline {
     stage('Test Backend') {
       steps {
         sh '''
-        echo "OPENAI_API_KEY is set: ${#OPENAI_API_KEY}"
+        set -a
+        source .env
+        set +a
         python3 -m pytest -q --cov
         '''
       }
