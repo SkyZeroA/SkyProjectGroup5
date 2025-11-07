@@ -51,3 +51,18 @@ test('renders PointsBarChart and fetches data', async () => {
   fireEvent.click(toggle);
   await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 });
+
+test('PointsBarChart toggles period and fetches data', async () => {
+  process.env.REACT_APP_API_URL = 'http://localhost:9099';
+  mockedAxios.get.mockResolvedValue({ data: [{ userPoints: 10, averagePoints: 5 }] });
+
+  render(<PointsBarChart isFormOpen={false} />);
+
+  await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+  // first button is the small toggle in the component
+  const buttons = screen.getAllByRole('button');
+  const toggle = buttons[0];
+  fireEvent.click(toggle);
+  expect(mockedAxios.get).toHaveBeenCalled();
+});

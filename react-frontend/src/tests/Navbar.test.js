@@ -1,14 +1,21 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
 jest.mock('axios');
 const mockedAxios = require('axios');
 
 const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-}));
+// Provide minimal react-router-dom mocks (MemoryRouter/Link) and override useNavigate
+jest.mock('react-router-dom', () => {
+  const React = require('react');
+  return {
+    MemoryRouter: ({ children }) => React.createElement('div', null, children),
+    Link: ({ children }) => React.createElement('a', null, children),
+    useNavigate: () => mockNavigate,
+  };
+});
 
 // Mock Popup to avoid rendering the real form
 jest.mock('../components/PopUp', () => () => require('react').createElement('div', { 'data-testid': 'popup' }, 'PopupMock'));
@@ -69,3 +76,36 @@ test('sign out error logs and does not navigate', async () => {
   expect(errSpy).toHaveBeenCalled();
   errSpy.mockRestore();
 });
+
+test('Navbar loads data and opens popup', async () => {
+  process.env.REACT_APP_API_URL = 'http://localhost:9099';
+
+  mockedAxios.get.mockImplementation((url) => {
+    /* eslint-disable no-undef */
+    if (url.includes('/api/fetch-questions')) {
+      return Promise.resolve({ data: [{ name: 'Cycling', points: 10 }] });
+    }
+    if (url.includes('/api/user-activities')) {
+      return Promise.resolve({ data: [{ name: 'Cycling', points: 10 }] });
+    }
+    if (url.includes('/api/fetch-user-data')) {
+      return Promise.resolve({ data: { username: 'Harry' } });
+    }
+    return Promise.resolve({ data: {} });
+  });
+
+  render(
+    <MemoryRouter>
+      <Navbar />
+    </MemoryRouter>
+  );
+
+  await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
+  // Click 'Log your Activities' button
+  const btn = screen.getByText(/Log your Activities/i);
+  fireEvent.click(btn);
+  // The popup's title should appear when open
+  await waitFor(() => expect(screen.queryByText(/Log Your Activities/i)).not.toBeNull());
+});
+

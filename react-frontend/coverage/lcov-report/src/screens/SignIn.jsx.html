@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.5% </span>
+                <span class="strong">92.85% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/40</span>
+                <span class='fraction'>39/42</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.5% </span>
+                <span class="strong">92.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/40</span>
+                <span class='fraction'>39/42</span>
             </div>
         
             
@@ -254,7 +254,10 @@
 <a name='L189'></a><a href='#L189'>189</a>
 <a name='L190'></a><a href='#L190'>190</a>
 <a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -263,7 +266,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
@@ -299,13 +303,15 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -452,6 +458,7 @@ import Input from "../components/Input";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import axios from "axios";
+import { ensureCsrfToken } from "../lib/csrf";
 import { useNavigate } from "react-router-dom";
 &nbsp;
 const SignIn = () =&gt; {
@@ -490,23 +497,25 @@ const SignIn = () =&gt; {
 <span class="cstat-no" title="statement not covered" >      return;</span>
     }
 &nbsp;
-    // await axios.post("http://localhost:9099/api/sign-in", signInPayload, {withCredentials:true})
-    await axios.post(`${apiUrl}/api/sign-in`, signInPayload, {withCredentials:true})
-      .then((response) =&gt; {
-        console.log("Sign In Response:", response.data);
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (response?.data?.message === "Sign in successful") {
-          navigate("/dashboard")
-        }
-      })
-      .catch((error) =&gt; {
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (error.response?.data?.error === "Incorrect username or password") {
-          setEmail("");
-          setPassword("");
-          setFormErrors(["Incorrect username or password."]);
-          incrementAttempts();
-        }
-        console.error("Sign In Error:", error);
-      });
+    try {
+      // Ensure token is fetched and axios defaults are set
+      await ensureCsrfToken(apiUrl);
+&nbsp;
+      const response = await axios.post(`${apiUrl}/api/sign-in`, signInPayload, { withCredentials: true });
+&nbsp;
+      console.log("Sign In Response:", response.data);
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (response?.data?.message === "Sign in successful") {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (error.response?.data?.error === "Incorrect username or password") {
+        setEmail("");
+        setPassword("");
+        setFormErrors(["Incorrect username or password."]);
+        incrementAttempts();
+      }
+      console.error("Sign In Error:", error);
+    }
   };
 &nbsp;
   const incrementAttempts = () =&gt; {
@@ -643,7 +652,7 @@ export default SignIn;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-07T13:47:18.369Z
+                at 2025-11-07T16:27:00.249Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
