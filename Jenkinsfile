@@ -2,12 +2,12 @@ pipeline {
   agent {
     docker {
       image 'python:3.11'
-      args '-u root'
+      args '-u root'  // run as root so npm installs work
     }
   }
 
   environment {
-    MY_ENV_FILE = credentials('Team5Env')
+    MY_ENV_FILE = credentials('Team5Env') // Your Jenkins secret file
   }
 
   stages {
@@ -19,16 +19,20 @@ pipeline {
 
     stage('Load Environment Variables') {
       steps {
-        // Copy .env file from Jenkins secret and export variables
-        sh '''
-        echo "Loading environment variables..."
-        cp "$MY_ENV_FILE" .env
-        set -a
-        . .env
-        set +a
-        echo "Environment variables loaded:"
-        grep -v '^#' .env || true
-        '''
+        script {
+          // Read the env file and convert to key=value pairs for Jenkins
+          def envVars = readFile("$MY_ENV_FILE")
+                          .split("\n")
+                          .findAll { it && !it.startsWith("#") }
+                          .collect { it.trim() }
+
+          // Export to environment for all subsequent stages
+          envVars.each { line ->
+            def (key, value) = line.tokenize('=')
+            env."$key" = value
+          }
+        }
+        sh 'printenv | grep -v "^_"'  // optional, show env vars loaded
       }
     }
 
@@ -44,9 +48,6 @@ pipeline {
     stage('Test Backend') {
       steps {
         sh '''
-        set -a
-        source .env
-        set +a
         python3 -m pytest -q --cov
         '''
       }
