@@ -2,10 +2,13 @@ from unittest import TestCase
 from unittest.mock import patch, MagicMock
 from datetime import date, datetime
 import os
+import json
 from backend.data_access import (init_db, init_insert,insert_new_user, get_user_id_from_db, get_username_from_db,
                                  check_password, insert_into_questionnaire, read_user_table,
                                  read_view_table_week, read_view_table_month, get_current_week_number, get_current_month_number,
-                                 get_users_preferred_activities, get_activity_id, get_all_activity_names, insert_user_activity)
+                                 get_users_preferred_activities, get_activity_id, get_all_activity_names, insert_user_activity
+                                 ,get_tips_from_db, set_tips_in_db, update_user_preferred_activities, get_avatar_from_db, update_user_avatar,
+                                 get_user_activity_count, get_user_activity_count_total, get_daily_activity_counts)
 
 
 from backend.data_access import (
@@ -235,6 +238,69 @@ class TestDatabaseFunctions(TestCase):
         assert ranks[0]['date'] == d1.isoformat()
         # user 1 should be rank 1 on first day
         assert ranks[0]['rank'] == 1
+
+    
+    def test_get_tips_from_db_with_data(self):
+        # Simulate DB returning JSON string
+        self.mock_cursor.fetchone.return_value = [json.dumps(['a', 'b', 'c'])]
+        result = get_tips_from_db(1)
+        self.assertEqual(result, ['a', 'b', 'c'])
+
+    def test_get_tips_from_db_none(self):
+        self.mock_cursor.fetchone.return_value = [None]
+        result = get_tips_from_db(1)
+        self.assertIsNone(result)
+
+    def test_set_tips_in_db_calls_execute_and_commit(self):
+        set_tips_in_db(1, ['x', 'y'])
+        # Should call execute then commit
+        self.mock_cursor.execute.assert_called()
+        self.mock_conn.commit.assert_called_once()
+
+    def test_get_avatar_from_db(self):
+        self.mock_cursor.fetchone.return_value = ['avatar.png']
+        result = get_avatar_from_db(1)
+        self.assertEqual(result, 'avatar.png')
+
+    def test_update_user_avatar_executes(self):
+        update_user_avatar(1, 'new.png')
+        self.mock_cursor.execute.assert_called_once()
+        self.mock_conn.commit.assert_called_once()
+
+    def test_get_user_activity_count(self):
+        # Simulate fetchone returning a single int value
+        self.mock_cursor.fetchone.return_value = [7]
+        result = get_user_activity_count(1, 2)
+        self.assertEqual(result, 7)
+
+    def test_get_user_activity_count_total(self):
+        # Simulate two rows returned
+        self.mock_cursor.fetchall.return_value = [(10, 5), (20, 3)]
+        result = get_user_activity_count_total(1)
+        # Expect list of tuples with ints
+        self.assertIsInstance(result, list)
+        self.assertEqual(result[0][0], 10)
+
+    def test_update_user_preferred_activities(self):
+        # Patch get_activity_id to avoid DB lookup inside function
+        with patch('backend.data_access.get_activity_id', side_effect=[101, 102]):
+            update_user_preferred_activities(1, ['A', 'B'])
+        # Expect delete + two inserts
+        # First call is DELETE
+        self.mock_cursor.execute.assert_any_call("DELETE FROM UserActivity WHERE userID = %s", (1,))
+        # Then INSERTs
+        self.assertTrue(any("INSERT INTO UserActivity" in str(call) for call in self.mock_cursor.execute.call_args_list))
+        self.mock_conn.commit.assert_called_once()
+
+    def test_get_daily_activity_counts(self):
+        # Simulate DB rows returned as dicts with date objects
+        d = date(2025, 1, 1)
+        self.mock_cursor.fetchall.return_value = [
+            {"activity_date": d, "daily_count": 2}
+        ]
+        result = get_daily_activity_counts(1, start_date="2025-01-01", end_date="2025-01-01")
+        self.assertEqual(result, {"2025-01-01": 2})
+
 
 # if __name__ == '__main__':
 #     unittest.main()
