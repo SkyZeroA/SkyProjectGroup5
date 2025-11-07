@@ -24,7 +24,7 @@ pipeline {
         echo "Loading environment variables..."
         cp "$MY_ENV_FILE" .env
         set -a
-        source .env
+        . .env
         set +a
         echo "Environment variables loaded:"
         grep -v '^#' .env || true
