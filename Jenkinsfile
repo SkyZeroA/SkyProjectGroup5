@@ -32,7 +32,6 @@ pipeline {
             env."$key" = value
           }
         }
-        sh 'printenv | grep -v "^_"'  // optional, show env vars loaded
       }
     }
 
@@ -44,6 +43,14 @@ pipeline {
         '''
       }
     }
+
+    stage('SonarQube Analysis') {
+      def scannerHome = tool 'SonarScanner';
+      withSonarQubeEnv() {
+        sh "${scannerHome}/bin/sonar-scanner"
+      }
+    }
+
 
     stage('Test Backend') {
       steps {
