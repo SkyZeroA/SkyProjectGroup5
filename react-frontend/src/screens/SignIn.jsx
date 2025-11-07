@@ -5,6 +5,7 @@ import Input from "../components/Input";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import axios from "axios";
+import { ensureCsrfToken } from "../lib/csrf";
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
@@ -43,23 +44,25 @@ const SignIn = () => {
       return;
     }
 
-    // await axios.post("http://localhost:9099/api/sign-in", signInPayload, {withCredentials:true})
-    await axios.post(`${apiUrl}/api/sign-in`, signInPayload, {withCredentials:true})
-      .then((response) => {
-        console.log("Sign In Response:", response.data);
-        if (response?.data?.message === "Sign in successful") {
-          navigate("/dashboard")
-        }
-      })
-      .catch((error) => {
-        if (error.response?.data?.error === "Incorrect username or password") {
-          setEmail("");
-          setPassword("");
-          setFormErrors(["Incorrect username or password."]);
-          incrementAttempts();
-        }
-        console.error("Sign In Error:", error);
-      });
+    try {
+      // Ensure token is fetched and axios defaults are set
+      await ensureCsrfToken(apiUrl);
+
+      const response = await axios.post(`${apiUrl}/api/sign-in`, signInPayload, { withCredentials: true });
+
+      console.log("Sign In Response:", response.data);
+      if (response?.data?.message === "Sign in successful") {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      if (error.response?.data?.error === "Incorrect username or password") {
+        setEmail("");
+        setPassword("");
+        setFormErrors(["Incorrect username or password."]);
+        incrementAttempts();
+      }
+      console.error("Sign In Error:", error);
+    }
   };
 
   const incrementAttempts = () => {

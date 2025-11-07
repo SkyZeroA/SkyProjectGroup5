@@ -4,6 +4,7 @@ import HeaderBanner from "../components/HeaderBanner";
 import  FooterBanner from "../components/FooterBanner";
 import { Avatar, AvatarFallback } from "../components/Avatar";
 import axios from "axios";
+import { ensureCsrfToken } from "../lib/csrf";
 import { Button } from "../components/Button";
 import Questions from "../components/Questions";
 import Navbar from "../components/Navbar";
@@ -44,6 +45,7 @@ const Profile = () => {
   const handleQuestionnaireUpdate = async () => {
     if (isEditing) {
     console.log("Submitting Answers:", answers);
+    await ensureCsrfToken(apiUrl);
     await axios.post(`${apiUrl}/api/set-questionnaire`, answers, { withCredentials: true })
       .then((response) => {
         console.log("Response:", response.data);
@@ -67,6 +69,7 @@ const Profile = () => {
       formData.append("avatar", file);
 
       try {
+        await ensureCsrfToken(apiUrl);
         const res = await axios.post(
           `${apiUrl}/api/upload-avatar`,
           formData,

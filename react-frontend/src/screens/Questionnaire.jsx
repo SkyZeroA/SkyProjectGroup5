@@ -4,6 +4,7 @@ import { Card, CardContent } from "../components/Card";
 import FooterBanner from "../components/FooterBanner";
 import HeaderBanner from "../components/HeaderBanner";
 import axios from "axios";
+import { ensureCsrfToken } from "../lib/csrf";
 import { useNavigate } from 'react-router-dom';
 import Questions from "../components/Questions";
 
@@ -20,6 +21,7 @@ const Questionnaire = () => {
 
     console.log("Submitting Answers:", answers);
     try {
+      await ensureCsrfToken(apiUrl);
       const response = await axios.post(
         `${apiUrl}/api/set-questionnaire`,
         answers,

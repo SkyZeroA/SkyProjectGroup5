@@ -6,6 +6,7 @@ import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ensureCsrfToken } from "../lib/csrf";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -87,6 +88,7 @@ const SignUp = () => {
     };
     console.log("Sign Up Payload:", signUpPayload);
 
+    await ensureCsrfToken(apiUrl);
     await axios.post(`${apiUrl}/api/sign-up`, signUpPayload, {withCredentials:true})
       .then((response) => {
         console.log("Sign In Response:", response.data);
