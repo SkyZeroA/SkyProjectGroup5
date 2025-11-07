@@ -135,15 +135,17 @@ class TestDatabaseFunctions(TestCase):
 
     # Validate activity names returned for a user.
     def test_get_users_preferred_activities(self):
-        self.mock_cursor.fetchall.return_value = [("Recycling",), ("Walking",)]
+        # Each row should be (activity_name, value_points)
+        self.mock_cursor.fetchall.return_value = [("Recycling", 5), ("Walking", 3)]
         result = get_users_preferred_activities(1)
-        self.assertEqual(result, ["Recycling", "Walking"])
+        self.assertEqual(result, [{"name": "Recycling", "points": 5}, {"name": "Walking", "points": 3}])
 
     # Ensure all activity names are fetched.
     def test_get_all_activity_names(self):
-        self.mock_cursor.fetchall.return_value = [("Cycling",), ("Composting",)]
+        # ActivityKey returns (activity_name, value_points)
+        self.mock_cursor.fetchall.return_value = [("Cycling", 10), ("Composting", 2)]
         result = get_all_activity_names()
-        self.assertEqual(result, ["Cycling", "Composting"])
+        self.assertEqual(result, [{"name": "Cycling", "points": 10}, {"name": "Composting", "points": 2}])
 
 
     # Validate correct activity ID is returned.
@@ -161,18 +163,19 @@ class TestDatabaseFunctions(TestCase):
 # ===================================
 
     def test_get_db_connect_kwargs_port_handling(self):
+        # Use clear=True to ensure environment is deterministic for the test
         # No DB_PORT -> omitted
-        with patch.dict(os.environ, {}, clear=False):
+        with patch.dict(os.environ, {}, clear=True):
             kwargs = get_db_connect_kwargs()
             assert 'port' not in kwargs
 
         # With numeric DB_PORT -> integer
-        with patch.dict(os.environ, {'DB_PORT': '3306'}, clear=False):
+        with patch.dict(os.environ, {'DB_PORT': '3306'}, clear=True):
             kwargs = get_db_connect_kwargs()
             assert isinstance(kwargs.get('port'), int)
 
         # With non-numeric DB_PORT -> kept as string
-        with patch.dict(os.environ, {'DB_PORT': 'notint'}, clear=False):
+        with patch.dict(os.environ, {'DB_PORT': 'notint'}, clear=True):
             kwargs = get_db_connect_kwargs()
             assert kwargs.get('port') == 'notint'
 

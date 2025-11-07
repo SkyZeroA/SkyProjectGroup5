@@ -159,9 +159,11 @@ class TestFlaskAPI(TestCase):
         mock_insert_activity.assert_called_once_with(1, 101, 42, 10, True)
 
     def test_fetch_questions(self):
-        response = self.app.get('/api/fetch-questions')
-        self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.get_json(), list)
+        # Mock backend DB call to avoid real DB connection
+        with patch('backend.routes.get_all_activity_names', return_value=[]):
+            response = self.app.get('/api/fetch-questions')
+            self.assertEqual(response.status_code, 200)
+            self.assertIsInstance(response.get_json(), list)
 
     @patch('backend.routes.get_username_from_db')
     @patch('backend.routes.read_view_table_week')
