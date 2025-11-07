@@ -12,11 +12,16 @@ pipeline {
       environment {
         scannerHome = tool 'sonarqube'
       }
-        steps {
-            withSonarQubeEnv('sonar-qube-1') {        
-              sh "${scannerHome}/bin/sonar-scanner"
-            }   
-        }
+      steps {
+        sh '''
+          # Make lcov paths relative
+          sed -i 's|$PWD/||g' react-frontend/coverage/lcov.info
+
+          # Run SonarScanner
+          ${scannerHome}/bin/sonar-scanner
+        '''
+      }
     }
+
   }
 }
