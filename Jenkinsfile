@@ -11,15 +11,15 @@ pipeline {
     }
     stage('Install') {
         steps {
-            // Install the ReactJS dependencies
-            sh "npm install"
+            sh 'cd react-frontend && npm install'
         }
-    }
+   }
+
     stage('Test') {
         steps {
-          // Run the ReactJS tests
-          sh "npm test"
+            sh 'cd react-frontend && npm test'
         }
     }
+
   }
 }
