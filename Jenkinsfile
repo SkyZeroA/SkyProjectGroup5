@@ -1,13 +1,13 @@
 pipeline {
   agent {
     docker {
-      image 'python:3.11'  // or python:3.10 if you prefer
-      args '-u root'       // run as root so npm installs work
+      image 'python:3.11'
+      args '-u root'
     }
   }
 
   environment {
-    MY_ENV_FILE = credentials('Team5Env')
+    OPENAI_API_KEY = credentials('OPENAI_API_KEY')
   }
 
   stages {
@@ -29,6 +29,7 @@ pipeline {
     stage('Test Backend') {
       steps {
         sh '''
+        echo "OPENAI_API_KEY is set: ${#OPENAI_API_KEY}"
         python3 -m pytest -q --cov
         '''
       }
