@@ -10,3 +10,4 @@ openai
 python-dotenv==1.2.1
 pytest==8.4.2
 numpy
+pytest-cov

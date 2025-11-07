@@ -14,23 +14,18 @@ pipeline {
         }
     }
 
-    stage('Check Python') {
+    stage('Install Backend') {
         steps {
             sh '''
-            which python || true
-            which python3 || true
-            python --version || true
-            python3 --version || true
+            python3 -m pip install -r requirements.txt
             '''
         }
     }
 
-    stage('Install Backend') {
+    stage('Test Backend') {
         steps {
             sh '''
-            python3 -m ensurepip --upgrade
-            python3 -m pip install --upgrade pip
-            python3 -m pip install -r requirements.txt
+            python3 -m pytest -q --cov
             '''
         }
     }
@@ -40,11 +35,12 @@ pipeline {
             sh 'cd react-frontend && npm install'
         }
     }
-    // stage('Test') {
-    //     steps {
-    //         sh 'cd react-frontend && npm test'
-    //     }
-    // }
+
+    stage('Test Frontend') {
+        steps {
+            sh 'cd react-frontend && npm test --watchAll=false --coverage'
+        }
+    }
 
   }
 }
