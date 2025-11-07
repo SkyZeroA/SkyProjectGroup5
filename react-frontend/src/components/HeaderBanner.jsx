@@ -24,9 +24,6 @@ const HeaderBanner = ({
         {centerLogo || hasToggle ? (
           // === Centered layout (Sign-In / Sign-Up) ===
           <>
-            {/* Left spacer */}
-            <div className="flex-1"></div>
-
             {/* Centered logo - NOT clickable on sign in/up */}
             <div className="mx-auto">
               <img
@@ -52,11 +49,13 @@ const HeaderBanner = ({
                 src="/image-5.png"
               />
             </Link>) : (
+            <div className="mx-auto">
               <img
-                className="h-[40px] w-auto object-contain pl-2"
+                className="h-[40px] w-auto object-contain"
                 alt="Sky Zero Logo"
                 src="/image-5.png"
               />
+            </div>
             )}
 
             {navbar && (
