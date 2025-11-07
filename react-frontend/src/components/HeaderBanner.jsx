@@ -25,17 +25,20 @@ const HeaderBanner = ({
           // === Centered layout (Sign-In / Sign-Up) ===
           <>
             {/* Centered logo - NOT clickable on sign in/up */}
-            <div className="mx-auto">
-              <img
-                className="h-[40px] w-auto object-contain"
-                alt="Sky Zero Logo"
-                src="/image-5.png"
-              />
-            </div>
+            <div className="relative w-full flex items-center">
+              {/* Centered logo */}
+              <div className="absolute left-1/2 transform -translate-x-1/2">
+                <img
+                  className="h-[40px] w-auto object-contain"
+                  alt="Sky Zero Logo"
+                  src="/image-5.png"
+                />
+              </div>
 
-            {/* Right side: optional colorblind toggle */}
-            <div className="flex-1 flex justify-end">
-              {colorblindButton && colorblindButton}
+              {/* Right side: optional colorblind toggle */}
+              <div className="ml-auto">
+                {colorblindButton && colorblindButton}
+              </div>
             </div>
           </>
         ) : (

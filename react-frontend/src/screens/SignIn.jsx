@@ -74,7 +74,7 @@ const SignIn = ({ colorblind, setColorblind }) => {
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header>
-        <HeaderBanner className="md:fixed"  logoLinked={false} colorblindButton={<ColorblindToggle colorblind={colorblind} setColorblind={setColorblind} centerLogo={true} />} />
+        <HeaderBanner className="md:fixed"  logoLinked={false} centerLogo={true} colorblindButton={<ColorblindToggle colorblind={colorblind} setColorblind={setColorblind} />} />
       </header>
 
       {/* Skip to main content link for keyboard users */}

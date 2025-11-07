@@ -4,7 +4,15 @@ import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recha
 // Default colors
 const DEFAULT_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28EFF', '#FF6699', '#33CC33'];
 // Colorblind-friendly palette (high contrast, distinct hues)
-const COLORBLIND_COLORS = ['#0072B2', '#E69F00', '#56B4E9'];
+const COLORBLIND_COLORS = [
+  '#0072B2', // blue
+  '#E69F00', // orange
+  '#56B4E9', // light blue
+  '#009E73', // green
+  '#F0E442', // yellow
+  '#D55E00', // red-orange
+  '#CC79A7'  // pink/magenta
+];
 
 function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnOffDevices, recycle, reusable, foodWaste, colorblind }) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -20,12 +28,12 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnO
 
   const data = [
     { name: 'Transport', value: transportEmissions },
-    { name: 'Diet', value: dietEmissions },
+    { name: 'Diet and Food Waste', value: dietEmissions + foodWaste },
     { name: 'Heating', value: heatingEmissions },
     { name: 'Lack of Turning Off Devices', value: turnOffDevices },
-    { name: 'Lack of Recycling', value: recycle },
-    { name: 'Lack of Reusables', value: reusable },
-    { name: 'Food Waste', value: foodWaste },
+    { name: 'Lack of Recycling/Reusables', value: recycle + reusable }
+    // { name: 'Lack of Reusables', value: reusable },
+    // { name: 'Food Waste', value: foodWaste },
   ];
 
   // Choose palette based on colorblind mode
