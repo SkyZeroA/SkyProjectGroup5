@@ -34,8 +34,8 @@ const SignIn = require('../screens/SignIn').default;
 test('renders the SignIn form with input fields and button', () => {
     render(<SignIn />);
 
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /Email/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Password$/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
     expect(screen.getByText(/Create a new account/i)).toBeInTheDocument();
   });
@@ -43,13 +43,13 @@ test('renders the SignIn form with input fields and button', () => {
 test('updates email and password on user input', () => {
     render(<SignIn />);
 
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
+  const emailInput = screen.getByRole('textbox', { name: /Email/i });
+  const passwordInput = screen.getByLabelText(/^Password$/i);
 
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+  fireEvent.change(emailInput, { target: { value: 'test@sky.uk' } });
     fireEvent.change(passwordInput, { target: { value: 'Password1!' } });
 
-    expect(emailInput.value).toBe('test@example.com');
+  expect(emailInput.value).toBe('test@sky.uk');
     expect(passwordInput.value).toBe('Password1!');
   });
 
@@ -60,21 +60,21 @@ test('submits form and navigates on successful sign-in', async () => {
 
     render(<SignIn />);
 
-    fireEvent.change(screen.getByLabelText(/Email/i), {
-      target: { value: 'test@example.com' },
+    fireEvent.change(screen.getByRole('textbox', { name: /Email/i }), {
+      target: { value: 'test@sky.uk' },
     });
-    fireEvent.change(screen.getByLabelText(/Password/i), {
+    fireEvent.change(screen.getByLabelText(/^Password$/i), {
       target: { value: 'Password1!' },
     });
 
     fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
 
     await waitFor(() => {
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        expect.stringContaining('/api/sign-in'),
-        { email: 'test@example.com', password: 'Password1!' },
-        { withCredentials: true }
-      );
+        expect(mockedAxios.post).toHaveBeenCalledWith(
+          expect.stringContaining('/api/sign-in'),
+          { email: 'test@sky.uk', password: 'Password1!' },
+          { withCredentials: true }
+        );
       // expect(mockNavigate).toHaveBeenCalledWith('/sign-up');
       expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
@@ -91,24 +91,24 @@ test('handles incorrect username or password error', async () => {
 
   render(<SignIn />);
 
-  fireEvent.change(screen.getByLabelText(/Email/i), {
-    target: { value: 'wrong@example.com' },
-  });
-  fireEvent.change(screen.getByLabelText(/Password/i), {
-    target: { value: 'WrongPass1!' },
-  });
+    fireEvent.change(screen.getByRole('textbox', { name: /Email/i }), {
+      target: { value: 'wrong@sky.uk' },
+    });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), {
+      target: { value: 'WrongPass1!' },
+    });
 
   fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
 
-  await waitFor(() => {
+    await waitFor(() => {
     expect(mockedAxios.post).toHaveBeenCalledWith(
       expect.stringContaining('/api/sign-in'),
-      { email: 'wrong@example.com', password: 'WrongPass1!' },
+      { email: 'wrong@sky.uk', password: 'WrongPass1!' },
       { withCredentials: true }
     );
 
     // You can also assert side effects like clearing the password field
-    expect(screen.getByLabelText(/Password/i).value).toBe('');
+    expect(screen.getByLabelText(/^Password$/i).value).toBe('');
   });
 });
 

@@ -59,7 +59,7 @@ const Dashboard = () => {
     const fetchInitialTips = async () => {
       setTipsLoading(true);
       try {
-        const res = await axios.get("http://localhost:9099/api/initial-ai-tips", { withCredentials: true });
+        const res = await axios.get(`${apiUrl}/api/initial-ai-tips`, { withCredentials: true });
         setTips(res.data.tips);
       } catch (err) {
         console.error("Error fetching tips:", err);
@@ -72,7 +72,7 @@ const Dashboard = () => {
 
   const replaceTip = async (index) => {
     try {
-      const res = await axios.get("http://localhost:9099/api/ai-tip", { withCredentials: true });
+      const res = await axios.get(`${apiUrl}/api/ai-tip`, { withCredentials: true });
       const newTip = res.data.tip;
       setTips((prevTips) => {
         const updated = [...prevTips];

@@ -51,13 +51,13 @@ test("updates form input fields correctly", () => {
 
     fireEvent.change(nameInput, { target: { value: "harry" } });
     fireEvent.change(usernameInput, { target: { value: "harry123" } });
-    fireEvent.change(emailInput, { target: { value: "harry@example.com" } });
+  fireEvent.change(emailInput, { target: { value: "harry@sky.uk" } });
   fireEvent.change(passwordInput, { target: { value: "Test1234!" } });
   fireEvent.change(confirmPasswordInput, { target: { value: "Test1234!" } });
 
     expect(nameInput.value).toBe("harry");
     expect(usernameInput.value).toBe("harry123");
-    expect(emailInput.value).toBe("harry@example.com");
+  expect(emailInput.value).toBe("harry@sky.uk");
   expect(passwordInput.value).toBe("Test1234!");
   expect(confirmPasswordInput.value).toBe("Test1234!");
 });
@@ -71,7 +71,7 @@ test("successful signup navigates to /questionnaire", async () => {
 
     fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
     fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "harry123" } });
-    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@example.com" } });
+  fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@sky.uk" } });
   fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: "Test1234!" } });
   fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "Test1234!" } });
 
@@ -83,7 +83,7 @@ test("successful signup navigates to /questionnaire", async () => {
         {
           "first-name": "harry",
           username: "harry123",
-          email: "harry@example.com",
+          email: "harry@sky.uk",
           password: "Test1234!",
           "confirm-password": "Test1234!",
         },
@@ -106,7 +106,7 @@ test("handles username already exists error", async () => {
     // Fill required fields so client-side validation does not prevent the POST
     fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
     fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "takenUser" } });
-    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "taken@example.com" } });
+  fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "taken@sky.uk" } });
     fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: "Test1234!" } });
     fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "Test1234!" } });
     fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
@@ -132,7 +132,7 @@ test("handles email already has an account error", async () => {
     // Fill required fields so client-side validation does not prevent the POST
     fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
     fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "harry123" } });
-    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@example.com" } });
+  fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@sky.uk" } });
     fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: "Test1234!" } });
     fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: "Test1234!" } });
     fireEvent.click(screen.getByRole("button", { name: /Continue/i }));
@@ -158,7 +158,7 @@ test("handles passwords do not match error", async () => {
     // Fill required fields but make passwords mismatch so client-side validation catches it
     fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: "harry" } });
     fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: "harry123" } });
-    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@example.com" } });
+  fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "harry@sky.uk" } });
     fireEvent.change(screen.getByLabelText(/^Password$/i), {
       target: { value: "Password1!" },
     });
