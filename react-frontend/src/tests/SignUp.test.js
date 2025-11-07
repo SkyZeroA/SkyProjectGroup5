@@ -176,6 +176,75 @@ test("handles passwords do not match error", async () => {
     });
 });
 
+test('shows first name validation error for short name', async () => {
+    render(<SignUp />);
+
+    fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: 'Al' } });
+    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: 'validuser' } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'user@sky.uk' } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'Test1234!' } });
+    fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: 'Test1234!' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/First name must be at least 3 characters/i)).toBeInTheDocument();
+      expect(mockedAxios.post).not.toHaveBeenCalled();
+    });
+});
+
+test('shows username validation error for invalid username', async () => {
+    render(<SignUp />);
+
+    fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: 'Alice' } });
+    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: 'ab' } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'user@sky.uk' } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'Test1234!' } });
+    fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: 'Test1234!' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Username must be 3-16 characters/i)).toBeInTheDocument();
+      expect(mockedAxios.post).not.toHaveBeenCalled();
+    });
+});
+
+test('shows email validation error for wrong domain', async () => {
+    render(<SignUp />);
+
+    fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: 'Alice' } });
+    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: 'alice123' } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'alice@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'Test1234!' } });
+    fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: 'Test1234!' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Email must be a valid @sky.uk address./i)).toBeInTheDocument();
+      expect(mockedAxios.post).not.toHaveBeenCalled();
+    });
+});
+
+test('shows password complexity validation error', async () => {
+    render(<SignUp />);
+
+    fireEvent.change(screen.getByLabelText(/First Name/i), { target: { value: 'Alice' } });
+    fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: 'alice123' } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: 'alice@sky.uk' } });
+    // weak password
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'abc' } });
+    fireEvent.change(screen.getByLabelText(/Confirm Password/i), { target: { value: 'abc' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Password must be at least 8 characters/i)).toBeInTheDocument();
+      expect(mockedAxios.post).not.toHaveBeenCalled();
+    });
+});
+
 test('clicking "Already got an account?" navigates to sign-in', () => {
     render(<SignUp />);
     fireEvent.click(
