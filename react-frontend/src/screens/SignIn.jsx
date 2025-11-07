@@ -13,6 +13,7 @@ const SignIn = () => {
   const [attempts, setAttempts] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
@@ -116,10 +117,13 @@ const SignIn = () => {
                   aria-describedby="email-error"
                   required
                 />
+
                 <Input
                   id="password"
-                  type="password"
+                  type={passwordVisible ? "text" : "password"}
                   label="Password"
+                  showPasswordToggle={true}
+                  onPasswordToggle={() => setPasswordVisible(!passwordVisible)}
                   // errorMessage={`${attempts === 0 ? "Enter your password." : "Incorrect password. Please try again."}`}
                   errorMessage="Enter your password."
                   showError={true}

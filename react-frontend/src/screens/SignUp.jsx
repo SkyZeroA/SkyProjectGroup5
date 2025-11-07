@@ -20,6 +20,8 @@ const SignUp = () => {
   const [firstNameError, setFirstNameError] = useState("Enter your first name.");
   const [passwordError, setPasswordError] = useState("Enter your password.");
   const [formErrors, setFormErrors] = useState([]);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate()
@@ -205,8 +207,10 @@ const SignUp = () => {
 
                 <Input
                   id="password"
-                  type="password"
+                  type={passwordVisible ? "text" : "password"}
                   label="Password"
+                  showPasswordToggle={true}
+                  onPasswordToggle={() => setPasswordVisible(!passwordVisible)}
                   errorMessage={passwordError}
                   showError={true}
                   value={password}
@@ -217,8 +221,10 @@ const SignUp = () => {
 
                 <Input
                   id="confirmPassword"
-                  type="password"
+                  type={confirmPasswordVisible ? "text" : "password"}
                   label="Confirm Password"
+                  showPasswordToggle={true}
+                  onPasswordToggle={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
                   errorMessage={confirmPasswordError || "Re-type your password."}
                   showError={!!confirmPasswordError}
                   value={confirmPassword}

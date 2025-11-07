@@ -161,11 +161,11 @@ const Dashboard = () => {
 
               {/* Footer Switch */}
               <div className="flex justify-center items-center mt-4 md:mt-6">
-                <span className="mr-6 md:mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[18px] md:text-[24px]">
+                <span className={isOn ? "mr-6 md:mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[18px] md:text-[24px]" : "mr-6 md:mr-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-semibold text-center text-[18px] md:text-[24px]"}>
                   Monthly
                 </span>
                 <Switch setOutput={setIsOn} option1={weekData} option2={monthData} />
-                <span className="ml-6 md:ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[18px] md:text-[24px]">
+                <span className={!isOn ? "ml-6 md:ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-center text-[18px] md:text-[24px]" : "ml-6 md:ml-10 text-gray-700 [font-family:'Sky_Text',Helvetica] font-semibold text-center text-[18px] md:text-[24px]"}>
                   Weekly
                 </span>
               </div>

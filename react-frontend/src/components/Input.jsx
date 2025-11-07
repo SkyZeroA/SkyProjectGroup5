@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 
-const Input = ({ className, type, label, errorMessage, showError, ...props }, ref) => {
+const Input = ({ className, type, label, errorMessage, showError, showPasswordToggle, onPasswordToggle, ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const [hasBeenTouched, setHasBeenTouched] = useState(false);
     const hasValue = props.value && String(props.value).length > 0;
@@ -62,6 +63,16 @@ const Input = ({ className, type, label, errorMessage, showError, ...props }, re
             }}
             {...props}
           />
+          {showPasswordToggle && (
+          <button
+            type="button"
+            onClick={onPasswordToggle}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+            aria-label={type === "password" ? "Show password" : "Hide password"}
+          >
+            {type === "password" ? <FaEye /> : <FaEyeSlash />}
+          </button>
+        )}
         </div>
         <div className="overflow-hidden">
           <div
