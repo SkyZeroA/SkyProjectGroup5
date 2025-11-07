@@ -7,6 +7,7 @@ const HeaderBanner = ({
   navbar = null,
   colorblindButton = null,
   centerLogo = false,
+  logoLinked = true
 }) => {
   const hasToggle = Boolean(colorblindButton);
 
@@ -43,13 +44,20 @@ const HeaderBanner = ({
         ) : (
           // === Default layout (logo on left, clickable) ===
           <>
+            {logoLinked ? (
             <Link to="/dashboard" className="cursor-pointer">
               <img
                 className="h-[40px] w-auto object-contain pl-2"
                 alt="Sky Zero Logo"
                 src="/image-5.png"
               />
-            </Link>
+            </Link>) : (
+              <img
+                className="h-[40px] w-auto object-contain pl-2"
+                alt="Sky Zero Logo"
+                src="/image-5.png"
+              />
+            )}
 
             {navbar && (
               <nav className="flex items-center gap-4 w-full">{navbar}</nav>
