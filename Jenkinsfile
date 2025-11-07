@@ -1,6 +1,10 @@
-// This adds install and test stages before static code analysis
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'python:3.11'  // or python:3.10 if you prefer
+      args '-u root'       // run as root so npm installs work
+    }
+  }
 
   environment {
     MY_ENV_FILE = credentials('Team5Env')
@@ -8,46 +12,43 @@ pipeline {
 
   stages {
     stage('Checkout') {
-        steps {
-          // Get some code from a GitHub repository
-          git branch: 'main', url: 'https://github.com/SkyZeroA/SkyProjectGroup5.git'
-        }
+      steps {
+        git branch: 'main', url: 'https://github.com/SkyZeroA/SkyProjectGroup5.git'
+      }
     }
 
-    stage('Setup Python Env') {
-        steps {
-            sh '''
-            sudo apt-get update
-            sudo apt-get install -y python3-venv
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install --upgrade pip
-            pip install -r requirements.txt
-            '''
-        }
+    stage('Setup Backend') {
+      steps {
+        sh '''
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements.txt
+        '''
+      }
     }
-    
+
     stage('Test Backend') {
-        steps {
-            sh '''
-            . venv/bin/activate
-            python3 -m pytest -q --cov
-            '''
-        }
+      steps {
+        sh '''
+        python3 -m pytest -q --cov
+        '''
+      }
     }
-
 
     stage('Install Frontend') {
-        steps {
-            sh 'cd react-frontend && npm install'
-        }
+      steps {
+        sh '''
+        apt-get update && apt-get install -y npm
+        cd react-frontend && npm install
+        '''
+      }
     }
 
     stage('Test Frontend') {
-        steps {
-            sh 'cd react-frontend && npm test --watchAll=false --coverage'
-        }
+      steps {
+        sh '''
+        cd react-frontend && npm test --watchAll=false --coverage
+        '''
+      }
     }
-
   }
 }
