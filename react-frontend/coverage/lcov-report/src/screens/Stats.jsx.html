@@ -253,7 +253,9 @@
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
 <a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -265,7 +267,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -325,6 +327,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -455,7 +459,7 @@ import PointsBarChart from "../components/PointsBarChart";
 import Navbar from "../components/Navbar";
 import { subscribeActivity } from "../lib/activityBus";
 &nbsp;
-const Stats = () =&gt; {
+const Stats = ({ colorblind }) =&gt; {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isOn, setIsOn] = useState(false);
   const [weekData, setWeekData] = useState([]);
@@ -550,6 +554,7 @@ const Stats = () =&gt; {
                 recycle={recycle}
                 reusable={reusable}
                 foodWaste={foodWaste}
+                colorblind={colorblind}
               /&gt;
             &lt;/CardContent&gt;
           &lt;/Card&gt;
@@ -557,7 +562,7 @@ const Stats = () =&gt; {
           {/* Calendar Heatmap */}
           &lt;Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full bg-white"&gt;
             &lt;CardContent className="h-full w-full flex flex-col justify-center items-center"&gt;
-              &lt;CalendarHeatmap isFormOpen={isFormOpen} /&gt;
+              &lt;CalendarHeatmap isFormOpen={isFormOpen} colorblind={colorblind} /&gt;
             &lt;/CardContent&gt;
           &lt;/Card&gt;
 &nbsp;
@@ -570,6 +575,7 @@ const Stats = () =&gt; {
                 setIsOn={setIsOn} 
                 weekData={weekData} 
                 monthData={monthData} 
+                colourblind={colorblind}
               /&gt;
             &lt;/CardContent&gt;
           &lt;/Card&gt;
@@ -577,7 +583,7 @@ const Stats = () =&gt; {
           {/* User Points Bar Chart */}
           &lt;Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white"&gt;
             &lt;CardContent className="h-full w-full flex flex-col justify-center items-center pb-2"&gt;
-              &lt;PointsBarChart isFormOpen={isFormOpen} /&gt;
+              &lt;PointsBarChart isFormOpen={isFormOpen} colourblind={colorblind} /&gt;
             &lt;/CardContent&gt;
           &lt;/Card&gt;
         &lt;/section&gt;
@@ -589,7 +595,7 @@ const Stats = () =&gt; {
               Highest Week Points
             &lt;/h3&gt;
             &lt;p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2"&gt;{highestWeekUser}&lt;/p&gt;
-            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600"&gt;
+            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]"&gt;
               {highestWeekPoints}
             &lt;/p&gt;
           &lt;/Card&gt;
@@ -599,7 +605,7 @@ const Stats = () =&gt; {
               Highest Month Points
             &lt;/h3&gt;
             &lt;p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2"&gt;{highestMonthUser}&lt;/p&gt;
-            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600"&gt;
+            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]"&gt;
               {highestMonthPoints}
             &lt;/p&gt;
           &lt;/Card&gt;
@@ -608,7 +614,7 @@ const Stats = () =&gt; {
             &lt;h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800"&gt;
               Your Highest Week Points
             &lt;/h3&gt;
-            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600"&gt;
+            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]"&gt;
               {userBestWeek}
             &lt;/p&gt;
           &lt;/Card&gt;
@@ -617,7 +623,7 @@ const Stats = () =&gt; {
             &lt;h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800"&gt;
               Your Highest Month Points
             &lt;/h3&gt;
-            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600"&gt;
+            &lt;p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]"&gt;
               {userBestMonth}
             &lt;/p&gt;
           &lt;/Card&gt;
@@ -640,7 +646,7 @@ export default Stats;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-07T21:40:23.499Z
+                at 2025-11-07T23:08:56.772Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

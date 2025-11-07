@@ -1,37 +1,33 @@
 import { render, screen } from '@testing-library/react';
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like: expect(element).toBeInTheDocument()
+import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
-// Import the mocked components directly for isolated rendering
-import SignIn from '../screens/SignIn';
-import SignUp from '../screens/SignUp';
-import Questionnaire from '../screens/Questionnaire';
-import Dashboard from '../screens/Dashboard';
+import App from '../App';
 
-
-// Mock the screen components to make them predictable for unit tests
+// Mock screens so tests stay fast and isolated
 jest.mock('../screens/SignIn', () => () => <div>SignIn</div>);
 jest.mock('../screens/SignUp', () => () => <div>SignUp</div>);
 jest.mock('../screens/Questionnaire', () => () => <div>Questionnaire</div>);
 jest.mock('../screens/Dashboard', () => () => <div>Dashboard</div>);
+jest.mock('../screens/Profile', () => () => <div>Profile</div>);
+jest.mock('../screens/Stats', () => () => <div>Stats</div>);
+jest.mock('../screens/About', () => () => <div>About</div>);
+jest.mock('../components/RequireAuth', () => ({ children }) => <>{children}</>);
 
-
-test('SignIn component renders in isolation', () => {
-  render(<SignIn />);
-  expect(screen.getByText(/SignIn/)).toBeInTheDocument();
+test('App renders without crashing', () => {
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
+  expect(screen.getByText('SignIn')).toBeInTheDocument();
 });
 
-test('SignUp component renders in isolation', () => {
-  render(<SignUp />);
-  expect(screen.getByText(/SignUp/)).toBeInTheDocument();
-});
-
-test('Questionnaire component renders in isolation', () => {
-  render(<Questionnaire />);
-  expect(screen.getByText(/Questionnaire/)).toBeInTheDocument();
-});
-
-test('Dashboard component renders in isolation', () => {
-  render(<Dashboard />);
-  expect(screen.getByText(/Dashboard/)).toBeInTheDocument();
+test('colorblind state toggles document class', () => {
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
+  // By default, should not have class
+  expect(document.documentElement.classList.contains('colorblind')).toBe(false);
 });

@@ -407,12 +407,19 @@ test('highlights current user in leaderboard and sorts correctly', async () => {
 
   await waitFor(() => {
     // Harry should be present
-    expect(screen.getByText('Harry')).toBeInTheDocument();
-    // The current user row should include the current-user border class
-    const highlighted = document.querySelector('.border-2.border-green-500');
-    expect(highlighted).toBeInTheDocument();
-    expect(highlighted).toHaveTextContent('Harry');
-  });
+    // expect(screen.getByText('Harry')).toBeInTheDocument();
+    // // The current user row should include the current-user border class
+    // const highlighted = document.querySelector('.border-2.border-\\[var\\(--log-color\\)\\]');
+    // expect(highlighted).toBeInTheDocument();
+    // expect(highlighted).toHaveTextContent('Harry');
+    
+    const highlighted = screen.getByText('Harry');
+    const harryCard = highlighted.closest('.border-2.border-\\[var\\(--user-label\\)\\]');
+    expect(harryCard).toBeInTheDocument();
+    // Assert it has the right classes
+    expect(harryCard).toHaveTextContent('Harry');
+  }
+);
 });
 
 

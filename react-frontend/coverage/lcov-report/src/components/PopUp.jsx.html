@@ -309,14 +309,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">55x</span>
-<span class="cline-any cline-yes">55x</span>
-<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
@@ -330,23 +330,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -356,12 +356,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -369,7 +369,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -458,8 +458,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -654,7 +654,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                       className={`cursor-pointer p-4 border rounded-md shadow-sm transition
                         ${
                           isSelected
-                            ? "bg-green-100 border-green-600 text-green-800"
+                            ? "bg-[var(--log-bg-color)] border-[var(--log-border-color)] text-[var(--log-text-color)]"
                             : "bg-white hover:bg-gray-100"
                         }`}
                     &gt;
@@ -663,7 +663,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                         &lt;span className="text-xs font-light"&gt;({points} pts)&lt;/span&gt;
                         {isSelected &amp;&amp; (
                           &lt;svg
-                            className="w-5 h-5 text-green-600"
+                            className="w-5 h-5 text-[var(--log-border-color)]"
                             fill="none"
                             stroke="currentColor"
                             strokeWidth="2"
@@ -745,7 +745,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                 &gt;
                   Cancel
                 &lt;/button&gt;
-                &lt;button className="bg-green-600 text-white px-4 py-2 rounded" onClick={handleActivitiesSave}&gt;
+                &lt;button className="bg-[var(--log-border-color)] text-white px-4 py-2 rounded" onClick={handleActivitiesSave}&gt;
                   Save
                 &lt;/button&gt;
               &lt;/div&gt;
@@ -759,13 +759,13 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                     setIsEditingActivities(true);
                   }}
                   type="button"
-                  className="flex bg-green-600 text-white px-4 py-2 rounded"
+                  className="flex bg-[var(--log-border-color)] text-white px-4 py-2 rounded"
                 &gt;
                   Edit Activities
                 &lt;/button&gt;
                 &lt;button
                   type="button"
-                  className="flex bg-green-600 text-white px-4 py-2 rounded"
+                  className="flex bg-[var(--log-border-color)] text-white px-4 py-2 rounded"
                   onClick={onClose}
                 &gt;
                   Close
@@ -787,7 +787,7 @@ export default PopupForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-07T21:40:23.499Z
+                at 2025-11-07T23:08:56.772Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

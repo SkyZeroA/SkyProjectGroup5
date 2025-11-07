@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.3% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/13</span>
+                <span class='fraction'>14/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>3/6</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -114,10 +114,35 @@
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
 <a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -128,7 +153,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -142,6 +166,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -154,7 +181,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -168,9 +196,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState, useEffect } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 &nbsp;
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28EFF', '#FF6699', '#33CC33'];
+// Default colors
+const DEFAULT_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28EFF', '#FF6699', '#33CC33'];
+// Colorblind-friendly palette (high contrast, distinct hues)
+const COLORBLIND_COLORS = [
+  '#0072B2', // blue
+  '#E69F00', // orange
+  '#56B4E9', // light blue
+  '#009E73', // green
+  '#F0E442', // yellow
+  '#D55E00', // red-orange
+  '#CC79A7'  // pink/magenta
+];
 &nbsp;
-function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnOffDevices, recycle, reusable, foodWaste }) {
+function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnOffDevices, recycle, reusable, foodWaste, colorblind }) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 &nbsp;
   useEffect(() =&gt; {
@@ -179,19 +218,21 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnO
     return () =&gt; window.removeEventListener('resize', handleResize);
   }, []);
 &nbsp;
-  // Adjust radius/height based on screen width
   const outerRadius = windowWidth &lt; 600 ? <span class="branch-0 cbranch-no" title="branch not covered" >60 </span>: 100;
   const height = windowWidth &lt; 600 ? <span class="branch-0 cbranch-no" title="branch not covered" >180 </span>: 300;
 &nbsp;
   const data = [
     { name: 'Transport', value: transportEmissions },
-    { name: 'Diet', value: dietEmissions },
+    { name: 'Diet and Food Waste', value: dietEmissions + foodWaste },
     { name: 'Heating', value: heatingEmissions },
     { name: 'Lack of Turning Off Devices', value: turnOffDevices },
-    { name: 'Lack of Recycling', value: recycle },
-    { name: 'Lack of Reusables', value: reusable },
-    { name: 'Food Waste', value: foodWaste },
+    { name: 'Lack of Recycling/Reusables', value: recycle + reusable }
+    // { name: 'Lack of Reusables', value: reusable },
+    // { name: 'Food Waste', value: foodWaste },
   ];
+&nbsp;
+  // Choose palette based on colorblind mode
+  const colors = colorblind ? <span class="branch-0 cbranch-no" title="branch not covered" >COLORBLIND_COLORS </span>: DEFAULT_COLORS;
 &nbsp;
   return (
     &lt;ResponsiveContainer width="100%" height={height}&gt;
@@ -205,7 +246,7 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnO
           label
         &gt;
           {data.map((entry, index) =&gt; (
-            &lt;Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /&gt;
+            &lt;Cell key={`cell-${index}`} fill={colors[index % colors.length]} /&gt;
           ))}
         &lt;/Pie&gt;
         &lt;Tooltip /&gt;
@@ -216,6 +257,7 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnO
 }
 &nbsp;
 export default MyPieChart;
+&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -223,7 +265,7 @@ export default MyPieChart;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-07T21:40:23.499Z
+                at 2025-11-07T23:08:56.772Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
