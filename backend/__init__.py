@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from pathlib import Path
+from flask_wtf import CSRFProtect
 
 # template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..', 'frontend', 'templates'))
 # app = Flask(__name__, template_folder=template_dir)
@@ -35,8 +36,8 @@ app.config.update(
     SESSION_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
 )
 
-SECRET_KEY = os.urandom(32)
-app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+csrf = CSRFProtect(app)
 
 from . import routes
 CORS(app, supports_credentials=True, origins=allowed_origins)

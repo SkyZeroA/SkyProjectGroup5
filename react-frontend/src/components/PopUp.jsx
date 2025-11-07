@@ -3,6 +3,7 @@
 import React, {useState, useEffect} from "react";
 import { Card, CardContent } from "./Card";
 import axios from "axios";
+import { ensureCsrfToken } from "../lib/csrf";
 
 const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints, onActivitiesSave }) => {
     const [answers, setAnswers] = useState({});
@@ -43,6 +44,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
 
   const handleSubmit = async (question, isPositive) => {
     try {
+      await ensureCsrfToken(apiUrl);
       const response = await axios.post(`${apiUrl}/api/log-activity`, {question, isPositive}, { withCredentials: true });
       console.log("Server response:", response.data);
     } catch (error) {

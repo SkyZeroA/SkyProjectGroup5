@@ -4,6 +4,7 @@ from backend import app
 from hashlib import sha256
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from flask_wtf.csrf import generate_csrf
 
 
 from backend.Questionnaire import Questionnaire
@@ -28,6 +29,14 @@ def sign_in():
         return jsonify({"message": "Sign in successful"}), 200
     else:
         return jsonify({"error": "Incorrect username or password"}), 401
+
+
+@app.route('/api/csrf-token', methods=['GET'])
+def get_csrf_token():
+    # Returns a CSRF token to single-page apps. The token is also stored in the session
+    # by Flask-WTF's generate_csrf, so CSRFProtect will validate incoming requests
+    token = generate_csrf()
+    return jsonify({"csrf_token": token}), 200
 
 
 @app.route('/api/sign-up', methods=['POST'])
