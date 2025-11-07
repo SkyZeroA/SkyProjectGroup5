@@ -14,6 +14,17 @@ pipeline {
         }
     }
 
+    stage('Check Python') {
+        steps {
+            sh '''
+            which python || true
+            which python3 || true
+            python --version || true
+            python3 --version || true
+            '''
+        }
+    }
+
     stage('Install Backend') {
         steps {
             sh 'pip3 install -r requirements.txt'
