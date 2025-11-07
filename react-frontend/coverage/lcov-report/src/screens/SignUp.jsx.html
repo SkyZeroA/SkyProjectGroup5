@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.77% </span>
+                <span class="strong">90.8% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>77/83</span>
+                <span class='fraction'>79/87</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/28</span>
+                <span class='fraction'>22/32</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">84.61% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>11/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.77% </span>
+                <span class="strong">90.8% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>77/83</span>
+                <span class='fraction'>79/87</span>
             </div>
         
             
@@ -335,7 +335,13 @@
 <a name='L270'></a><a href='#L270'>270</a>
 <a name='L271'></a><a href='#L271'>271</a>
 <a name='L272'></a><a href='#L272'>272</a>
-<a name='L273'></a><a href='#L273'>273</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -352,6 +358,8 @@
 <span class="cline-any cline-yes">79x</span>
 <span class="cline-any cline-yes">79x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">79x</span>
+<span class="cline-any cline-yes">79x</span>
 <span class="cline-any cline-yes">79x</span>
 <span class="cline-any cline-yes">79x</span>
 <span class="cline-any cline-yes">79x</span>
@@ -547,6 +555,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
@@ -558,6 +568,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -630,6 +642,8 @@ const SignUp = () =&gt; {
   const [firstNameError, setFirstNameError] = useState("Enter your first name.");
   const [passwordError, setPasswordError] = useState("Enter your password.");
   const [formErrors, setFormErrors] = useState([]);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 &nbsp;
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate()
@@ -816,8 +830,10 @@ const SignUp = () =&gt; {
 &nbsp;
                 &lt;Input
                   id="password"
-                  type="password"
+                  type={passwordVisible ? <span class="branch-0 cbranch-no" title="branch not covered" >"text" </span>: "password"}
                   label="Password"
+                  showPasswordToggle={true}
+                  onPasswordToggle={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setPasswordVisible(!passwordVisible)}</span>
                   errorMessage={passwordError}
                   showError={true}
                   value={password}
@@ -828,8 +844,10 @@ const SignUp = () =&gt; {
 &nbsp;
                 &lt;Input
                   id="confirmPassword"
-                  type="password"
+                  type={confirmPasswordVisible ? <span class="branch-0 cbranch-no" title="branch not covered" >"text" </span>: "password"}
                   label="Confirm Password"
+                  showPasswordToggle={true}
+                  onPasswordToggle={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setConfirmPasswordVisible(!confirmPasswordVisible)}</span>
                   errorMessage={confirmPasswordError || <span class="branch-1 cbranch-no" title="branch not covered" >"Re-type your password."}</span>
                   showError={!!confirmPasswordError}
                   value={confirmPassword}
@@ -886,7 +904,7 @@ export default SignUp;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-07T16:27:00.249Z
+                at 2025-11-07T21:40:23.499Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

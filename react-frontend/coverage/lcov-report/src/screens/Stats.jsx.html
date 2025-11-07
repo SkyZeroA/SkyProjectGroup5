@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>36/40</span>
+                <span class='fraction'>44/48</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.3% </span>
+                <span class="strong">93.61% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>36/39</span>
+                <span class='fraction'>44/47</span>
             </div>
         
             
@@ -241,7 +241,19 @@
 <a name='L176'></a><a href='#L176'>176</a>
 <a name='L177'></a><a href='#L177'>177</a>
 <a name='L178'></a><a href='#L178'>178</a>
-<a name='L179'></a><a href='#L179'>179</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -267,10 +279,18 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -305,6 +325,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -439,6 +463,10 @@ const Stats = () =&gt; {
   const [transportEmissions, setTransportEmissions] = useState(0);
   const [dietEmissions, setDietEmissions] = useState(0);
   const [heatingEmissions, setHeatingEmissions] = useState(0);
+  const [turnOffDevices, setTurnOffDevices] = useState(0);
+  const [recycle, setRecycle] = useState(0);
+  const [reusable, setReusable] = useState(0);
+  const [foodWaste, setFoodWaste] = useState(0);
   const [highestWeekPoints, setHighestWeekPoints] = useState(0);
   const [highestMonthPoints, setHighestMonthPoints] = useState(0);
   const [highestWeekUser, setHighestWeekUser] = useState("");
@@ -457,6 +485,10 @@ const Stats = () =&gt; {
       setTransportEmissions(data.transportEmissions);
       setDietEmissions(data.dietEmissions);
       setHeatingEmissions(data.heatingEmissions);
+      setTurnOffDevices(data.turnOffDevicesEmissions);
+      setRecycle(data.recycleEmissions);
+      setReusable(data.reusableEmissions);
+      setFoodWaste(data.foodWasteEmissions);
       setHighestWeekUser(data.highestWeekUser);
       setHighestWeekPoints(data.highestWeekPoints);
       setHighestMonthUser(data.highestMonthUser);
@@ -514,6 +546,10 @@ const Stats = () =&gt; {
                 transportEmissions={transportEmissions}
                 dietEmissions={dietEmissions}
                 heatingEmissions={heatingEmissions}
+                turnOffDevices={turnOffDevices}
+                recycle={recycle}
+                reusable={reusable}
+                foodWaste={foodWaste}
               /&gt;
             &lt;/CardContent&gt;
           &lt;/Card&gt;
@@ -604,7 +640,7 @@ export default Stats;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-07T16:27:00.249Z
+                at 2025-11-07T21:40:23.499Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
