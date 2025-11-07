@@ -120,6 +120,29 @@
 
 @layer base {
   :root {
+    --user-label: #22c55e;          /* User label color */
+    --color-accent: #4bad31;          /* green accent */
+    --gradient-start: #6eee87;         /* Gradient start */
+    --gradient-middle: #59c754;        /* Gradient middle */
+    --gradient-end: #4bac31;           /* Gradient end */
+    --stats-color: #38a169;          /* Stats color */
+    --log-color: #48bb78;           /* Log Activity button color */
+    --log-bg-color: #f0fff4;        /* Log Activity background color */
+    --log-border-color: #38a169;    /* Log Activity border color */
+    --log-text-color: #276749;  /* Log Activity text color */
+    --progress-bar-color: #4BAD31; /* Progress bar color */
+
+
+    --color-button-bg: #000ef5;       /* blue button */
+    --color-button-bg-hover: #004ef5; /* button hover */
+    --color-button-text: #ffffff;     /* button text */
+    --background: #f9fafb;            /* Page background */
+    --card: #ffffff;                   /* Card background */
+    --foreground: #4a4a4a;            /* Primary text */
+
+    --destructive: #dc2626;            /* Error messages */
+
+
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
@@ -182,6 +205,66 @@
 
     --ring: 216 34% 17%;
 
+    --radius: 0.5rem;
+  }
+
+  .colorblind {
+    --user-label: #2b8cbe;
+
+    /* Accent color — vivid but color-blind safe */
+    --color-accent: #2b8cbe;
+
+    /* Gradient colors — green-teal range visible across CVD types */
+    --gradient-start: #ff7f0e;   /* Orange */
+    --gradient-middle: #66c2a5;  /* Teal */
+    --gradient-end: #3288bd;     /* Medium Blue */
+
+
+    /* Stats and progress colors — good contrast, teal-green family */
+    --stats-color: #2b8cbe;
+    --progress-bar-color: #2b8cbe;
+
+    /* Log Activity button + background */
+    --log-color: #41b6c4;         /* Teal-cyan button */
+    --log-bg-color: #f7fcfd;      /* Cool white background */
+    --log-border-color: #2c7fb8;  /* Rich blue border */
+    --log-text-color: #00441b;  
+
+    --color-primary: #4a4a4a;
+    --color-accent: #E69F00;           /* orange instead of green */
+    --color-button-bg: #0072B2;        /* colorblind-safe blue */
+    --color-button-bg-hover: #005EA3;  /* darker hover */
+    --color-button-text: #ffffff;
+
+
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --border: 210 40% 80%;
+    --input: 210 40% 80%;
+
+    --card: transparent;
+    --card-foreground: 0 0% 0%;
+
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 0 0% 0%;
+
+    --accent: 40 90% 50%; /* colorblind-safe accent */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --ring: 40 90% 50%;
     --radius: 0.5rem;
   }
 }

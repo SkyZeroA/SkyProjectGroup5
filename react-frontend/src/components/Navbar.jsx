@@ -113,16 +113,16 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* CENTER: Log Activities Button (always visible) */}
-        <div className="flex justify-center flex-grow md:flex-grow-0">
-          <Button
-            variant="link"
-            className="text-green-500 whitespace-nowrap"
-            onClick={() => setIsFormOpen(true)}
-          >
-            Log your Activities
-          </Button>
-        </div>
+      {/* CENTER: Log Activities Button (always visible) */}
+      <div className="flex justify-center flex-grow md:flex-grow-0">
+        <Button
+          variant="link"
+          className="text-[var(--log-color)] whitespace-nowrap"
+          onClick={() => setIsFormOpen(true)}
+        >
+          Log your Activities
+        </Button>
+      </div>
 
         {/* RIGHT SIDE: User links (desktop) */}
         <div className="hidden md:flex gap-4 items-center">

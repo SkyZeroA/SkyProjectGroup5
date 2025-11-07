@@ -7,8 +7,9 @@ import FooterBanner from "../components/FooterBanner";
 import axios from "axios";
 import { ensureCsrfToken } from "../lib/csrf";
 import { useNavigate } from "react-router-dom";
+import ColorblindToggle from "../components/ColourblindToggle";
 
-const SignIn = () => {
+const SignIn = ({ colorblind, setColorblind }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
@@ -73,7 +74,7 @@ const SignIn = () => {
   return (
     <div className="bg-neutral-50 overflow-hidden w-full min-h-screen relative">
       <header>
-        <HeaderBanner className="md:fixed"  logoLinked={false}/>
+        <HeaderBanner className="md:fixed"  logoLinked={false} colorblindButton={<ColorblindToggle colorblind={colorblind} setColorblind={setColorblind} centerLogo={true} />} />
       </header>
 
       {/* Skip to main content link for keyboard users */}
@@ -94,13 +95,13 @@ const SignIn = () => {
               <div className="text-center mb-8">
                 <h1
                   id="sign-in-heading"
-                  className="mb-4 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] text-transparent [font-family:'Sky_Text',Helvetica] text-[38px] leading-[57px]"
+                  className="mb-4 bg-[linear-gradient(90deg,var(--gradient-start)_0%,var(--gradient-middle)_50%,var(--gradient-end)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] text-transparent [font-family:'Sky_Text',Helvetica] text-[38px] leading-[57px]"
                 >
                   Hello
                 </h1>
                 <p className="[font-family:'Sky_Text',Helvetica] font-normal text-[17px] leading-[25.5px]">
                   <span className="text-[#4a4a4a]">Sign in to </span>
-                  <span className="text-[#4bad31]">ClearSky</span>
+                  <span className="text-[var(--color-accent)]">ClearSky</span>
                 </p>
               </div>
 

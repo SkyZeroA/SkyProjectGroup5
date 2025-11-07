@@ -111,7 +111,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                       className={`cursor-pointer p-4 border rounded-md shadow-sm transition
                         ${
                           isSelected
-                            ? "bg-green-100 border-green-600 text-green-800"
+                            ? "bg-[var(--log-bg-color)] border-[var(--log-border-color)] text-[var(--log-text-color)]"
                             : "bg-white hover:bg-gray-100"
                         }`}
                     >
@@ -120,7 +120,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                         <span className="text-xs font-light">({points} pts)</span>
                         {isSelected && (
                           <svg
-                            className="w-5 h-5 text-green-600"
+                            className="w-5 h-5 text-[var(--log-border-color)]"
                             fill="none"
                             stroke="currentColor"
                             strokeWidth="2"
@@ -202,7 +202,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                 >
                   Cancel
                 </button>
-                <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={handleActivitiesSave}>
+                <button className="bg-[var(--log-border-color)] text-white px-4 py-2 rounded" onClick={handleActivitiesSave}>
                   Save
                 </button>
               </div>
@@ -216,13 +216,13 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                     setIsEditingActivities(true);
                   }}
                   type="button"
-                  className="flex bg-green-600 text-white px-4 py-2 rounded"
+                  className="flex bg-[var(--log-border-color)] text-white px-4 py-2 rounded"
                 >
                   Edit Activities
                 </button>
                 <button
                   type="button"
-                  className="flex bg-green-600 text-white px-4 py-2 rounded"
+                  className="flex bg-[var(--log-border-color)] text-white px-4 py-2 rounded"
                   onClick={onClose}
                 >
                   Close

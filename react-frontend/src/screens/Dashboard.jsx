@@ -21,9 +21,6 @@ const Dashboard = () => {
   const [isOn, setIsOn] = useState(false);
   const [tips, setTips] = useState([]);
   const [tipsLoading, setTipsLoading] = useState(true);
-  const [transportEmissions, setTransportEmissions] = useState(0);
-  const [dietEmissions, setDietEmissions] = useState(0);
-  const [heatingEmissions, setHeatingEmissions] = useState(0);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
@@ -113,7 +110,7 @@ const Dashboard = () => {
           <Card className="bg-white rounded-lg flex flex-col md:min-h-[calc(100vh-96px)]">
             <CardContent className="p-3 md:p-6 flex flex-col">
               {/* Header */}
-              <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]
+              <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,var(--gradient-start)_0%,var(--gradient-middle)_50%,var(--gradient-end)_100%)]
                 [-webkit-background-clip:text] bg-clip-text 
                 [-webkit-text-fill-color:transparent] [text-fill-color:transparent]
                 [font-family:'Sky_Text',Helvetica] font-normal text-center 
@@ -129,7 +126,7 @@ const Dashboard = () => {
 											key={user.name}
 											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
 												user.isCurrentUser
-													? "sticky top-0 bottom-0 z-10 border-2 border-green-500"
+													? "sticky top-0 bottom-0 z-10 border-2 border-[var(--user-label)]"
 													: ""
 											}`}
 										>

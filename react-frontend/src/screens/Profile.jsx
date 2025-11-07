@@ -8,8 +8,9 @@ import { ensureCsrfToken } from "../lib/csrf";
 import { Button } from "../components/Button";
 import Questions from "../components/Questions";
 import Navbar from "../components/Navbar";
+import ColorblindToggle from "../components/ColourblindToggle";
 
-const Profile = () => {
+const Profile = ({ colorblind, setColorblind }) => {
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [avatar, setAvatar] = useState(null);
@@ -147,6 +148,9 @@ const Profile = () => {
                 <span className="[font-family:'Sky_Text',Helvetica] text-gray-900 text-sm md:text-base">
                   Username: {username}
                 </span>
+              </div>
+              <div className="flex justify-center mt-4">
+                <ColorblindToggle colorblind={colorblind} setColorblind={setColorblind} />
               </div>
             </CardContent>
           </Card>

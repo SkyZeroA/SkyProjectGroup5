@@ -66,14 +66,14 @@ const About = () => {
           <CardContent>
             <h1 className="text-[26px] md:text-[38px] [font-family:'Sky_Text',Helvetica] font-normal mb-2">
 							Welcome to 
-							<span className="bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]
+							<span className="bg-[linear-gradient(90deg,var(--gradient-start)_0%,var(--gradient-middle)_50%,var(--gradient-end)_100%)]
 							[-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent] [text-fill-color:transparent]"> ClearSky</span></h1>
             <p className="text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[16px] md:text-[20px] lg:text-[22px]">
 							ClearSky is your personal companion on the journey to a more sustainable lifestyle.
 							<br />
 							Track your eco-friendly activities, monitor your carbon footprint, and see how you rank on our community leaderboard.
 							<br />
-							Click here to navigate straight to your <a href="/dashboard" className="text-green-600 underline">Dashboard</a>, or scroll down and learn about the features we offer and answer any questions you might have!
+							Click here to navigate straight to your <a href="/dashboard" className="text-[var(--stats-color)] underline">Dashboard</a>, or scroll down and learn about the features we offer and answer any questions you might have!
 						</p>
           </CardContent>
         </Card>
@@ -83,7 +83,7 @@ const About = () => {
             <div className="flex flex-col md:flex-row gap-6">
               {/* Leaderboard Section - Left Third */}
               <div className="w-full md:w-1/3 md:border-r md:pr-6">
-                <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,rgba(110,238,135,1)_0%,rgba(89,199,84,1)_50%,rgba(75,173,49,1)_100%)]
+                <h1 className="mb-4 pt-2 bg-[linear-gradient(90deg,var(--gradient-start)_0%,var(--gradient-middle)_50%,var(--gradient-end)_100%)]
                 [-webkit-background-clip:text] bg-clip-text 
                 [-webkit-text-fill-color:transparent] [text-fill-color:transparent]
                 [font-family:'Sky_Text',Helvetica] font-normal text-center 

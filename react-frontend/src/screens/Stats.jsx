@@ -10,7 +10,7 @@ import PointsBarChart from "../components/PointsBarChart";
 import Navbar from "../components/Navbar";
 import { subscribeActivity } from "../lib/activityBus";
 
-const Stats = () => {
+const Stats = ({ colorblind }) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isOn, setIsOn] = useState(false);
   const [weekData, setWeekData] = useState([]);
@@ -105,6 +105,7 @@ const Stats = () => {
                 recycle={recycle}
                 reusable={reusable}
                 foodWaste={foodWaste}
+                colorblind={colorblind}
               />
             </CardContent>
           </Card>
@@ -112,7 +113,7 @@ const Stats = () => {
           {/* Calendar Heatmap */}
           <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center">
-              <CalendarHeatmap isFormOpen={isFormOpen} />
+              <CalendarHeatmap isFormOpen={isFormOpen} colorblind={colorblind} />
             </CardContent>
           </Card>
 
@@ -125,6 +126,7 @@ const Stats = () => {
                 setIsOn={setIsOn} 
                 weekData={weekData} 
                 monthData={monthData} 
+                colourblind={colorblind}
               />
             </CardContent>
           </Card>
@@ -132,7 +134,7 @@ const Stats = () => {
           {/* User Points Bar Chart */}
           <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
             <CardContent className="h-full w-full flex flex-col justify-center items-center pb-2">
-              <PointsBarChart isFormOpen={isFormOpen} />
+              <PointsBarChart isFormOpen={isFormOpen} colourblind={colorblind} />
             </CardContent>
           </Card>
         </section>
@@ -144,7 +146,7 @@ const Stats = () => {
               Highest Week Points
             </h3>
             <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestWeekUser}</p>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {highestWeekPoints}
             </p>
           </Card>
@@ -154,7 +156,7 @@ const Stats = () => {
               Highest Month Points
             </h3>
             <p className="[font-family:'Sky_Text',Helvetica] text-gray-500 mb-2">{highestMonthUser}</p>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {highestMonthPoints}
             </p>
           </Card>
@@ -163,7 +165,7 @@ const Stats = () => {
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Week Points
             </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {userBestWeek}
             </p>
           </Card>
@@ -172,7 +174,7 @@ const Stats = () => {
             <h3 className="text-lg font-semibold mb-2 [font-family:'Sky_Text',Helvetica] text-gray-800">
               Your Highest Month Points
             </h3>
-            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-green-600">
+            <p className="[font-family:'Sky_Text',Helvetica] text-2xl sm:text-3xl font-bold text-[var(--stats-color)]">
               {userBestMonth}
             </p>
           </Card>
