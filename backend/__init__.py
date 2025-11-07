@@ -37,7 +37,7 @@ app.config.update(
     SESSION_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
 )
 
-
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', os.urandom(32))
 csrf = CSRFProtect(app)
 
 
