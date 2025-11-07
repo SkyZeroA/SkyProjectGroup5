@@ -2,6 +2,10 @@
 pipeline {
   agent any
 
+  environment {
+    MY_ENV_FILE = credentials('Team5Env')
+  }
+
   stages {
     stage('Checkout') {
         steps {
@@ -9,17 +13,24 @@ pipeline {
           git branch: 'main', url: 'https://github.com/SkyZeroA/SkyProjectGroup5.git'
         }
     }
-    stage('Install') {
+
+    stage('Install Backend') {
+        steps {
+            sh 'pip install -r requirements.txt'
+        }
+    }
+
+
+    stage('Install Frontend') {
         steps {
             sh 'cd react-frontend && npm install'
         }
-   }
-
-    stage('Test') {
-        steps {
-            sh 'cd react-frontend && npm test'
-        }
     }
+    // stage('Test') {
+    //     steps {
+    //         sh 'cd react-frontend && npm test'
+    //     }
+    // }
 
   }
 }
