@@ -18,6 +18,10 @@ const Stats = () => {
   const [transportEmissions, setTransportEmissions] = useState(0);
   const [dietEmissions, setDietEmissions] = useState(0);
   const [heatingEmissions, setHeatingEmissions] = useState(0);
+  const [turnOffDevices, setTurnOffDevices] = useState(0);
+  const [recycle, setRecycle] = useState(0);
+  const [reusable, setReusable] = useState(0);
+  const [foodWaste, setFoodWaste] = useState(0);
   const [highestWeekPoints, setHighestWeekPoints] = useState(0);
   const [highestMonthPoints, setHighestMonthPoints] = useState(0);
   const [highestWeekUser, setHighestWeekUser] = useState("");
@@ -36,6 +40,10 @@ const Stats = () => {
       setTransportEmissions(data.transportEmissions);
       setDietEmissions(data.dietEmissions);
       setHeatingEmissions(data.heatingEmissions);
+      setTurnOffDevices(data.turnOffDevicesEmissions);
+      setRecycle(data.recycleEmissions);
+      setReusable(data.reusableEmissions);
+      setFoodWaste(data.foodWasteEmissions);
       setHighestWeekUser(data.highestWeekUser);
       setHighestWeekPoints(data.highestWeekPoints);
       setHighestMonthUser(data.highestMonthUser);
@@ -93,6 +101,10 @@ const Stats = () => {
                 transportEmissions={transportEmissions}
                 dietEmissions={dietEmissions}
                 heatingEmissions={heatingEmissions}
+                turnOffDevices={turnOffDevices}
+                recycle={recycle}
+                reusable={reusable}
+                foodWaste={foodWaste}
               />
             </CardContent>
           </Card>

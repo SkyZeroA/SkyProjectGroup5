@@ -11,7 +11,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
   const [heatingHours, setHeatingHours] = useState(0);
   const [turnOffDevices, setTurnOffDevices] = useState(0);
   const [recycle, setRecycle] = useState(0);
-  const [reuseable, setReuseable] = useState(0);
+  const [reusable, setReusable] = useState(0);
   const [foodWaste, setFoodWaste] = useState(0);
 	
 	// Keeps track of current question
@@ -28,7 +28,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
       setHeatingHours(initialAnswers.heatingHours ?? 0);
 	  setTurnOffDevices(initialAnswers.turnOffDevices ?? 0);
 	  setRecycle(initialAnswers.recycle ?? 0);
-	  setReuseable(initialAnswers.reuseable ?? 0);
+	  setReusable(initialAnswers.reusable ?? 0);
 	  setFoodWaste(initialAnswers.foodWaste ?? 0);
     }
   }, [initialAnswers]);
@@ -45,7 +45,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
         heatingHours,
 		turnOffDevices,
 		recycle,
-		reuseable,
+		reusable,
 		foodWaste
       });
     }
@@ -58,7 +58,7 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 		heatingHours,
 		turnOffDevices,
 		recycle,
-		reuseable,
+		reusable,
 		foodWaste,
 		onAnswersChange
 	]);
@@ -169,8 +169,8 @@ const Questions = ({onAnswersChange, isEditing, initialAnswers = {} }) => {
 					{ value: 2, label: "Sometimes" },
 					{ value: 3, label: "Rarely" },
 				]}
-				current={reuseable}
-				setCurrent={setReuseable}
+				current={reusable}
+				setCurrent={setReusable}
 				question={`Question ${questionNumber++}: How often do you use reusable bottles, coffee cups, or shopping bags?`}
 			/>
 

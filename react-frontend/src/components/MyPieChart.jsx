@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28EFF', '#FF6699', '#33CC33'];
 
-function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions }) {
+function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnOffDevices, recycle, reusable, foodWaste }) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -20,6 +20,10 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions }) {
     { name: 'Transport', value: transportEmissions },
     { name: 'Diet', value: dietEmissions },
     { name: 'Heating', value: heatingEmissions },
+    { name: 'Lack of Turning Off Devices', value: turnOffDevices },
+    { name: 'Lack of Recycling', value: recycle },
+    { name: 'Lack of Reusables', value: reusable },
+    { name: 'Food Waste', value: foodWaste },
   ];
 
   return (
