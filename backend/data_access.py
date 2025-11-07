@@ -158,10 +158,9 @@ def insert_into_questionnaire(questionnaire):
     close_connection(db)
 
 
-def get_latest_answers_from_questionnaire(email):
+def get_latest_answers_from_questionnaire(user_id):
     db = get_connection()
     cursor = db.cursor()
-    user_id = get_user_id_from_db(email)
     cursor.execute("""
         SELECT
         transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours
@@ -184,10 +183,9 @@ def get_latest_answers_from_questionnaire(email):
         return response
 
 
-def get_all_questionnaire_submissions(email):
+def get_all_questionnaire_submissions(user_id):
     db = get_connection()
     cursor = db.cursor()
-    user_id = get_user_id_from_db(email)
 
     cursor.execute("""
         SELECT
@@ -249,10 +247,10 @@ def get_user_id_from_db(email):
     return None
 
 
-def get_username_from_db(email):
+def get_username_from_db(user_id):
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT username FROM User WHERE email = %s", (email,))
+    cursor.execute("SELECT username FROM User WHERE userID = %s", (user_id,))
     username = cursor.fetchone()
     close_connection(db)
     if username and username[0]:
@@ -260,10 +258,10 @@ def get_username_from_db(email):
     return None
 
 
-def get_first_name_from_db(email):
+def get_first_name_from_db(user_id):
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT firstName FROM User WHERE email = %s", (email,))
+    cursor.execute("SELECT firstName FROM User WHERE userID = %s", (user_id,))
     first_name = cursor.fetchone()
     close_connection(db)
     if first_name and first_name[0]:
@@ -271,10 +269,10 @@ def get_first_name_from_db(email):
     return None
 
 
-def get_tips_from_db(email):
+def get_tips_from_db(user_id):
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT tips FROM User WHERE email = %s", (email,))
+    cursor.execute("SELECT tips FROM User WHERE userID = %s", (user_id,))
     result = cursor.fetchone()
     close_connection(db)
 
@@ -283,7 +281,7 @@ def get_tips_from_db(email):
     return None
 
 
-def set_tips_in_db(email, tips):
+def set_tips_in_db(user_id, tips):
     db = get_connection()
     cursor = db.cursor()
 
@@ -292,16 +290,16 @@ def set_tips_in_db(email, tips):
     cursor.execute("""
                    UPDATE User
                    SET tips = %s
-                   WHERE email = %s
-                   """, (tips_json, email))
+                   WHERE userID = %s
+                   """, (tips_json, user_id))
     db.commit()
     close_connection(db)
 
 
-def get_avatar_from_db(email):
+def get_avatar_from_db(user_id):
     db = get_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT avatarFilename FROM User WHERE email = %s", (email,))
+    cursor.execute("SELECT avatarFilename FROM User WHERE userID = %s", (user_id,))
     avatar = cursor.fetchone()
     close_connection(db)
     if avatar and avatar[0]:
@@ -445,14 +443,14 @@ def insert_user_activity(user_id, activity, weekID, monthID, positive_activity):
     close_connection(db)
 
 
-def update_user_avatar(email, avatarFilename):
+def update_user_avatar(user_id, avatarFilename):
     db = get_connection()
     cursor = db.cursor()
     cursor.execute("""
         UPDATE User
         SET avatarFilename = %s
-        WHERE email = %s
-    """, (avatarFilename, email))
+        WHERE userID = %s
+    """, (avatarFilename, user_id))
     db.commit()
     close_connection(db)
 
