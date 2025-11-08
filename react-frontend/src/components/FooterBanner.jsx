@@ -1,6 +1,6 @@
 import GradientAccent from "./GradientAccent";
 import { cn } from "../lib/utils";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 
 const FooterBanner = ({ className }) => {
   // Step 1: define links with labels and URLs
@@ -63,7 +63,7 @@ const FooterBanner = ({ className }) => {
         </div>
       </footer>
 
-      <GradientAccent className={cn("bottom-0 left-0 z-10", className)} />
+      <GradientAccent className={cn("bottom-0 left-0 z-10", className)}/>
     </div>
   );
 };

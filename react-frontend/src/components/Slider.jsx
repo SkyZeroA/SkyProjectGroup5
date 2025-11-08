@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-const Slider = ({ value: controlledValue, onChange, min = 0, max = 100, jump = 1 }) => {
+const Slider = ({ id, value: controlledValue, onChange, min = 0, max = 100, jump = 1 }) => {
   const [internalValue, setInternalValue] = useState(50);
   const isControlled = controlledValue !== undefined && onChange;
 
-const value = isControlled ? controlledValue : internalValue;
+  const value = isControlled ? controlledValue : internalValue;
 
   const handleChange = (e) => {
     const v = Number(e.target.value);
@@ -14,7 +14,7 @@ const value = isControlled ? controlledValue : internalValue;
 
   const percentage = ((value - min) / (max - min)) * 100;
 
-  const dayLabels = []
+  const dayLabels = [];
   for (let i = min; i <= max; i += jump) {
     dayLabels.push({ label: i.toString() });
   }
@@ -31,7 +31,7 @@ const value = isControlled ? controlledValue : internalValue;
           style={{ left: `${percentage}%` }}
         />
         <input
-          id="slider"
+          id={id}
           type="range"
           min={min}
           max={max}
@@ -45,8 +45,8 @@ const value = isControlled ? controlledValue : internalValue;
             <div key={index} className="flex justify-between [font-family:'Sky_Text',Helvetica] font-normal">
               {day.label}
             </div>
-                ))}
-              </div>
+          ))}
+        </div>
       </div>
     </div>
   );

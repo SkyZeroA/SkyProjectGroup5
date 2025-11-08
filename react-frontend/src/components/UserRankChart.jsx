@@ -221,6 +221,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen, colourblind }) => {
           Weekly
         </span>
         <button
+          data-testid="toggle-view"
           onClick={() => setIsOn(!isOn)}
           className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition-colors duration-300 ${
             isOn ? "justify-start" : "justify-end"
@@ -236,6 +237,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen, colourblind }) => {
       {/* Navigation */}
       <div className="flex justify-between items-center mb-1 px-2">
         <button
+          data-testid="prev-button"
           onClick={handlePrev}
           disabled={isPrevDisabled}
           className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"
@@ -246,6 +248,7 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen, colourblind }) => {
           {formatPeriodLabel()}
         </div>
         <button
+          data-testid="next-button"
           onClick={handleNext}
           disabled={isNextDisabled}
           className="px-2 py-0.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 text-sm"

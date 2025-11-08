@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.51% </span>
+                <span class="strong">89.65% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>19/29</span>
+                <span class='fraction'>26/29</span>
             </div>
         
             
@@ -162,29 +162,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,13 +207,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -259,7 +259,7 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
     const [isFocused, setIsFocused] = useState(false);
     const [hasBeenTouched, setHasBeenTouched] = useState(false);
     const hasValue = props.value &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >String(props.value).length &gt; 0;</span>
-    const shouldShowError = showError &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >hasBeenTouched </span>&amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >!isFocused </span>&amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >!hasValue;</span>
+    const shouldShowError = showError &amp;&amp; hasBeenTouched &amp;&amp; !isFocused &amp;&amp; !hasValue;
 &nbsp;
     // Determine border and label colors
     let borderColor = "#4A4A4A"; // Default grey
@@ -317,13 +317,13 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
             {...props}
           /&gt;
           {showPasswordToggle &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;button</span>
+          &lt;button
             type="button"
             onClick={onPasswordToggle}
             className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-            aria-label={type === "password" ? "Show password" : "Hide password"}
+            aria-label={type === "password" ? "Show password" : <span class="branch-1 cbranch-no" title="branch not covered" >"Hide password"}</span>
           &gt;
-            {type === "password" ? &lt;FaEye /&gt; : &lt;FaEyeSlash /&gt;}
+            {type === "password" ? &lt;FaEye /&gt; : <span class="branch-1 cbranch-no" title="branch not covered" >&lt;FaEyeSlash /&gt;}</span>
           &lt;/button&gt;
         )}
         &lt;/div&gt;
@@ -331,7 +331,7 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
           &lt;div
             className={`transition-all duration-300 ease-in-out ${
               shouldShowError
-                ? <span class="branch-0 cbranch-no" title="branch not covered" >"max-h-8 opacity-100 translate-y-0"</span>
+                ? "max-h-8 opacity-100 translate-y-0"
                 : "max-h-0 opacity-0 -translate-y-2"
             }`}
           &gt;
@@ -352,7 +352,7 @@ export default Input ;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-08T12:59:46.674Z
+                at 2025-11-08T21:03:36.988Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

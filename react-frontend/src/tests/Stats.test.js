@@ -66,3 +66,55 @@ test('Switch toggles and calls setOutput', () => {
   expect(setOutput).toHaveBeenCalledWith(false);
 });
 
+test('fetchData handles API failure gracefully', async () => {
+  mockedAxios.get.mockRejectedValueOnce(new Error('API Error'));
+
+  render(<Stats />);
+
+  await waitFor(() => {
+    // Check for absence of specific content instead of the entire element
+    expect(screen.queryByText('Alice')).not.toBeInTheDocument(); // Example user data
+    expect(screen.queryByText('50')).not.toBeInTheDocument(); // Example points data
+  });
+});
+
+test('subscribeActivity triggers fetchData on activity update', async () => {
+  const mockData = {
+    weekLeaderboard: [{ name: 'Alice', score: 50 }],
+    monthLeaderboard: [{ name: 'Bob', score: 120 }],
+    transportEmissions: 10,
+    dietEmissions: 5,
+    heatingEmissions: 2,
+    highestWeekUser: 'Alice',
+    highestWeekPoints: 50,
+    highestMonthUser: 'Bob',
+    highestMonthPoints: 120,
+    userBestWeek: 40,
+    userBestMonth: 110,
+  };
+
+  mockedAxios.get.mockResolvedValueOnce({ data: mockData });
+
+  // Mock subscribeActivity to ensure it is defined and callable
+  const activityBus = require('../lib/activityBus');
+  jest.spyOn(activityBus, 'subscribeActivity').mockImplementation((callback) => {
+    callback();
+    return jest.fn(); // Return a mock unsubscribe function
+  });
+
+  render(<Stats />);
+
+  await waitFor(() => {
+    expect(screen.getByText('Highest Week Points')).toBeInTheDocument();
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+  });
+
+  // Simulate activity update
+  activityBus.subscribeActivity.mock.calls[0][0]();
+
+  await waitFor(() => {
+    expect(mockedAxios.get).toHaveBeenCalledTimes(3); 
+  });
+
+});
+
