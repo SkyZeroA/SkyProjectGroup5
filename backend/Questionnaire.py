@@ -197,7 +197,6 @@ class Questionnaire:
         # What do we want to do in the case that a person who usually bikes to work ticks an activity that involves driving/public transport?
         # 1) Have it in the code that it will not increase their good green part of the bar (what i implemented)
         # 2) Have it reduce their green part of the bar
-        other_emissions = 0.0
         for (activity_id, count) in counts:
             if activity_id == 1:
                 transport_emissions -= update_transport_emissions(tef_index, td_index, count)
@@ -217,8 +216,6 @@ class Questionnaire:
             elif activity_id == 7:
                 if days_eating_meat > 0:
                     diet_emissions -= update_diet_emissions(me_index, count)
-            elif activity_id == 8:
-                other_emissions += 1 * count
             elif activity_id == 9:
                 reusable_emissions -= update_reusable_emissions(reusable_index, count)
             elif activity_id == 11:
@@ -251,7 +248,7 @@ class Questionnaire:
         turn_off_devices_emissions = less_than_zero(turn_off_devices_emissions)
 
 
-        current = (transport_emissions + diet_emissions + heating_emissions + turn_off_devices_emissions + recycle_emissions + reusable_emissions + food_waste_emissions - other_emissions) * percentage_progress * year_progress_today
+        current = (transport_emissions + diet_emissions + heating_emissions + turn_off_devices_emissions + recycle_emissions + reusable_emissions + food_waste_emissions) * percentage_progress * year_progress_today
 
         return {"total_projected": round(self.projected_carbon),
                 "projected": round(self.projected_carbon * year_progress_today),
