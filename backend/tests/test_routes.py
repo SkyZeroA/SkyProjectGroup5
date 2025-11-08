@@ -188,7 +188,11 @@ class TestFlaskAPI(TestCase):
             "current": 300,
             "transport_emissions": 0,
             "diet_emissions": 0,
-            "heating_emissions": 0
+            "heating_emissions": 0,
+            "turn_off_devices_emissions": 0,
+            "recycle_emissions": 0,
+            "reusable_emissions": 0,
+            "food_waste_emissions": 0
         }
 
         mock_questionnaire_class.return_value = mock_questionnaire_instance
@@ -259,7 +263,6 @@ class TestFlaskAPI(TestCase):
         data = resp.get_json()
         assert 'csrf_token' in data
 
-    @patch('backend.routes.g', new_callable=MagicMock)
     @patch('backend.routes.update_user_preferred_activities')
     @patch('backend.routes.get_user_id_from_db')
     def test_update_user_activities(self, mock_get_user_id, mock_update_prefs, mock_g):
@@ -359,7 +362,11 @@ class TestFlaskAPI(TestCase):
             'current': 300,
             'transport_emissions': 0,
             'diet_emissions': 0,
-            'heating_emissions': 0
+            'heating_emissions': 0,
+            'turn_off_devices_emissions': 0,
+            'recycle_emissions': 0,
+            'reusable_emissions': 0,
+            'food_waste_emissions': 0
         }
         mock_questionnaire_class.return_value = mock_questionnaire_instance
         mock_high_week.return_value = {'username':'Harry','points':100}

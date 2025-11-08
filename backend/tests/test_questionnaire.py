@@ -5,9 +5,14 @@ from backend.Questionnaire import (
     calculate_transport_emissions,
     calculate_diet_emissions,
     calculate_heating_emissions,
+    calculate_turn_off_devices_emissions,
+    calculate_recycle_emissions,
+    calculate_reusable_emissions,
+    calculate_food_waste_emissions,
     update_transport_emissions,
     update_diet_emissions,
     update_heating_emissions,
+    update_reusable_emissions,
     Questionnaire,
 )
 
@@ -21,7 +26,11 @@ class TestQuestionnaire(unittest.TestCase):
             "officeDays": 3,       # 3 days/week
             "dietDays": 5,         # 5 days/week
             "meats": 0,            # Beef
-            "heatingHours": 4      # 4 hours/day
+            "heatingHours": 4,     # 4 hours/day
+            "turnOffDevices": 2,   # Sometimes
+            "recycle": 1,          # Rarely
+            "reusable": 2,         # Sometimes
+            "foodWaste": 2         # Often
         }
 
         user_id = "123"
@@ -50,6 +59,11 @@ class TestQuestionnaire(unittest.TestCase):
         assert update_transport_emissions(3, 2, 4) >= 0
         assert update_diet_emissions(0, 2) > 0
         assert update_heating_emissions(2, 5) > 0
+        assert calculate_turn_off_devices_emissions(1) > 0
+        assert calculate_recycle_emissions(2) > 0
+        assert calculate_reusable_emissions(1) > 0
+        assert calculate_food_waste_emissions(2) > 0
+        assert update_reusable_emissions(1, 3) > 0
 
     @patch('backend.Questionnaire.get_user_activity_count_total')
     def test_activity_adjustments_all_branches(self, mock_counts):
@@ -63,6 +77,10 @@ class TestQuestionnaire(unittest.TestCase):
             "dietDays": 3,
             "meats": 0,
             "heatingHours": 2,
+            "turnOffDevices": 1,
+            "recycle": 1,
+            "reusable": 1,
+            "foodWaste": 1
         }
         q = Questionnaire(answers, user_id=1, start_date=datetime(2025, 1, 1))
 
@@ -75,7 +93,7 @@ class TestQuestionnaire(unittest.TestCase):
 
         # Validate returned structure and types
         assert isinstance(result, dict)
-        for k in ("total_projected", "projected", "current", "transport_emissions", "diet_emissions", "heating_emissions"):
+        for k in ("total_projected", "projected", "current", "transport_emissions", "diet_emissions", "heating_emissions", "turn_off_devices_emissions", "recycle_emissions", "reusable_emissions", "food_waste_emissions"):
             assert k in result
             assert isinstance(result[k], int)
 

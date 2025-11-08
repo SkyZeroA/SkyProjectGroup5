@@ -205,7 +205,7 @@ class TestDatabaseFunctions(TestCase):
         # Simulate two rows returned by the DB
         row_date = datetime(2025, 1, 1)
         mock_cursor.fetchall.return_value = [
-            (1, 2, 3, 4, 5, 6, row_date),
+            (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, row_date),
         ]
         # ensure get_user_id_from_db will be called inside function; patch it to return 42
         with patch('backend.data_access.get_user_id_from_db', return_value=42):
