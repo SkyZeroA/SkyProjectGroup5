@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/15</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -145,27 +145,27 @@
 <a name='L80'></a><a href='#L80'>80</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -232,10 +232,10 @@ const ProgressBar = ({ current, projected }) =&gt; {
 &nbsp;
   useEffect(() =&gt; {
     // Animate everything at once
-    const timer = setTimeout(<span class="fstat-no" title="function not covered" >()</span> =&gt; {
-<span class="cstat-no" title="statement not covered" >      setAnimatedCurrent(percentCurrent);</span>
-<span class="cstat-no" title="statement not covered" >      setAnimatedGreen(100);</span>
-<span class="cstat-no" title="statement not covered" >      setAnimatedRightLabel(100);</span>
+    const timer = setTimeout(() =&gt; {
+      setAnimatedCurrent(percentCurrent);
+      setAnimatedGreen(100);
+      setAnimatedRightLabel(100);
     }, 100); // small delay to trigger CSS transitions
 &nbsp;
     return () =&gt; clearTimeout(timer);
@@ -277,7 +277,7 @@ const ProgressBar = ({ current, projected }) =&gt; {
           style={{
             left: `${animatedCurrent}%`,
             transform: 'translateX(-50%)',
-            top: isClose ? '-10px' : <span class="branch-1 cbranch-no" title="branch not covered" >'0px',</span>
+            top: isClose ? '-10px' : '0px',
           }}
         &gt;
           {current}
@@ -289,7 +289,7 @@ const ProgressBar = ({ current, projected }) =&gt; {
           style={{
             left: `${animatedRightLabel}%`,
             transform: 'translateX(-50%)',
-            top: isClose ? '10px' : <span class="branch-1 cbranch-no" title="branch not covered" >'0px',</span>
+            top: isClose ? '10px' : '0px',
           }}
         &gt;
           {projected}
@@ -307,7 +307,7 @@ export default ProgressBar;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-08T11:43:25.664Z
+                at 2025-11-08T12:59:46.674Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
