@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1762635817017" clover="3.2.0">
-  <project timestamp="1762635817017" name="All files">
-    <metrics statements="857" coveredstatements="810" conditionals="394" coveredconditionals="301" methods="229" coveredmethods="196" elements="1480" coveredelements="1307" complexity="0" loc="857" ncloc="857" packages="4" files="37" classes="37"/>
+<coverage generated="1762643789876" clover="3.2.0">
+  <project timestamp="1762643789876" name="All files">
+    <metrics statements="857" coveredstatements="811" conditionals="400" coveredconditionals="306" methods="231" coveredmethods="198" elements="1488" coveredelements="1315" complexity="0" loc="857" ncloc="857" packages="4" files="37" classes="37"/>
     <package name="src">
       <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="App.js" path="/Users/tch432/Documents/Project/SkyProjectGroup5/react-frontend/src/App.js">
@@ -320,19 +320,19 @@
       <file name="PopUp.jsx" path="/Users/tch432/Documents/Project/SkyProjectGroup5/react-frontend/src/components/PopUp.jsx">
         <metrics statements="48" coveredstatements="42" conditionals="50" coveredconditionals="37" methods="20" coveredmethods="16"/>
         <line num="8" count="8" type="stmt"/>
-        <line num="9" count="55" type="stmt"/>
-        <line num="10" count="55" type="stmt"/>
-        <line num="11" count="55" type="stmt"/>
-        <line num="13" count="55" type="stmt"/>
-        <line num="15" count="55" type="stmt"/>
-        <line num="16" count="32" type="stmt"/>
+        <line num="9" count="54" type="stmt"/>
+        <line num="10" count="54" type="stmt"/>
+        <line num="11" count="54" type="stmt"/>
+        <line num="13" count="54" type="stmt"/>
+        <line num="15" count="54" type="stmt"/>
+        <line num="16" count="31" type="stmt"/>
         <line num="17" count="9" type="stmt"/>
         <line num="18" count="9" type="stmt"/>
         <line num="19" count="9" type="cond" truecount="1" falsecount="1"/>
         <line num="21" count="0" type="stmt"/>
-        <line num="24" count="32" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="31" type="cond" truecount="2" falsecount="0"/>
         <line num="25" count="9" type="stmt"/>
-        <line num="29" count="55" type="cond" truecount="2" falsecount="0"/>
+        <line num="29" count="54" type="cond" truecount="2" falsecount="0"/>
         <line num="31" count="25" type="stmt"/>
         <line num="32" count="6" type="stmt"/>
         <line num="38" count="25" type="stmt"/>
@@ -371,19 +371,19 @@
       <file name="ProgressBar.jsx" path="/Users/tch432/Documents/Project/SkyProjectGroup5/react-frontend/src/components/ProgressBar.jsx">
         <metrics statements="14" coveredstatements="14" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="4"/>
         <line num="3" count="5" type="stmt"/>
-        <line num="4" count="30" type="stmt"/>
-        <line num="6" count="30" type="stmt"/>
-        <line num="7" count="30" type="stmt"/>
-        <line num="8" count="30" type="stmt"/>
-        <line num="10" count="30" type="stmt"/>
+        <line num="4" count="29" type="stmt"/>
+        <line num="6" count="29" type="stmt"/>
+        <line num="7" count="29" type="stmt"/>
+        <line num="8" count="29" type="stmt"/>
+        <line num="10" count="29" type="stmt"/>
         <line num="12" count="24" type="stmt"/>
-        <line num="13" count="5" type="stmt"/>
-        <line num="14" count="5" type="stmt"/>
-        <line num="15" count="5" type="stmt"/>
+        <line num="13" count="4" type="stmt"/>
+        <line num="14" count="4" type="stmt"/>
+        <line num="15" count="4" type="stmt"/>
         <line num="18" count="24" type="stmt"/>
-        <line num="21" count="30" type="stmt"/>
-        <line num="22" count="30" type="stmt"/>
-        <line num="24" count="30" type="stmt"/>
+        <line num="21" count="29" type="stmt"/>
+        <line num="22" count="29" type="stmt"/>
+        <line num="24" count="29" type="stmt"/>
       </file>
       <file name="Questions.jsx" path="/Users/tch432/Documents/Project/SkyProjectGroup5/react-frontend/src/components/Questions.jsx">
         <metrics statements="28" coveredstatements="28" conditionals="31" coveredconditionals="28" methods="3" coveredmethods="3"/>
@@ -654,7 +654,7 @@
       </file>
     </package>
     <package name="src.screens">
-      <metrics statements="305" coveredstatements="287" conditionals="84" coveredconditionals="59" methods="61" coveredmethods="54"/>
+      <metrics statements="305" coveredstatements="288" conditionals="90" coveredconditionals="64" methods="63" coveredmethods="56"/>
       <file name="About.jsx" path="/Users/tch432/Documents/Project/SkyProjectGroup5/react-frontend/src/screens/About.jsx">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="10" count="2" type="stmt"/>
@@ -665,7 +665,7 @@
         <line num="177" count="7" type="stmt"/>
       </file>
       <file name="Dashboard.jsx" path="/Users/tch432/Documents/Project/SkyProjectGroup5/react-frontend/src/screens/Dashboard.jsx">
-        <metrics statements="57" coveredstatements="55" conditionals="16" coveredconditionals="11" methods="14" coveredmethods="13"/>
+        <metrics statements="57" coveredstatements="56" conditionals="22" coveredconditionals="16" methods="16" coveredmethods="15"/>
         <line num="14" count="4" type="stmt"/>
         <line num="15" count="26" type="stmt"/>
         <line num="16" count="26" type="stmt"/>
@@ -713,16 +713,16 @@
         <line num="76" count="1" type="stmt"/>
         <line num="77" count="1" type="stmt"/>
         <line num="80" count="0" type="stmt"/>
-        <line num="84" count="26" type="cond" truecount="1" falsecount="1"/>
-        <line num="85" count="26" type="stmt"/>
-        <line num="86" count="0" type="stmt"/>
-        <line num="87" count="11" type="stmt"/>
-        <line num="92" count="26" type="stmt"/>
-        <line num="93" count="26" type="stmt"/>
-        <line num="95" count="26" type="stmt"/>
-        <line num="125" count="11" type="stmt"/>
-        <line num="210" count="43" type="stmt"/>
-        <line num="214" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="85" count="26" type="cond" truecount="1" falsecount="1"/>
+        <line num="88" count="26" type="stmt"/>
+        <line num="90" count="11" type="stmt"/>
+        <line num="91" count="11" type="stmt"/>
+        <line num="93" count="11" type="stmt"/>
+        <line num="95" count="11" type="stmt"/>
+        <line num="104" count="26" type="stmt"/>
+        <line num="134" count="11" type="stmt"/>
+        <line num="250" count="43" type="stmt"/>
+        <line num="254" count="1" type="cond" truecount="1" falsecount="1"/>
       </file>
       <file name="Profile.jsx" path="/Users/tch432/Documents/Project/SkyProjectGroup5/react-frontend/src/screens/Profile.jsx">
         <metrics statements="44" coveredstatements="40" conditionals="16" coveredconditionals="13" methods="15" coveredmethods="12"/>

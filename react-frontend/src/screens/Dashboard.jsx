@@ -81,16 +81,25 @@ const Dashboard = () => {
     }
   };
 
-  const current = isOn ? weekData : monthData;
-  const leaderboardData = current
-    .sort((a, b) => b.score - a.score)
-    .map((user) => ({
-      ...user,
-      isCurrentUser: user.name === username,
-    }));
+  // Compute leaderboard with ranking that accounts for ties
+  const sortedData = [...(isOn ? weekData : monthData)].sort((a, b) => b.score - a.score);
 
-  console.log(leaderboardData)
-  console.log(currentCarbon, projectedCarbon, totalProjectedCarbon)
+  // Assign ranks where all users in a tie share the same "=rank"
+  const leaderboardData = sortedData.map((user, index, arr) => {
+    // find the first index in this tie group
+    const firstIndexInGroup = arr.findIndex(u => u.score === user.score);
+    const baseRank = firstIndexInGroup + 1;
+    const isTied =
+      arr.filter(u => u.score === user.score).length > 1;
+
+    return {
+      ...user,
+      rank: isTied ? `=${baseRank}` : `${baseRank}`,
+      isCurrentUser: user.name === username,
+    };
+  });
+
+
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -122,17 +131,23 @@ const Dashboard = () => {
               <div className="bg-neutral-50 overflow-y-auto rounded-lg p-2 md:p-4 max-h-[calc(100vh-296px)] md:min-h-[calc(100vh-296px)] scroll-py-4">
                 <div className="space-y-3 md:space-y-4">
                   {leaderboardData.map((user) => (
-										<Card
-											key={user.name}
-											className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
-												user.isCurrentUser
-													? "sticky top-0 bottom-0 z-10 border-2 border-[var(--user-label)]"
-													: ""
-											}`}
-										>
-											<div className="flex items-center gap-4">
-												<Avatar className="w-12 h-12 bg-gray-200">
-													{user.avatarFilename ? (
+                    <Card
+                      key={user.name}
+                      className={`flex items-center justify-between p-4 rounded-lg shadow-sm transition-all duration-300 ease-in-out bg-white ${
+                        user.isCurrentUser
+                          ? "sticky top-0 bottom-0 z-10 border-2 border-[var(--user-label)]"
+                          : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        {/* Rank number */}
+                        <span className="w-6 text-right text-[24px] font-semibold text-gray-700">
+                          {user.rank}
+                        </span>
+
+                        {/* Avatar */}
+                        <Avatar className="w-12 h-12 bg-gray-200">
+                          {user.avatarFilename ? (
                             <img
                               src={`${apiUrl}/uploads/${user.avatarFilename}`}
                               alt="User avatar"
@@ -143,16 +158,20 @@ const Dashboard = () => {
                               {user.name.charAt(0)}
                             </AvatarFallback>
                           )}
-												</Avatar>
-												<span className="text-lg font-medium text-gray-900">
-													{user.name}
-												</span>
-											</div>
-											<span className="text-lg font-medium text-gray-900">
-												{user.score}
-											</span>
-										</Card>
-									))}
+                        </Avatar>
+
+                        {/* Username */}
+                        <span className="text-lg font-medium text-gray-900">
+                          {user.name}
+                        </span>
+                      </div>
+
+                      {/* Score */}
+                      <span className="text-lg font-medium text-gray-900">
+                        {user.score}
+                      </span>
+                    </Card>
+                  ))}
                 </div>
               </div>
 
@@ -174,13 +193,18 @@ const Dashboard = () => {
         <div className="w-full md:w-2/3 flex flex-col gap-6 h-auto md:h-[calc(100vh-96px)]">
           {/* Projected Carbon Section */}
           <Card className="bg-white rounded-lg flex-shrink-0">
-            <CardContent className="p-3 md:p-6">
-              <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[26px] md:text-[38px]">
+            <CardContent className="p-2 md:p-4">
+              <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[26px] md:text-[34px]">
                 Projected Carbon Footprint
               </h1>
-              <p className="[font-family:'Sky_Text',Helvetica] font-normal text-[16px] md:text-[24px]">
+              <p className="[font-family:'Sky_Text',Helvetica] font-normal text-[12px] md:text-[20px]">
                 In 2025, you are projected to be responsible for{" "}
-                <span className="font-bold">{totalProjectedCarbon} kg</span> of CO2
+                <span className="font-bold">{totalProjectedCarbon} kg</span> of CO2. {" "}
+                That means it would take approximately{" "}
+                <span className="font-bold">
+                  {Math.ceil(totalProjectedCarbon / 22)}
+                </span>{" "}
+                mature trees to offset your carbon emissions for the year. 🌳🌲🌳
               </p>
 
               <ProgressBar
@@ -190,19 +214,35 @@ const Dashboard = () => {
                 className="flex justify-center items-center mt-2 md:mt-4"
               />
 
-              <p className="mt-3 text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[16px] md:text-[24px]">
+              <p className="text-gray-700 [font-family:'Sky_Text',Helvetica] font-normal text-[12px] md:text-[20px]">
                 Currently, you have produced{" "}
                 <strong>{currentCarbon} kg</strong> of CO2 so far, which is{" "}
                 <strong>{Math.round(projectedCarbon - currentCarbon)} kg Less</strong> than
                 projected for this point in the year!
               </p>
+              {/* Only show if at least 22 kg of CO₂ saved */}
+              {projectedCarbon - currentCarbon >= 22 ? (
+                <p className="mt-2 text-[var(--stats-color)] [font-family:'Sky_Text',Helvetica] font-normal text-[12px] md:text-[18px]">
+                  🎉 That means you’ve saved enough carbon to offset the work of approximately{" "}
+                  <strong>
+                    {Math.floor((projectedCarbon - currentCarbon) / 22)}{" "}
+                    {Math.floor((projectedCarbon - currentCarbon) / 22) === 1 ? "tree" : "trees"}
+                  </strong>{" "}
+                  this year! 🎉 
+                </p>
+              ) : (
+                <p className="mt-2 text-[var(--stats-color)] [font-family:'Sky_Text',Helvetica] font-normal text-[12px] md:text-[18px]">
+                  {/* Reserved space to maintain card size */}
+                  &nbsp;
+                </p>
+              )}
             </CardContent>
           </Card>
 
           {/* AI Generated Tips Section */}
           <Card className="bg-white rounded-lg flex-grow overflow-hidden">
-            <CardContent className="p-3 md:p-6 flex flex-col h-full">
-              <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[26px] md:text-[38px] mb-4">
+            <CardContent className="p-3 md:p-6 flex flex-col h-full overflow-y-auto">
+              <h1 className="[font-family:'Sky_Text',Helvetica] font-normal text-[26px] md:text-[34px]">
                 Tips for reducing your carbon footprint
               </h1>
               <ul className="list-none flex-1 pr-2">

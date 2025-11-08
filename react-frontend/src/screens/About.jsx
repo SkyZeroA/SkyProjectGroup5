@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import HeaderBanner from '../components/HeaderBanner';
 import FooterBanner from '../components/FooterBanner';
 import { Card, CardContent } from '../components/Card';
@@ -8,6 +8,9 @@ import ProgressBar from '../components/ProgressBar';
 import FAQCard from '../components/FAQCard';
 
 const About = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
 	// Dummy leaderboard data
 	const leaderboardData = [
