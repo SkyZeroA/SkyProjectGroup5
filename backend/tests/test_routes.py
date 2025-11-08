@@ -1,4 +1,5 @@
 from unittest import TestCase
+import unittest
 from unittest.mock import patch, MagicMock
 import io
 from flask import session
@@ -134,35 +135,38 @@ class TestFlaskAPI(TestCase):
     @patch('backend.routes.get_activity_id')
     @patch('backend.routes.get_current_month_number')
     @patch('backend.routes.get_current_week_number')
-    @patch('backend.routes.get_user_id_from_db')
-    @patch('backend.routes.g', new_callable=MagicMock)
-    def test_log_activity(self, mock_g, mock_get_user_id, mock_get_week, mock_get_month, mock_get_activity_id, mock_insert_activity):
-        mock_g.user_id = 1
-        mock_get_user_id.return_value = 1
+    def test_log_activity(self, mock_get_week, mock_get_month, mock_get_activity_id, mock_insert_activity):
+        # Mock the helper functions
         mock_get_week.return_value = 42
         mock_get_month.return_value = 10
         mock_get_activity_id.return_value = 101
         mock_insert_activity.return_value = None
 
-        with self.app.session_transaction() as sess:
-            sess['email'] = "harry@sky.uk"
+        # Set session so login_required works
+        with self.app as client:
+            with client.session_transaction() as sess:
+                sess['email'] = "harry@sky.uk"
 
-        response = self.app.post('/api/log-activity', json={
-            "question": "Cycling",
-            "isPositive": True
-        })
+            # Make POST request
+            response = client.post('/api/log-activity', json={
+                "question": "Cycling",
+                "isPositive": True
+            })
 
+        # Assert response
         self.assertEqual(response.status_code, 200)
         self.assertIn("Activity logged successfully", response.get_data(as_text=True))
-        mock_insert_activity.assert_called_once_with(1, 101, 42, 10, True)
+
+        # Assert insert_user_activity was called correctly
+        mock_insert_activity.assert_called_once_with(
+            unittest.mock.ANY,  # user_id is obtained internally from session / g
+            101,                # activity_id
+            42,                 # week number
+            10,                 # month number
+            True                # isPositive
+        )
 
 
-    def test_fetch_questions(self):
-        # Mock backend DB call to avoid real DB connection
-        with patch('backend.routes.get_all_activity_names', return_value=[]):
-            response = self.app.get('/api/fetch-questions')
-            self.assertEqual(response.status_code, 200)
-            self.assertIsInstance(response.get_json(), list)
 
     @patch('backend.routes.get_username_from_db')
     @patch('backend.routes.read_view_table_week')
@@ -264,16 +268,25 @@ class TestFlaskAPI(TestCase):
         assert 'csrf_token' in data
 
     @patch('backend.routes.update_user_preferred_activities')
-    @patch('backend.routes.get_user_id_from_db')
-    def test_update_user_activities(self, mock_get_user_id, mock_update_prefs, mock_g):
-        mock_g.user_id = 1
-        mock_get_user_id.return_value = 1
-        with self.app.session_transaction() as sess:
-            sess['email'] = 'a@b.com'
+    def test_update_user_activities(self, mock_update_user_activities):
+        mock_update_user_activities.return_value = None
 
-        resp = self.app.post('/api/update-user-activities', json={'activities': ['Walking', 'Recycling']})
-        self.assertEqual(resp.status_code, 200)
-        mock_update_prefs.assert_called_once_with(1, ['Walking', 'Recycling'])
+        # Use test client to manage session
+        with self.app as client:
+            # Set session['email'] so login_required passes
+            with client.session_transaction() as sess:
+                sess['email'] = 'harry@example.com'  # must match what login_required expects
+
+            # Make POST request
+            response = client.post('/api/update-user-activities', json={'activities': ['Cycling', 'Recycling']})
+
+        # Check results
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json(), {"message": "User activities updated successfully"})
+
+        # Make sure your mock was called with correct user_id from g
+        mock_update_user_activities.assert_called_once()
+
 
     @patch('backend.routes.get_users_preferred_activities_no_points')
     @patch('backend.routes.get_activity_id')

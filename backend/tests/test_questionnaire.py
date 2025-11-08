@@ -13,89 +13,146 @@ from backend.Questionnaire import (
     update_diet_emissions,
     update_heating_emissions,
     update_reusable_emissions,
+    less_than_zero,
     Questionnaire,
 )
 
-class TestQuestionnaire(unittest.TestCase):
+class TestQuestionnaireFullCoverage(unittest.TestCase):
     @patch('backend.Questionnaire.get_user_activity_count_total')
-    def test_calculate_projected_carbon_footprint(self, mock_counts):
-        # Mock answers: keys must match Questionnaire.format_answers expectations
+    def test_calculate_projected_carbon_footprint_basic(self, mock_counts):
+        """ Basic calculation check """
         answers = {
-            "transportMethod": 3,  # Car (Petrol/Diesel)
-            "travelDistance": 2,   # 10-15 miles
-            "officeDays": 3,       # 3 days/week
-            "dietDays": 5,         # 5 days/week
-            "meats": 0,            # Beef
-            "heatingHours": 4,     # 4 hours/day
-            "turnOffDevices": 2,   # Sometimes
-            "recycle": 1,          # Rarely
-            "reusable": 2,         # Sometimes
-            "foodWaste": 2         # Often
+            "transportMethod": 3,
+            "travelDistance": 2,
+            "officeDays": 3,
+            "dietDays": 5,
+            "meats": 0,
+            "heatingHours": 4,
+            "turnOffDevices": 2,
+            "recycle": 1,
+            "reusable": 2,
+            "foodWaste": 2
         }
-
-        user_id = "123"
-        # Provide a stable start date for deterministic progress calculations
-        start_date = datetime(2025, 1, 1)
         mock_counts.return_value = []
-        q = Questionnaire(answers, user_id, start_date)
-
+        q = Questionnaire(answers, user_id=123, start_date=datetime(2025, 1, 1))
         result = q.calculate_projected_carbon_footprint()
-
-        # Result keys are defined in Questionnaire.calculate_projected_carbon_footprint
-        # Ensure expected keys exist and values are integers (rounded inside implementation)
-        self.assertIn("total_projected", result)
-        self.assertIn("projected", result)
-        self.assertIn("current", result)
-
-        self.assertIsInstance(result["total_projected"], int)
-        self.assertIsInstance(result["projected"], int)
-        self.assertIsInstance(result["current"], int)
+        # Check keys
+        for key in ("total_projected", "projected", "current",
+                    "transport_emissions", "diet_emissions", "heating_emissions",
+                    "turn_off_devices_emissions", "recycle_emissions",
+                    "reusable_emissions", "food_waste_emissions"):
+            self.assertIn(key, result)
+            self.assertIsInstance(result[key], int)
 
     def test_helpers_basic(self):
-        # Basic smoke tests for helper functions
-        assert calculate_transport_emissions(3, 2, 1) >= 0
-        assert calculate_diet_emissions(0, 1) > 0
-        assert calculate_heating_emissions(2) > 0
-        assert update_transport_emissions(3, 2, 4) >= 0
-        assert update_diet_emissions(0, 2) > 0
-        assert update_heating_emissions(2, 5) > 0
-        assert calculate_turn_off_devices_emissions(1) > 0
-        assert calculate_recycle_emissions(2) > 0
-        assert calculate_reusable_emissions(1) > 0
-        assert calculate_food_waste_emissions(2) > 0
-        assert update_reusable_emissions(1, 3) > 0
+        # Smoke tests for helper functions
+        self.assertGreaterEqual(calculate_transport_emissions(3, 2, 1), 0)
+        self.assertGreater(calculate_diet_emissions(0, 1), 0)
+        self.assertGreater(calculate_heating_emissions(2), 0)
+        self.assertGreater(calculate_turn_off_devices_emissions(1), 0)
+        self.assertGreater(calculate_recycle_emissions(2), 0)
+        self.assertGreater(calculate_reusable_emissions(1), 0)
+        self.assertGreater(calculate_food_waste_emissions(2), 0)
+        self.assertEqual(less_than_zero(-5), 0)
+        self.assertEqual(less_than_zero(0), 0)
+        self.assertEqual(less_than_zero(10), 10)
 
     @patch('backend.Questionnaire.get_user_activity_count_total')
-    def test_activity_adjustments_all_branches(self, mock_counts):
-        # Return counts that exercise every activity id (1..9)
-        mock_counts.return_value = [(i, 1) for i in range(1, 10)]
+    def test_activity_branches(self, mock_counts):
+        """ Test all special branches for activities """
+        # Provide counts that hit all branches
+        mock_counts.return_value = [
+            (1, 2), (2, 1), (3, 1), (4, 1), (5, 1),
+            (6, 1), (7, 1), (8, 1), (9, 1), (11, 1), (13, 4), (15, 1)
+        ]
 
         answers = {
-            "transportMethod": 3,  # Diesel car (to trigger some branches)
-            "travelDistance": 2,   # 10-15
+            "transportMethod": 3,
+            "travelDistance": 2,
             "officeDays": 3,
-            "dietDays": 3,
+            "dietDays": 1,
             "meats": 0,
             "heatingHours": 2,
             "turnOffDevices": 1,
-            "recycle": 1,
+            "recycle": 0,
+            "reusable": 2,
+            "foodWaste": 1
+        }
+        q = Questionnaire(answers, user_id=99, start_date=datetime(2025, 1, 1))
+        result = q.calculate_projected_carbon_footprint()
+        # Check that all numeric results are integers
+        for key, value in result.items():
+            self.assertIsInstance(value, int)
+
+    @patch('backend.Questionnaire.get_user_activity_count_total')
+    def test_activity_edge_conditions(self, mock_counts):
+        """ Test activity branches that depend on conditions """
+        # tef_index != 3 for activities 4 and 6 (public transport / carpool)
+        mock_counts.return_value = [(4, 1), (6, 1), (7, 1)]
+        answers = {
+            "transportMethod": 2,  # not a car
+            "travelDistance": 1,
+            "officeDays": 3,
+            "dietDays": 0,  # triggers no diet reduction in activity 7
+            "meats": 0,
+            "heatingHours": 2,
+            "turnOffDevices": 1,
+            "recycle": 0,
             "reusable": 1,
             "foodWaste": 1
         }
-        q = Questionnaire(answers, user_id=1, start_date=datetime(2025, 1, 1))
-
-        # Ensure get_year_progress and set_end_date work
-        orig_progress = q.get_year_progress()
-        q.set_end_date(datetime(2025, 6, 1))
-        assert q.get_year_progress() != orig_progress
-
+        q = Questionnaire(answers, user_id=100, start_date=datetime(2025, 1, 1))
         result = q.calculate_projected_carbon_footprint()
+        self.assertIn("current", result)
 
-        # Validate returned structure and types
-        assert isinstance(result, dict)
-        for k in ("total_projected", "projected", "current", "transport_emissions", "diet_emissions", "heating_emissions", "turn_off_devices_emissions", "recycle_emissions", "reusable_emissions", "food_waste_emissions"):
-            assert k in result
-            assert isinstance(result[k], int)
+    @patch('backend.Questionnaire.get_user_activity_count_total')
+    def test_recycle_branches(self, mock_counts):
+        """ Test all recycling if/elif branches """
+        counts = [(13, 5)]
+        for recycle_index in range(4):
+            mock_counts.return_value = counts
+            answers = {
+                "transportMethod": 0,
+                "travelDistance": 0,
+                "officeDays": 1,
+                "dietDays": 1,
+                "meats": 0,
+                "heatingHours": 1,
+                "turnOffDevices": 0,
+                "recycle": recycle_index,
+                "reusable": 1,
+                "foodWaste": 1
+            }
+            q = Questionnaire(answers, user_id=101, start_date=datetime(2025, 1, 1))
+            result = q.calculate_projected_carbon_footprint()
+            self.assertIn("recycle_emissions", result)
 
-# if __name__ == "__main__":
-#     unittest.main()
+    def test_format_and_set_methods(self):
+        answers = {
+            "transportMethod": 1,
+            "travelDistance": 1,
+            "officeDays": 2,
+            "dietDays": 3,
+            "meats": 2,
+            "heatingHours": 5,
+            "turnOffDevices": 1,
+            "recycle": 0,
+            "reusable": 1,
+            "foodWaste": 0
+        }
+        q = Questionnaire(answers, user_id=102, start_date=datetime(2025, 1, 1))
+        # format_answers
+        formatted = q.format_answers()
+        self.assertEqual(formatted[0], 102)
+        self.assertEqual(len(formatted), 11)
+        # format_prompt
+        prompt = q.format_prompt()
+        self.assertIsInstance(prompt["travel_distance"], float)
+        self.assertIn(prompt["transport_method"], ["Work from home", "Walk/Cycle", "Public transport", "Petrol car", "Electric car"])
+        self.assertIn(prompt["meat_choice"], ["Beef", "Lamb", "Pork", "Chicken", "Turkey", "Fish"])
+        # set_projected_carbon
+        q.set_projected_carbon(1000)
+        self.assertNotEqual(q.projected_carbon, -99)
+
+if __name__ == "__main__":
+    unittest.main()

@@ -301,6 +301,28 @@ class TestDatabaseFunctions(TestCase):
         result = get_daily_activity_counts(1, start_date="2025-01-01", end_date="2025-01-01")
         self.assertEqual(result, {"2025-01-01": 2})
 
+    def test_get_user_id_from_db_not_found(self):
+        self.mock_cursor.fetchone.return_value = None
+        result = get_user_id_from_db(TEST_EMAIL)
+        self.assertIsNone(result)
+
+    def test_get_username_from_db_not_found(self):
+        self.mock_cursor.fetchone.return_value = None
+        result = get_username_from_db(TEST_EMAIL)
+        self.assertIsNone(result)
+
+    def test_get_user_daily_ranks_ties(self):
+        d = date(2025, 1, 1)
+        self.mock_cursor.fetchall.return_value = [
+            {"user_id": 1, "date": d, "total_score": 10},
+            {"user_id": 2, "date": d, "total_score": 10},  # Tie
+            {"user_id": 3, "date": d, "total_score": 5},
+        ]
+        ranks = get_user_daily_ranks(1, period="week", start_date="2025-01-01", end_date="2025-01-01")
+        self.assertEqual(len(ranks), 1)
+        # Rank 1 should be for user 1 and user 2 (tie)
+        self.assertEqual(ranks[0]['rank'], 1)
+
 
 # if __name__ == '__main__':
 #     unittest.main()
