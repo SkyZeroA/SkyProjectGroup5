@@ -15,15 +15,15 @@ services:
       - db
 
 
-frontend:
-  build: ./react-frontend
-  ports:
-    - "85:85"
-  environment:
-    - PORT=85
-    - REACT_APP_API_URL=http://backend:3005
-  depends_on:
-    - backend
+  frontend:
+    build: ./react-frontend
+    ports:
+      - "85:85"
+    environment:
+      - PORT=85
+      - REACT_APP_API_URL=http://backend:3005
+    depends_on:
+      - backend
 
 
   db:
