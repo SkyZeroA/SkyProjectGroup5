@@ -1,11 +1,17 @@
 FROM python:3.11
-WORKDIR /backend
 
-COPY requirements.txt .
+# Set workdir to root of project
+WORKDIR /
 
-ENV FLASK_APP=backend.app
-ENV FLASK_RUN_PORT=3005
-
+# Copy requirements and install
+COPY backend/requirements.txt .
 RUN pip install -r requirements.txt
-COPY . .
-CMD ["python3", "-m", "app"]
+
+# Copy backend folder into container root
+COPY backend ./backend
+
+# Expose port (optional)
+EXPOSE 3005
+
+# Run the backend as a module
+CMD ["python3", "-m", "backend.app"]
