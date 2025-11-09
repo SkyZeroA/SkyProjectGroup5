@@ -7,7 +7,7 @@ services:
       - ./backend:/backend
     environment:
       - DATABASE_URL=mysql://root:@db:3306/SkyZeroDB
-      - FLASK_APP=backend.app
+      - FLASK_APP=app
       - FLASK_RUN_HOST=0.0.0.0
       - FLASK_RUN_PORT=3005
     env_file:
