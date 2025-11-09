@@ -2,7 +2,6 @@ FROM python:3.11
 WORKDIR /backend
 
 COPY requirements.txt .
-COPY ../.env .env
 
 ENV FLASK_APP=backend.app
 ENV FLASK_RUN_PORT=3005
