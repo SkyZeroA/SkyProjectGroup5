@@ -80,52 +80,51 @@ const UserRankChart = ({ isOn, setIsOn, isFormOpen, colourblind }) => {
   const MIN_DATE = new Date(2025, 0, 1);
 
   // --- Fetch data ---
-  const fetchDailyRanks = async () => {
-  try {
-    // Get all dates for the current week or month
-    const allDates = isOn
-      ? getWeekDates(currentWeekStart)
-      : getMonthDates(currentMonth);
-    
-      const apiUrl = process.env.REACT_APP_API_URL;
-
-    // Get today's date at midnight (for comparison)
-    const todayMidnight = new Date();
-    todayMidnight.setHours(0, 0, 0, 0);
-
-    // Define start/end for API query
-    const startDate = allDates[0];
-    const endDate = allDates[allDates.length - 1];
-
-
-    // Fetch rank data for the full period
-    const response = await axios.get(`${apiUrl}/api/daily-rank`, {
-      params: { period: isOn ? "week" : "month", startDate, endDate },
-      withCredentials: true
-    });
-
-    const ranks = response.data.ranks || [];
-
-    // Merge fetched data with allDates
-    const merged = allDates.map((date) => {
-      const dateObj = new Date(date);
-      const found = ranks.find((r) => r.date === date);
-
-      return {
-        date,
-        rank: dateObj <= todayMidnight ? (found ? found.rank : null) : null
-      };
-    });
-
-    setDailyRanks(merged);
-    } catch (error) {
-      console.error("Failed to fetch daily ranks:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchDailyRanks = async () => {
+      try {
+        // Get all dates for the current week or month
+        const allDates = isOn
+          ? getWeekDates(currentWeekStart)
+          : getMonthDates(currentMonth);
+
+        const apiUrl = process.env.REACT_APP_API_URL;
+
+        // Get today's date at midnight (for comparison)
+        const todayMidnight = new Date();
+        todayMidnight.setHours(0, 0, 0, 0);
+
+        // Define start/end for API query
+        const startDate = allDates[0];
+        const endDate = allDates[allDates.length - 1];
+
+        // Fetch rank data for the full period
+        const response = await axios.get(`${apiUrl}/api/daily-rank`, {
+          params: { period: isOn ? "week" : "month", startDate, endDate },
+          withCredentials: true
+        });
+
+        const ranks = response.data.ranks || [];
+
+        // Merge fetched data with allDates
+        const merged = allDates.map((date) => {
+          const dateObj = new Date(date);
+          const found = ranks.find((r) => r.date === date);
+
+          return {
+            date,
+            rank: dateObj <= todayMidnight ? (found ? found.rank : null) : null
+          };
+        });
+
+        setDailyRanks(merged);
+      } catch (error) {
+        console.error("Failed to fetch daily ranks:", error);
+      }
+    };
+
     fetchDailyRanks();
-  }, [isOn, isFormOpen, currentWeekStart, currentMonth]);
+  }, [isOn, isFormOpen, currentWeekStart, currentMonth, /* apiUrl used internally */]);
 
   // --- Navigation handlers ---
   const handlePrev = () => {

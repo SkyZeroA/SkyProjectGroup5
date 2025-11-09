@@ -5,7 +5,7 @@ import FooterBanner from "../components/FooterBanner";
 import ProgressBar from "../components/ProgressBar";
 import Switch from "../components/Switch";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TipCard from "../components/TipCard";
 import Navbar from "../components/Navbar";
 import { subscribeActivity } from '../lib/activityBus';
@@ -25,7 +25,7 @@ const Dashboard = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/dashboard`, { withCredentials: true });
       setWeekData(response.data.weekLeaderboard);
@@ -38,11 +38,11 @@ const Dashboard = () => {
       navigate('/questionnaire')
       console.error("Failed to fetch dashboard data:", error);
     }
-  };
+  }, [apiUrl, navigate]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   // subscribe to activity updates published by Navbar's popup
   useEffect(() => {
@@ -50,7 +50,7 @@ const Dashboard = () => {
       fetchData();
     });
     return unsub;
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     const fetchInitialTips = async () => {
@@ -65,7 +65,7 @@ const Dashboard = () => {
       }
     };
     fetchInitialTips();
-  }, []);
+  }, [apiUrl]);
 
   const replaceTip = async (index) => {
     try {

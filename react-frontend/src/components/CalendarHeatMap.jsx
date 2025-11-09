@@ -61,7 +61,7 @@ const UserActivityHeatmap = ({ isFormOpen, colorblind }) => {
       } catch (error) {
         console.error("Failed to fetch activity data:", error);
       }
-    }, [currentMonth, isFormOpen]);
+    }, [currentMonth, apiUrl]);
 
   useEffect(() => {
       fetchActivity();

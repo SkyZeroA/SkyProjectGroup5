@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import HeaderBanner from "../components/HeaderBanner";
 import FooterBanner from "../components/FooterBanner";
@@ -31,7 +31,7 @@ const Stats = ({ colorblind }) => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/stats`, { withCredentials: true });
       const data = response.data;
@@ -53,11 +53,11 @@ const Stats = ({ colorblind }) => {
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
     }
-  };
+  }, [apiUrl]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   // subscribe to activity updates published by Navbar's popup
   useEffect(() => {
@@ -66,7 +66,7 @@ const Stats = ({ colorblind }) => {
       fetchData();
     });
     return unsub;
-  }, []);
+  }, [fetchData]);
 
 
   return (

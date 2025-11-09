@@ -9,7 +9,7 @@ import json
 try:
     from dotenv import load_dotenv
     ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
-    env_filename = f'env'
+    env_filename = f'.env'
 
     env_path = Path(__file__).resolve().parents[0] / env_filename
     if env_path.exists():

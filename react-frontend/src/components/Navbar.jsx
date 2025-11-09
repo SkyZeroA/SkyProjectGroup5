@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './Button';
 import axios from 'axios';
@@ -19,17 +19,16 @@ const Navbar = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
 
-  const fetchUserData = async () => {
-    await axios.get(`${apiUrl}/api/fetch-user-data`, { withCredentials: true })
-      .then(response => {
-        setUsername(response.data.username);
-      })
-      .catch(error => {
-        console.error("Error fetching user data:", error);
-      });
-  };
+  const fetchUserData = useCallback(async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/fetch-user-data`, { withCredentials: true });
+      setUsername(response.data.username);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }, [apiUrl]);
 
-  const fetchAllQuestions = async () => {
+  const fetchAllQuestions = useCallback(async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/fetch-questions`, { withCredentials: true });
       setAllQuestions(response.data.map(activity => activity.name));
@@ -37,9 +36,9 @@ const Navbar = () => {
     } catch (error) {
       console.error("Error fetching activity questions:", error);
     }
-  };
+  }, [apiUrl]);
 
-  const fetchUserActivities = async () => {
+  const fetchUserActivities = useCallback(async () => {
     try {
       const response = await axios.get(`${apiUrl}/api/user-activities`, { withCredentials: true });
       setQuestions(response.data.map(activity => activity.name));
@@ -47,7 +46,7 @@ const Navbar = () => {
     } catch (error) {
       console.error("Error fetching user activities:", error);
     }
-  };
+  }, [apiUrl]);
 
   const handleActivitySave = async (selected) => {
     try {
@@ -77,13 +76,13 @@ const Navbar = () => {
 };
 
 	useEffect(() => {
-		fetchAllQuestions();
-		fetchUserActivities();
-	}, [isFormOpen]);
+    fetchAllQuestions();
+    fetchUserActivities();
+  }, [isFormOpen, fetchAllQuestions, fetchUserActivities]);
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [fetchUserData]);
 
   const mainLinks = [
 		{ label: "About", onClick: () => navigate("/about") },

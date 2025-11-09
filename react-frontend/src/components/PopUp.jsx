@@ -24,7 +24,7 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
       if (isOpen) {
         fetchActivityCounts();
       }
-    }, [isOpen, questions]);
+  }, [isOpen, questions, apiUrl]);
 
     if (!isOpen) {return null; }
 

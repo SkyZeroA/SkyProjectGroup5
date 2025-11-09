@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # Parse BASE_URL to get host and port
     parsed_url = urlparse(BASE_URL)
     host = parsed_url.hostname or "localhost"
-    port = parsed_url.port or 9099
+    port = parsed_url.port or 5000
 
     app.run(host=host, port=port, debug=(ENV == 'development'))
 
