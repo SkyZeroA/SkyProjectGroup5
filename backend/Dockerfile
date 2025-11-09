@@ -3,7 +3,7 @@ WORKDIR /backend
 
 COPY requirements.txt .
 
-ENV FLASK_APP="app.py"
+ENV FLASK_APP="."
 ENV FLASK_RUN_PORT=3005
 ENV FLASK_RUN_HOST=0.0.0.0
 
