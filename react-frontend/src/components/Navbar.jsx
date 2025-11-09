@@ -69,7 +69,8 @@ const Navbar = () => {
   try {
     await ensureCsrfToken(apiUrl);
     await axios.post(`${apiUrl}/api/sign-out`, {}, { withCredentials: true });
-    navigate('/'); // or navigate to login page if you have one
+    navigate('/'); // Navigate to the sign-in page
+    window.location.reload(); // Refresh the page to reset the state
   } catch (error) {
     console.error("Error signing out:", error);
   }
