@@ -7,16 +7,24 @@ services:
     volumes:
       - ./backend:/backend
     environment:
-      - DATABASE_URL=mysql://root:@db:3306/SkyZeroDB
+      - DATABASE_URL=mysql://root:@db:3305/SkyZeroDB
     depends_on:
       - db
+    command: >
+      sh -c "python3 -m backend.app"
+
 
   frontend:
     build: ./react-frontend
     ports:
       - "85:85"
+    environment:
+      - PORT=85
     volumes:
       - ./react-frontend:/app
+    command: >
+      sh -c "npm start"
+
 
   db:
     image: mysql:8
