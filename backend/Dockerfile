@@ -1,6 +1,12 @@
 FROM python:3.11
 WORKDIR /backend
+
 COPY requirements.txt .
+COPY ../.env .env
+
+ENV FLASK_APP=backend.app
+ENV FLASK_RUN_PORT=3005
+
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["flask", "run", "--host=0.0.0.0", "--port=3005"]
+CMD ["python3", "-m", "backend.app"]
