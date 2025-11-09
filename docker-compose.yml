@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./backend:/backend
+    environment:
+      - DATABASE_URL=mysql://root:@db:3306/SkyZeroDB
+    depends_on:
+      - db
+
+  frontend:
+    build: ./react-frontend
+    ports:
+      - "85:85"
+    volumes:
+      - ./react-frontend:/app
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: SkyZeroDB
+    ports:
+      - "3305:3305"
+    volumes:
+      - db_data:/var/lib/mysql
+
+
+volumes:
+  db_data:
+ 
