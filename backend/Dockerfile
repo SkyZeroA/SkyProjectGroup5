@@ -9,4 +9,4 @@ ENV FLASK_RUN_HOST=0.0.0.0
 
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["python3", "-m", "flask", "run"]
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=3005"]
