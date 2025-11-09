@@ -1,5 +1,5 @@
-from backend import app
-import backend.data_access as db
+from . import app
+import data_access as db
 from urllib.parse import urlparse
 import os
 from pathlib import Path

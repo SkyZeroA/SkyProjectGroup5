@@ -1,5 +1,5 @@
 from datetime import datetime
-from backend.data_access import *
+from data_access import *
 
 # ---------- Text options --------------
 # Will be used to generate a prompt for use in the AI tips section
