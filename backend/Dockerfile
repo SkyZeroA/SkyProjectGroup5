@@ -8,4 +8,4 @@ ENV FLASK_RUN_PORT=3005
 
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["python3", "-m", "backend.app"]
+CMD ["python3", "-m", "app"]
