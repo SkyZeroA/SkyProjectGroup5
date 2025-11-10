@@ -2,14 +2,14 @@ services:
   backend:
     build: ./backend
     ports:
-      - "3005:3005"
+      - "5005:5005"
     volumes:
       - ./backend:/backend
     environment:
       - DATABASE_URL=mysql://root:@db:3306/SkyZeroDB
       - FLASK_APP=app
       - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_RUN_PORT=3005
+      - FLASK_RUN_PORT=5005
     env_file:
       - .env
     depends_on:
@@ -22,7 +22,7 @@ services:
       - "85:85"
     environment:
       - PORT=85
-      - REACT_APP_API_URL=http://35.210.202.5:3005
+      - REACT_APP_API_URL=http://35.210.202.5:5005
     env_file:
       - .env
     depends_on:
