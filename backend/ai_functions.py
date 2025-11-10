@@ -1,8 +1,8 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-from data_access import get_latest_answers_from_questionnaire, get_tips_from_db
-from Questionnaire import Questionnaire
+from .data_access import get_latest_answers_from_questionnaire, get_tips_from_db
+from .Questionnaire import Questionnaire
 from datetime import datetime
 import numpy as np
 

@@ -7,11 +7,11 @@ from datetime import datetime
 from flask_wtf.csrf import generate_csrf
 
 
-from decorators import login_required
-from Questionnaire import Questionnaire
-from data_access import *
-from helpers import allowed_file
-from ai_functions import generate_tip
+from .decorators import login_required
+from .Questionnaire import Questionnaire
+from .data_access import *
+from .helpers import allowed_file
+from .ai_functions import generate_tip
 
 
 @app.route('/api/csrf-token', methods=['GET'])
