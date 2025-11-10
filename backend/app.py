@@ -18,33 +18,34 @@ except Exception:
     pass
 
 
-if __name__ == "__main__":
-    db.init_db()
-    db.init_insert()
+def initialize_database():
+    try:
+        db.init_db()
+        db.init_insert()
+        print("Database initialized successfully")
+    except Exception as e:
+        print("Database initialization failed:", e)
 
-    # Determine ENV and BASE_URL from environment variables
-    # ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
-    # DEFAULT_DEV_BASE = "http://localhost:9099"
-    # DEFAULT_PROD_BASE = os.getenv('PROD_BASE_URL', 'https://example.com')
 
-    # if ENV == 'production':
-    #     BASE_URL = os.getenv('BASE_URL', DEFAULT_PROD_BASE)
-    # else:
-    #     BASE_URL = os.getenv('BASE_URL', DEFAULT_DEV_BASE)
-    
+# Determine ENV and BASE_URL from environment variables
+# ENV = os.getenv('ENV', os.getenv('FLASK_ENV', 'development'))
+# DEFAULT_DEV_BASE = "http://localhost:9099"
+# DEFAULT_PROD_BASE = os.getenv('PROD_BASE_URL', 'https://example.com')
 
-    # You no longer need to check ENV again to decide which default to use — the .env file will handle that!!!
-    BASE_URL = os.getenv('BASE_URL', 'http://localhost:9099')
+# if ENV == 'production':
+#     BASE_URL = os.getenv('BASE_URL', DEFAULT_PROD_BASE)
+# else:
+#     BASE_URL = os.getenv('BASE_URL', DEFAULT_DEV_BASE)
 
-    # Parse BASE_URL to get host and port
-    parsed_url = urlparse(BASE_URL)
-    host = parsed_url.hostname or "0.0.0.0"
-    port = parsed_url.port or 5000
 
-    app.run(host="0.0.0.0", port=port, debug=(ENV == 'development'))
+# You no longer need to check ENV again to decide which default to use — the .env file will handle that!!!
+BASE_URL = os.getenv('BASE_URL', 'http://localhost:9099')
 
-    # app.run(host="localhost", port=9099, debug=True)
+# Parse BASE_URL to get host and port
+parsed_url = urlparse(BASE_URL)
+host = parsed_url.hostname or "0.0.0.0"
+port = parsed_url.port or 5000
 
-# To run this you need to be in the main project folder "SkyProjectGropu5"
-# Then run the following command:
-# python3 -m backend.app
+
+initialize_database()
+app.run(host=host, port=port, debug=(ENV == 'development'))
