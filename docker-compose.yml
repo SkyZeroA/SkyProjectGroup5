@@ -6,7 +6,11 @@ services:
     volumes:
       - ./backend:/backend
     environment:
-      - DATABASE_URL=mysql://root:@db:3306/SkyZeroDB
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=SkyZeroDB
       - FLASK_APP=app
       - FLASK_RUN_HOST=0.0.0.0
       - FLASK_RUN_PORT=5005
