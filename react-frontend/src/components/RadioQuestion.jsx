@@ -18,10 +18,9 @@ const RadioQuestion = ({ options, current, setCurrent, question }) => {
 					}
 				>
 					{options.map((option) => (
-						<label
+						<div
 							key={option.value}
-							className="flex items-center justify-between gap-2 w-36 lg:w-28 min-h-[50px] px-3 mx-auto cursor-pointer"
-							htmlFor={String(option.value)}
+							className="flex items-center justify-between gap-2 w-36 lg:w-28 min-h-[50px] px-3 mx-auto"
 						>
 							<span className="text-sm md:text-base [font-family:'Sky_Text',Helvetica] font-normal mr-2 whitespace-normal break-words">
 								{option.label}
@@ -31,7 +30,7 @@ const RadioQuestion = ({ options, current, setCurrent, question }) => {
 								id={String(option.value)}
 								className="w-7 h-7 bg-[#ebebeb] border-0 data-[state=checked]:bg-[#7399ff] data-[state=checked]:text-white"
 							/>
-						</label>
+						</div>
 					))}
 				</RadioGroup>
 			</CardContent>
