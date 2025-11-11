@@ -3,17 +3,6 @@ services:
     build: ./backend
     ports:
       - "5005:5005"
-    volumes:
-      - ./backend:/backend
-    environment:
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=
-      - DB_NAME=SkyZeroDB
-      - FLASK_APP=app
-      - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_RUN_PORT=5005
     env_file:
       - .env
     depends_on:
