@@ -115,9 +115,9 @@ const PopupForm = ({ isOpen, onClose, questions, points, allQuestions, allPoints
                             : "bg-white hover:bg-gray-100"
                         }`}
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col items-center justify-between sm:flex-row sm:items-start">
                         <span className="text-sm font-medium">{activity}</span>
-                        <span className="text-xs font-light">({points} pts)</span>
+                        <span className="text-xs font-light sm:mt-1">({points} pts)</span>
                         {isSelected && (
                           <svg
                             className="w-5 h-5 text-[var(--log-border-color)]"

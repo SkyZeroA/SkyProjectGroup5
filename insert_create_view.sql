@@ -3,16 +3,16 @@ USE SkyZeroDB;
 
 INSERT IGNORE INTO User (firstName, username, email, avatarFilename, encrypted_password)
 VALUES
-('Taran', 'taran123', 'taran@sky.uk', 'boris.jpg', 'Password1!'),
+('Taran', 'taran123', 'taran@sky.uk', 'redpanda.jpeg', 'Password1!'),
 ('Leo', 'Leonardo', 'leo@sky.uk', 'leo.jpg', 'Password1!'),
-('Harry', 'harry987', 'harry@sky.uk', 'homer.jpg', 'Password1!'),
-('Adnan', 'adnan456', 'adnan@sky.uk', 'kayode.jpeg', 'Password1!'),
+('Harry', 'harry987', 'harry@sky.uk', 'kayode.jpeg', 'Password1!'),
+('Adnan', 'adnan456', 'adnan@sky.uk', 'homer.jpg', 'Password1!'),
 ('Zubin', 'zubin789', 'zubin@sky.uk', 'elf.jpeg', 'Password1!'),
 ('Ben', 'ben321', 'ben@sky.uk', 'madara.jpeg', 'Password1!'),
 ('Alice', 'alice01', 'alice@sky.uk', 'taylor.jpeg', 'Password1!'),
-('Cathy', 'cathy654', 'cathy@sky.uk', 'boo.jpg', 'Password1!'),
-('Derek', 'derekhale', 'derek@sky.uk', 'derek.jpeg', 'Password1!'),
-('Eva', 'evasmith', 'eva@sky.uk', 'legallyblonde.jpeg', 'Password1!'),
+('Boo', 'boo654', 'boo@sky.uk', 'boo.jpg', 'Password1!'),
+('Spike', 'Spike', 'spike@sky.uk', 'spike.jpg', 'Password1!'),
+('Elle', 'ElleWoods', 'elle@sky.uk', 'legallyblonde.jpeg', 'Password1!'),
 ('Frank', 'franktheman', 'frank@sky.uk', 'aurafarm.jpg', 'Password1!'),
 ('Iris', 'Iris', 'iris@sky.uk', 'iris.jpg', 'Password1!'),
 ('Hannah', 'hannah', 'hannah@sky.uk', 'golden.jpg', 'Password1!'),
