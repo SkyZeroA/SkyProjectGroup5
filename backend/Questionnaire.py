@@ -7,6 +7,14 @@ TRANSPORT_METHODS = ["Work from home", "Walk/Cycle", "Public transport", "Petrol
 
 MEAT_CHOICES = ["Beef", "Lamb", "Pork", "Chicken", "Turkey", "Fish"]
 
+TURNS_OFF_DEVICES = ["Always", "Most of the time", "Sometimes", "Rarely"]
+
+RECYCLES = ["Always", "Most of the time", "Sometimes", "Rarely"]
+
+REUSES = ["Always", "Most of the time", "Sometimes", "Rarely"]
+
+HAS_FOOD_WASTE = ["Rarely", "Sometimes", "Often"]
+
 
 # --------- Emission Factors ------------
 
@@ -131,10 +139,10 @@ class Questionnaire:
             "diet_days": self._questionnaire["dietDays"],
             "meat_choice": MEAT_CHOICES[self._questionnaire["meats"]],
             "heating_hours": self._questionnaire["heatingHours"],
-            "turn_off_devices": TURN_OFF_DEVICE[self._questionnaire["turnOffDevices"]],
-            "recycle": RECYCLING[self._questionnaire["recycle"]],
-            "reusable": REUSABLE[self._questionnaire["reusable"]],
-            "food_waste": FOOD_WASTE[self._questionnaire["foodWaste"]]
+            "turn_off_devices": TURNS_OFF_DEVICES[self._questionnaire["turnOffDevices"]],
+            "recycle": RECYCLES[self._questionnaire["recycle"]],
+            "reusable": REUSES[self._questionnaire["reusable"]],
+            "food_waste": HAS_FOOD_WASTE[self._questionnaire["foodWaste"]]
         }
 
     def get_questionnaire(self):

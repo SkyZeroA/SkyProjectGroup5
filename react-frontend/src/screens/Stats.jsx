@@ -93,7 +93,7 @@ const Stats = ({ colorblind }) => {
         <section className="w-full sm:w-3/4 grid grid-cols-1 sm:grid-cols-2 grid-rows-4 sm:grid-rows-2 gap-4 sm:gap-6" aria-label="Charts and visual statistics">
           {/* Emissions Pie Chart */}
           <Card className="flex flex-col justify-center items-center h-64 sm:h-full w-full overflow-hidden bg-white">
-            <CardContent className="h-full w-full flex flex-col justify-center items-center">
+            <CardContent className="h-full w-full flex flex-col justify-center items-center sm:pb-6 pb-0">
               <h2 className="[font-family:'Sky_Text',Helvetica] text-xl sm:text-2xl font-bold text-center text-gray-900">
                 Projected Emissions Breakdown
               </h2>

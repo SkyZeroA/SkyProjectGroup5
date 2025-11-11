@@ -48,6 +48,8 @@ def convert_db_to_prompt(user_id):
             transport(office_days={lifestyle_dict["office_days"]}, method="{lifestyle_dict["transport_method"]}", distance_miles={lifestyle_dict["travel_distance"]})
             diet(meat_meals_per_day=2, meat_days_per_week={lifestyle_dict["diet_days"]}, most_common_meat={lifestyle_dict["meat_choice"]})
             heating(hours_per_day={lifestyle_dict["heating_hours"]}, months_active=["December", "January", "February"])
+            turns_off_devices(frequency="{lifestyle_dict["turn_off_devices"]}")
+            recycles(frequency="{lifestyle_dict["recycle"]}")
         }}
     """.strip()
 

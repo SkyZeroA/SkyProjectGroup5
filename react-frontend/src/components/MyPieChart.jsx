@@ -16,6 +16,21 @@ const COLORBLIND_COLORS = [
 
 function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnOffDevices, recycle, reusable, foodWaste, colorblind }) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [legendFontSize, setLegendFontSize] = useState(12); // Default font size
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        // For small screens (e.g., phones)
+        setLegendFontSize(6);
+      } else {
+        // For larger screens
+        setLegendFontSize(12);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -23,15 +38,15 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnO
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const outerRadius = windowWidth < 600 ? 60 : 100;
+  const outerRadius = windowWidth < 600 ? 45 : 100;
   const height = windowWidth < 600 ? 180 : 300;
 
   const data = [
     { name: 'Transport', value: transportEmissions },
-    { name: 'Diet and Food Waste', value: dietEmissions + foodWaste },
+    { name: 'Diet', value: dietEmissions + foodWaste },
     { name: 'Heating', value: heatingEmissions },
-    { name: 'Lack of Turning Off Devices', value: turnOffDevices },
-    { name: 'Lack of Recycling/Reusables', value: recycle + reusable }
+    { name: 'Devices On', value: turnOffDevices },
+    { name: 'Not Recycling/Reusing', value: recycle + reusable }
     // { name: 'Lack of Reusables', value: reusable },
     // { name: 'Food Waste', value: foodWaste },
   ];
@@ -55,7 +70,7 @@ function MyPieChart({ transportEmissions, dietEmissions, heatingEmissions, turnO
           ))}
         </Pie>
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: legendFontSize }} />
       </PieChart>
     </ResponsiveContainer>
   );

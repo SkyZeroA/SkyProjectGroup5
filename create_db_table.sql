@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS User (
     firstName VARCHAR(50) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    avatarFilename VARCHAR(250) UNIQUE,
+    avatarFilename VARCHAR(250),
     encrypted_password VARCHAR(100) NOT NULL,
     tips JSON
 );
