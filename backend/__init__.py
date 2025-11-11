@@ -26,7 +26,7 @@ try:
 except Exception:
     pass
 
-allowed_origins = os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000', 'http://35.210.202.5:85').split(',')
+allowed_origins = os.getenv('ALLOWED_ORIGINS', 'http://localhost:3000,http://35.210.202.5:85').split(',')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', os.urandom(32))
