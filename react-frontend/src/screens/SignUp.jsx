@@ -18,8 +18,6 @@ const SignUp = () => {
   const [usernameError, setUsernameError] = useState("Enter your username.");
   const [emailError, setEmailError] = useState("Enter your email address.");
   const [confirmPasswordError, setConfirmPasswordError] = useState("Re-type your password.");
-  const [firstNameError, setFirstNameError] = useState("Enter your first name.");
-  const [passwordError, setPasswordError] = useState("Enter your password.");
   const [formErrors, setFormErrors] = useState([]);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
@@ -177,7 +175,7 @@ const SignUp = () => {
                   id="first-name"
                   type="text"
                   label="First Name"
-                  errorMessage={firstNameError}
+                  errorMessage={"Enter your first name."}
                   showError={true}
                   value={name}
                   onChange={(e) => { setName(e.target.value)}}
@@ -213,7 +211,7 @@ const SignUp = () => {
                   label="Password"
                   showPasswordToggle={true}
                   onPasswordToggle={() => setPasswordVisible(!passwordVisible)}
-                  errorMessage={passwordError}
+                  errorMessage={"Enter your password."}
                   showError={true}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

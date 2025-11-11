@@ -1,0 +1,40 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5005:5005"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+
+  frontend:
+    build: ./react-frontend
+    ports:
+      - "85:85"
+    environment:
+      - PORT=85
+      - REACT_APP_API_URL=http://35.210.202.5:5005
+    env_file:
+      - .env
+    depends_on:
+      - backend
+
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: SkyZeroDB
+    ports:
+      - "3305:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+
+
+volumes:
+  db_data:
+ 

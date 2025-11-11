@@ -12,6 +12,7 @@ const Questionnaire = () => {
   const [answers, setAnswers] = useState({});
 
   const apiUrl = process.env.REACT_APP_API_URL;
+  
   const [submissionError, setSubmissionError] = useState("");
   const navigate = useNavigate();
 

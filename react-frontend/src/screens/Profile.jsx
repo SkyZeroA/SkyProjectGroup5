@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "../components/Card";
 import HeaderBanner from "../components/HeaderBanner";
 import  FooterBanner from "../components/FooterBanner";
@@ -20,27 +20,25 @@ const Profile = ({ colorblind, setColorblind }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   // Gets the username and first name of the current user
-  const fetchUserData = async () => {
-    await axios.get(`${apiUrl}/api/fetch-user-data`, { withCredentials: true })
-      .then(response => {
-        setUsername(response.data.username);
-        setFirstName(response.data.firstName);
-        setAvatar(response.data.avatar && response.data.avatar !== "None" ? response.data.avatar : null);
-      })
-      .catch(error => {
-        console.error("Error fetching user data:", error);
-      });
-  };
+  const fetchUserData = useCallback(async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/fetch-user-data`, { withCredentials: true });
+      setUsername(response.data.username);
+      setFirstName(response.data.firstName);
+      setAvatar(response.data.avatar && response.data.avatar !== "None" ? response.data.avatar : null);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }, [apiUrl]);
 
-  const fetchQuestionnaireData = async () => {
-    await axios.get(`${apiUrl}/api/fetch-questionnaire-answers`, { withCredentials: true })
-      .then(response => {
-        setAnswers(response.data.answers);
-      })
-      .catch(error => {
-        console.error("Error fetching questionnaire data:", error);
-      });
-  };
+  const fetchQuestionnaireData = useCallback(async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/fetch-questionnaire-answers`, { withCredentials: true });
+      setAnswers(response.data.answers);
+    } catch (error) {
+      console.error("Error fetching questionnaire data:", error);
+    }
+  }, [apiUrl]);
 
 
   const handleQuestionnaireUpdate = async () => {
@@ -86,11 +84,11 @@ const Profile = ({ colorblind, setColorblind }) => {
 
   useEffect(() => {
     fetchUserData();
-  }, [avatar])
+  }, [avatar, fetchUserData])
 
   useEffect(() => {
     fetchQuestionnaireData();
-  }, [])
+  }, [fetchQuestionnaireData])
 
   console.log("avatar", avatar)
   return (

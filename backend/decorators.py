@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import session, jsonify, g
-from backend.data_access import get_user_id_from_db
+from .data_access import get_user_id_from_db
 
 def login_required(f):
     @wraps(f)

@@ -1,6 +1,5 @@
 import GradientAccent from "./GradientAccent";
 import { cn } from "../lib/utils";
-import { data, Link } from "react-router-dom";
 
 const FooterBanner = ({ className }) => {
   // Step 1: define links with labels and URLs
@@ -26,13 +25,13 @@ const FooterBanner = ({ className }) => {
         <div className="flex flex-col-reverse md:flex-row md:justify-between w-full items-start md:items-center py-4 md:py-4 gap-6">
           {/* Left side: logo + copyright */}
           <div className="flex items-center space-x-4">
-            <Link to="https://www.sky.com/">
+            <a href="https://www.sky.com/" target="_blank" rel="noopener noreferrer">
               <img
                 className="w-auto h-[34px] object-cover"
                 alt="Sky Logo"
                 src="/image-8.png"
               />
-            </Link>
+            </a>
             <span className="[font-family:'Sky_Text',Helvetica] font-normal text-[#4a4a4a] text-[clamp(14px,2vw,17px)] leading-[23.2px] whitespace-nowrap">
               © 2025 Sky UK
             </span>

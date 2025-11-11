@@ -92,28 +92,28 @@ const PointsBarChart = ({ isFormOpen, colourblind }) => {
   const startWeek = weekChunk * 6 + 1;
   const endWeek = Math.min((weekChunk + 1) * 6, 52);
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/user-points`, {
-        params: { period: isWeek ? "week" : "month", year, monthChunk, weekChunk },
-        withCredentials: true,
-      });
-
-      const formattedData = response.data.map((item, index) =>
-        isWeek
-          ? { ...item, label: getWeekDateRange(startWeek + index, year) }
-          : { ...item, label: getMonthName(monthChunk * 6 + index) }
-      );
-
-      setData(formattedData);
-    } catch (error) {
-      console.error("Failed to fetch points data", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/user-points`, {
+          params: { period: isWeek ? "week" : "month", year, monthChunk, weekChunk },
+          withCredentials: true,
+        });
+
+        const formattedData = response.data.map((item, index) =>
+          isWeek
+            ? { ...item, label: getWeekDateRange(startWeek + index, year) }
+            : { ...item, label: getMonthName(monthChunk * 6 + index) }
+        );
+
+        setData(formattedData);
+      } catch (error) {
+        console.error("Failed to fetch points data", error);
+      }
+    };
+
     fetchData();
-  }, [isWeek, year, monthChunk, weekChunk, isFormOpen]);
+  }, [isWeek, startWeek, year, monthChunk, weekChunk, isFormOpen, apiUrl]);
 
   const normalColors = {
     userPoints: "#8884d8", // purple
