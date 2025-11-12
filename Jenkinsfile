@@ -18,6 +18,8 @@ pipeline {
                     sh '''
                         cp $ROOT_ENV ./  # copy root .env to repo root
                         cp $FRONTEND_ENV ./react-frontend/  # copy frontend .env
+                        chmod 600 ./.env
+                        chmod 600 ./react-frontend/.env
                     '''
                 }
             }
