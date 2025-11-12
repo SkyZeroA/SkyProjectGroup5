@@ -430,3 +430,20 @@ def user_points():
 
     return jsonify(data)
 
+@app.route("/api/check-username", methods=["GET"])
+def check_username():
+    username = request.args.get("username")
+    if not username:
+        return jsonify({"available": False, "error": "No username provided"}), 400
+
+    db = get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(*) FROM User WHERE username = %s", (username,))
+    (count,) = cursor.fetchone()
+    cursor.close()
+    db.close()
+
+    if count > 0:
+        return jsonify({"available": False})
+    else:
+        return jsonify({"available": True})

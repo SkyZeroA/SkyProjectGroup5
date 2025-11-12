@@ -1,22 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-
-const Input = ({ className, type, label, errorMessage, showError, showPasswordToggle, onPasswordToggle, ...props }, ref) => {
+const Input = forwardRef(
+  (
+    {
+      className,
+      type,
+      label,
+      errorMessage,
+      showPasswordToggle,
+      onPasswordToggle,
+      isValid, // boolean prop from parent that indicates validity
+      ...props
+    },
+    ref
+  ) => {
     const [isFocused, setIsFocused] = useState(false);
     const [hasBeenTouched, setHasBeenTouched] = useState(false);
     const hasValue = props.value && String(props.value).length > 0;
-    const shouldShowError = showError && hasBeenTouched && !isFocused && !hasValue;
 
-    // Determine border and label colors
-    let borderColor = "#4A4A4A"; // Default grey
-    let labelColor = "#4A4A4A"; // Default grey
-    
+    // Determine if we should show the error
+    const shouldShowError = hasBeenTouched && hasValue && !isValid;
+
+    // Determine border color
+    let borderColor = "#4A4A4A"; // default grey
     if (isFocused) {
-      borderColor = "#0066CC"; // Blue when focused
+      borderColor = "#0066CC"; // blue on focus
+    } else if (hasValue) {
+      borderColor = isValid ? "#0066CC" : "#dd1618"; // blue if valid, red if invalid
+    }
+
+    // Determine label color
+    let labelColor = "#4A4A4A"; // default grey
+    if (isFocused) {
       labelColor = "#0066CC";
-    } else if (hasBeenTouched && !hasValue) {
-      borderColor = "#dd1618"; // Red when error
+    } else if (hasValue && !isValid) {
       labelColor = "#dd1618";
     }
 
@@ -26,12 +44,9 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
           {label && (
             <label
               htmlFor={props.id}
-              className={
-                `absolute left-3 bg-white px-2 transition-all duration-200 pointer-events-none
-                [font-family:'Sky_Text',Helvetica] font-normal text-[15px] leading-[22.5px]"
-                ${isFocused || props.value || hasBeenTouched ? "-top-2 text-[15px]" : "top-1/2 -translate-y-1/2 text-[15px]"}`
-              }
-
+              className={`absolute left-3 bg-white px-2 transition-all duration-200 pointer-events-none
+                [font-family:'Sky_Text',Helvetica] font-normal text-[15px] leading-[22.5px]
+                ${isFocused || hasValue ? "-top-2 text-[15px]" : "top-1/2 -translate-y-1/2 text-[15px]"}`}
               style={{ color: labelColor }}
             >
               {label}
@@ -44,12 +59,12 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
               placeholder:text-muted-foreground
               focus-visible:outline-none focus-visible:ring-0
               disabled:cursor-not-allowed disabled:opacity-50
-              "[font-family:'Sky_Text',Helvetica] font-normal",
+              "[font-family:'Sky_Text',Helvetica] font-normal"
               ${className}`}
             style={{
               borderWidth: isFocused ? "2px" : "1px",
-              borderColor: borderColor,
-              borderStyle: "solid"
+              borderColor,
+              borderStyle: "solid",
             }}
             ref={ref}
             onFocus={(e) => {
@@ -75,6 +90,7 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
             </span>
           )}
         </div>
+
         <div className="overflow-hidden">
           <div
             className={`transition-all duration-300 ease-in-out ${
@@ -84,13 +100,15 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
             }`}
           >
             <p className="text-[#dd1618] [font-family:'Sky_Text',Helvetica] font-normal text-[15px] leading-[22.5px]">
-              {errorMessage}
+              {shouldShowError ? errorMessage : ""}
             </p>
           </div>
         </div>
       </div>
     );
-};
+  }
+);
+
 Input.displayName = "Input";
 
-export default Input ;
+export default Input;
