@@ -14,7 +14,6 @@ const SignIn = ({ colorblind, setColorblind }) => {
   const [password, setPassword] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [formErrors, setFormErrors] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -22,7 +21,6 @@ const SignIn = ({ colorblind, setColorblind }) => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
 
     const signInPayload = {
       email,
@@ -93,6 +91,7 @@ const SignIn = ({ colorblind, setColorblind }) => {
                 onSubmit={handleSignIn}
                 aria-labelledby="sign-in-heading"
                 className="space-y-6"
+                noValidate
               >
                 <Input
                   id="email"
@@ -103,7 +102,8 @@ const SignIn = ({ colorblind, setColorblind }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   aria-describedby="email-error"
-                  required
+                  showStatusIcon={false}
+                  isValid={email.length > 0}
                 />
 
                 <Input
@@ -118,19 +118,9 @@ const SignIn = ({ colorblind, setColorblind }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   aria-describedby="password-error"
-                  required
+                  showStatusIcon={false}
+                  isValid={password.length > 0}
                 />
-
-                {/* Error message */}
-                {errorMessage && (
-                  <span
-                    id="password-error"
-                    role="alert"
-                    className="text-red-600 text-sm"
-                  >
-                    {errorMessage}
-                  </span>
-                )}
 
                 <Button
                   type="submit"

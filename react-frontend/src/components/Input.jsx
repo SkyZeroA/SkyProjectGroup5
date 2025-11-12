@@ -1,5 +1,5 @@
 import React, { useState, forwardRef } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCheck, FaTimes, FaSpinner } from "react-icons/fa";
 
 const Input = forwardRef(
   (
@@ -8,9 +8,12 @@ const Input = forwardRef(
       type,
       label,
       errorMessage,
+      showError,
       showPasswordToggle,
       onPasswordToggle,
-      isValid, // boolean prop from parent that indicates validity
+      isValid = true, // boolean from parent
+      isChecking = false, // boolean from parent for async validation
+      showStatusIcon = true,
       ...props
     },
     ref
@@ -19,23 +22,34 @@ const Input = forwardRef(
     const [hasBeenTouched, setHasBeenTouched] = useState(false);
     const hasValue = props.value && String(props.value).length > 0;
 
-    // Determine if we should show the error
-    const shouldShowError = hasBeenTouched && hasValue && !isValid;
+    // Show error live while typing
+    const shouldShowError = hasValue && !isValid;
 
-    // Determine border color
-    let borderColor = "#4A4A4A"; // default grey
+    // Determine border and label colors
+    let borderColor = "#4A4A4A";
+    let labelColor = "#4A4A4A";
     if (isFocused) {
-      borderColor = "#0066CC"; // blue on focus
-    } else if (hasValue) {
-      borderColor = isValid ? "#0066CC" : "#dd1618"; // blue if valid, red if invalid
+      borderColor = "#0066CC";
+      labelColor = "#0066CC";
+    } else if (shouldShowError) {
+      borderColor = "#dd1618";
+      labelColor = "#dd1618";
     }
 
-    // Determine label color
-    let labelColor = "#4A4A4A"; // default grey
-    if (isFocused) {
-      labelColor = "#0066CC";
-    } else if (hasValue && !isValid) {
-      labelColor = "#dd1618";
+    // Determine status icon
+    let StatusIcon = null;
+    let statusColor = "";
+    if (isChecking) {
+      StatusIcon = FaSpinner;
+      statusColor = "#888888"; // grey
+    } else if (hasValue && showStatusIcon) {
+      if (isValid) {
+        StatusIcon = FaCheck;
+        statusColor = "#60A5FA"; // blue
+      } else {
+        StatusIcon = FaTimes;
+        statusColor = "#F87171"; // red
+      }
     }
 
     return (
@@ -46,12 +60,13 @@ const Input = forwardRef(
               htmlFor={props.id}
               className={`absolute left-3 bg-white px-2 transition-all duration-200 pointer-events-none
                 [font-family:'Sky_Text',Helvetica] font-normal text-[15px] leading-[22.5px]
-                ${isFocused || hasValue ? "-top-2 text-[15px]" : "top-1/2 -translate-y-1/2 text-[15px]"}`}
+                ${isFocused || hasValue || hasBeenTouched ? "-top-2 text-[15px]" : "top-1/2 -translate-y-1/2 text-[15px]"}`}
               style={{ color: labelColor }}
             >
               {label}
             </label>
           )}
+
           <input
             type={type}
             className={`flex h-[54px] w-full rounded-[3px] bg-white px-3 py-2 text-sm transition-colors
@@ -65,6 +80,8 @@ const Input = forwardRef(
               borderWidth: isFocused ? "2px" : "1px",
               borderColor,
               borderStyle: "solid",
+              paddingRight:
+                showPasswordToggle || StatusIcon ? "2.5rem" : undefined, // room for icon
             }}
             ref={ref}
             onFocus={(e) => {
@@ -78,20 +95,33 @@ const Input = forwardRef(
             }}
             {...props}
           />
+
           {showPasswordToggle && (
             <span
               role="button"
-              tabIndex={-1}
               onClick={onPasswordToggle}
-              aria-hidden="true"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer select-none"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none z-10"
+              aria-label={type === "password" ? "Show password" : "Hide password"}
             >
               {type === "password" ? <FaEyeSlash /> : <FaEye />}
             </span>
           )}
+
+          {/* Status icon */}
+          {StatusIcon && (!showPasswordToggle || !isChecking) && (
+            <span
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-sm"
+              style={{ color: statusColor }}
+            >
+              <StatusIcon
+                className={isChecking ? "animate-spin" : ""}
+                size={14}
+              />
+            </span>
+          )}
         </div>
 
-        <div className="overflow-hidden">
+        <div>
           <div
             className={`transition-all duration-300 ease-in-out ${
               shouldShowError
@@ -110,5 +140,4 @@ const Input = forwardRef(
 );
 
 Input.displayName = "Input";
-
 export default Input;

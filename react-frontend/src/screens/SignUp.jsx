@@ -11,40 +11,77 @@ import debounce from "lodash.debounce";
 
 const SignUp = () => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [usernameStatus, setUsernameStatus] = useState(""); 
+  const [firstNameStatus, setFirstNameStatus] = useState("");
 
-  const [usernameError, setUsernameError] = useState("Enter your username.");
+  const [username, setUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState("");
   const [emailError, setEmailError] = useState("Enter your email address.");
+
+  const [password, setPassword] = useState("");
+  const [passwordStatus, setPasswordStatus] = useState("");
+
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("Re-type your password.");
+
   const [formErrors, setFormErrors] = useState([]);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const apiUrl = process.env.REACT_APP_API_URL;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  // Validation regexes
-  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]{1,}$/;
+  // Regex validation
+  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
   const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
-  // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const emailRegex = /^[^\s@]+@sky\.uk$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
+  /** Live validation for first name */
+  useEffect(() => {
+    if (!name) {
+      setFirstNameStatus("");
+    } else if (nameRegex.test(name.trim())) {
+      setFirstNameStatus("valid");
+    } else {
+      setFirstNameStatus("invalid");
+    }
+  }, [name]);
+
+  /** Live validation for email */
+  useEffect(() => {
+    if (!email) {
+      setEmailStatus("");
+    } else if (emailRegex.test(email.trim())) {
+      setEmailStatus("valid");
+    } else {
+      setEmailStatus("invalid");
+    }
+  }, [email]);
+
+  /** Live validation for password */
+  useEffect(() => {
+    if (!password) {
+      setPasswordStatus("");
+    } else if (passwordRegex.test(password)) {
+      setPasswordStatus("valid");
+    } else {
+      setPasswordStatus("invalid");
+    }
+  }, [password]);
+
+  /** Live validation for username (async) */
   useEffect(() => {
     if (!username) {
-      setUsernameStatus(""); 
+      setUsernameStatus("");
       return;
     }
-
     if (!usernameRegex.test(username.trim())) {
       setUsernameStatus("invalid");
       return;
     }
-
     setUsernameStatus("checking");
 
     const checkUsername = debounce(async () => {
@@ -53,71 +90,42 @@ const SignUp = () => {
           params: { username },
           withCredentials: true,
         });
-
-        if (res.data.available) {
-          setUsernameStatus("available");
-        } else {
-          setUsernameStatus("taken");
-        }
+        setUsernameStatus(res.data.available ? "available" : "taken");
       } catch (err) {
-        console.error("Username check failed", err);
+        console.error(err);
         setUsernameStatus("");
       }
     }, 500);
 
     checkUsername();
-
     return () => checkUsername.cancel();
   }, [username]);
 
-
-  // Each error caught in this function sets the relevant error message and clears the relevant fields
-  // This is so if the user makes two mistakes, one after the other, they will not see both error messages, only the one relevant to their most recent mistake
+  /** Sign-up form submit */
   const handleSignUp = async (e) => {
     e.preventDefault();
     // Client-side validation
-    if (!nameRegex.test(name.trim())) {
-      const msg = "First name must be at least 3 characters and may not include numbers, letters, spaces, hyphens or apostrophes.";
-      // setFirstNameError(msg);
-      setFormErrors([msg]);
+    if (firstNameStatus !== "valid") {
+      setFormErrors(["First name must be at least 3 letters and contain no numbers."]);
       return;
     }
-    if (!usernameRegex.test(username.trim())) {
-      const msg = "Username must be 3-16 characters and may include letters, numbers, underscores or hyphens.";
-      // setUsernameError(msg);
-      setFormErrors([msg]);
+    if (usernameStatus !== "available") {
+      setFormErrors(["Username must be 3-16 chars, letters, numbers, underscores, or hyphens."]);
       return;
     }
-    if (!emailRegex.test(email.trim())) {
-      const msg = "Email must be a valid @sky.uk address.";
-      // setUsernameError("Enter your username.");
-      // setEmailError(msg);
-      setConfirmPasswordError("Re-type your password.");
-      setFormErrors([msg]);
+    if (emailStatus !== "valid") {
+      setFormErrors(["Email must end with @sky.uk."]);
       return;
     }
-
-    if (!passwordRegex.test(password)) {
-      const msg = "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
-      // setUsernameError("Enter your username.");
-      setEmailError("Enter your email address.");
-      // setPasswordError(msg);
-      // setPassword("");
-      // setConfirmPassword("");
-      setFormErrors([msg]);
+    if (passwordStatus !== "valid") {
+      setFormErrors(["Password must be 8+ chars, with upper/lower case, number, and special char."]);
       return;
     }
-
     if (password !== confirmPassword) {
-      const msg = "Passwords do not match. Please re-type.";
-      setUsernameError("Enter your username.");
-      setEmailError("Enter your email address.");
-      // setConfirmPasswordError(msg);
-      // setPassword("");
-      // setConfirmPassword("");
-      setFormErrors([msg]);
+      setFormErrors(["Passwords do not match. Please re-type."]);
       return;
     }
+
     const signUpPayload = {
       "first-name": name,
       username,
@@ -125,49 +133,31 @@ const SignUp = () => {
       password,
       "confirm-password": confirmPassword,
     };
-    console.log("Sign Up Payload:", signUpPayload);
 
     await ensureCsrfToken(apiUrl);
-    await axios.post(`${apiUrl}/api/sign-up`, signUpPayload, {withCredentials:true})
-      .then((response) => {
-        console.log("Sign In Response:", response.data);
-        if (response?.data?.message === "Sign up successful") {
+    try {
+      const response = await axios.post(`${apiUrl}/api/sign-up`, signUpPayload, { withCredentials: true });
+      if (response?.data?.message === "Sign up successful") {
+        setFormErrors([]);
+        navigate("/questionnaire");
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        const errMsg = error.response?.data?.error;
+        if (errMsg === "Username already exists") {
           setFormErrors([]);
-          navigate("/questionnaire")
+          setUsername("");
+        } else if (errMsg === "Email already has an account") {
+          setFormErrors([]);
+          setEmail("");
+        } else if (errMsg === "Passwords do not match") {
+          setFormErrors([]);
+          setPassword("");
+          setConfirmPassword("");
         }
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          if (error.response?.data?.error === "Username already exists") {
-            // Handle username already exists error
-            setUsernameError("Username already exists. Please choose another.");
-            setEmailError("Enter your email address.");
-            setConfirmPasswordError("Re-type your password.");
-            setUsername("");
-            setPassword("");
-            setConfirmPassword("");
-
-          } else if (error.response?.data?.error === "Email already has an account") {
-            // Handle email already has an account error
-            setUsernameError("Enter your username.");
-            setEmailError("Email already has an account. Please use another.");
-            setConfirmPasswordError("Re-type your password.");
-            setEmail("");
-            setPassword("");
-            setConfirmPassword("");
-            setFormErrors([]);
-
-          } else if (error.response?.data?.error === "Passwords do not match") {
-            // Handle passwords do not match error
-            setUsernameError("Enter your username.");
-            setEmailError("Enter your email address.");
-            setConfirmPasswordError("Passwords do not match. Please re-type.");
-            setPassword("");
-            setConfirmPassword("");
-          }
-        }
-        console.error("Sign Up Error:", error);
-      });
+      }
+      console.error("Sign Up Error:", error);
+    }
   };
 
   return (
@@ -176,7 +166,6 @@ const SignUp = () => {
         <HeaderBanner className="md:fixed" logoLinked={false} centerLogo={true} />
       </header>
 
-      {/* Skip link for keyboard users */}
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:bg-white focus:p-2 focus:z-50"
@@ -184,10 +173,7 @@ const SignUp = () => {
         Skip to main content
       </a>
 
-      <main
-        id="main-content"
-        className="flex items-center justify-center min-h-screen"
-      >
+      <main id="main-content" className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center">
           <Card className="w-[380px] min-h-[544px] rounded-[7px] bg-white shadow-sm transition-all duration-300 ease-in-out mt-[5px]">
             <CardContent className="p-6">
@@ -205,81 +191,74 @@ const SignUp = () => {
                 </p>
               </div>
 
-              <form
-                onSubmit={handleSignUp}
-                aria-labelledby="sign-up-heading"
-                className="space-y-6"
-              >
+              <form onSubmit={handleSignUp} aria-labelledby="sign-up-heading" className="space-y-6" noValidate>
                 <Input
                   id="first-name"
                   type="text"
                   label="First Name"
-                  errorMessage={"Enter your first name."}
-                  showError={true}
                   value={name}
-                  onChange={(e) => { setName(e.target.value)}}
+                  onChange={(e) => setName(e.target.value)}
+                  isValid={firstNameStatus === "valid"}
+                  showError={firstNameStatus === "invalid"}
+                  errorMessage="First name must be at least 3 letters and contain no numbers."
                 />
 
                 <Input
                   id="username"
                   type="text"
                   label="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  isValid={usernameStatus === "available"}
+                  isChecking={usernameStatus === "checking"}
+                  showError={usernameStatus === "invalid" || usernameStatus === "taken"}
                   errorMessage={
                     usernameStatus === "invalid"
-                      ? "Username must be 3-16 characters, using letters, numbers, underscores, or hyphens."
+                      ? "3-16 chars, letters, numbers, underscores, hyphens."
                       : usernameStatus === "taken"
                       ? "This username is already taken."
                       : ""
                   }
-                  isValid={usernameStatus === "valid"}
-                  showError={usernameStatus === "invalid" || usernameStatus === "taken"}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  valid={usernameRegex.test(username)} // <- add this
                 />
-
 
                 <Input
                   id="email"
                   type="email"
                   label="Email"
-                  errorMessage={emailError || "Enter your email address."}
-                  showError={!!emailError}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  aria-describedby="email-error"
+                  isValid={emailStatus === "valid"}
+                  showError={emailStatus === "invalid"}
+                  errorMessage="Email must end with @sky.uk."
                 />
 
                 <Input
                   id="password"
                   type={passwordVisible ? "text" : "password"}
                   label="Password"
-                  showPasswordToggle={true}
-                  onPasswordToggle={() => setPasswordVisible(!passwordVisible)}
-                  errorMessage={"Enter your password."}
-                  showError={true}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  aria-describedby="password-error"
+                  isValid={passwordStatus === "valid"}
+                  showError={passwordStatus === "invalid"}
+                  errorMessage="Password must be 8+ chars, with upper/lower case, number, special char."
+                  showPasswordToggle={true}
+                  onPasswordToggle={() => setPasswordVisible(!passwordVisible)}
+                  showStatusIcon={false}
                 />
 
                 <Input
                   id="confirmPassword"
                   type={confirmPasswordVisible ? "text" : "password"}
                   label="Confirm Password"
-                  showPasswordToggle={true}
-                  onPasswordToggle={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-                  errorMessage={confirmPasswordError || "Re-type your password."}
-                  showError={!!confirmPasswordError}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  aria-describedby="confirm-password-error"
+                  showError={!!confirmPasswordError}
+                  errorMessage={confirmPasswordError || "Re-type your password."}
+                  showPasswordToggle={true}
+                  onPasswordToggle={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                  showStatusIcon={false}
                 />
 
-                {/* Submit button */}
                 <Button
                   type="submit"
                   variant="default"
@@ -295,7 +274,7 @@ const SignUp = () => {
                     ))}
                   </div>
                 )}
-  
+
                 <div className="text-center">
                   <Button
                     variant="link"
