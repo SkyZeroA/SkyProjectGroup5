@@ -8,8 +8,8 @@ services:
     depends_on:
       - db
     volumes:
-    - ./uploads:/app/uploads
-    
+    - ./uploads:/uploads
+
 
   frontend:
     build: ./react-frontend
