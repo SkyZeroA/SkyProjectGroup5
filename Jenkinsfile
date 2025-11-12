@@ -16,10 +16,10 @@ pipeline {
                 ]) {
                     // Place the files in the correct repo paths
                     sh '''
-                        cp $ROOT_ENV ./  # copy root .env to repo root
+                        cp $ROOT_ENV ./.env  # copy root .env to repo root
                         chmod 600 ./.env
-                        
-                        cp $FRONTEND_ENV ./react-frontend/  # copy frontend .env
+
+                        cp $FRONTEND_ENV ./react-frontend/.env  # copy frontend .env
                         chmod 600 ./react-frontend/.env
                     '''
                 }
