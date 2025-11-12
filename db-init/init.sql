@@ -218,7 +218,7 @@ INSERT IGNORE INTO ActivityKey (activityID, activity_name, value_points) VALUES
 (12, 'Donate items', 1),
 (13, 'Recycle plastic, can or glass', 1),
 (14, 'Buy second-hand item', 2),
-(15, 'Lower heating by 1\u00B0C', 2);
+(15, 'Lower heating by 1C', 2);
 
 INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity, date_done) VALUES
 (1, 41, 10, 5, TRUE, '2025-10-14'),
