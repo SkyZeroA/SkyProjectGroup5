@@ -81,7 +81,6 @@ VALUES
 ('Ben', 'ben321', 'ben@sky.uk', 'madara.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
 ('Alice', 'alice01', 'alice@sky.uk', 'taylor.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
 ('Boo', 'boo654', 'boo@sky.uk', 'boo.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
-('Spike', 'Spike', 'spike@sky.uk', 'spike.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
 ('Elle', 'ElleWoods', 'elle@sky.uk', 'legallyblonde.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
 ('Frank', 'franktheman', 'frank@sky.uk', 'aurafarm.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
 ('Iris', 'Iris', 'iris@sky.uk', 'iris.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
@@ -107,8 +106,7 @@ VALUES
 (12, 0, 0, 0, 1, 3, 3, 2, 1, 0, 0),
 (13, 1, 5, 5, 5, 4, 11, 3, 3, 3, 2),
 (14, 2, 4, 7, 7, 2, 9, 3, 3, 3, 2),
-(15, 4, 2, 2, 3, 1, 4, 3, 3, 3, 2),
-(16, 0, 0, 0, 4, 2, 6, 3, 3, 2, 1);
+(15, 4, 2, 2, 3, 1, 4, 3, 3, 3, 2);
 
 INSERT IGNORE INTO Week (weekID, week_start, week_end) VALUES
 (1, '2025-01-06', '2025-01-12'),
@@ -220,7 +218,7 @@ INSERT IGNORE INTO ActivityKey (activityID, activity_name, value_points) VALUES
 (12, 'Donate items', 1),
 (13, 'Recycle plastic, can or glass', 1),
 (14, 'Buy second-hand item', 2),
-(15, 'Lower heating by 1°C', 2);
+(15, 'Lower heating by 1\u00B0C', 2);
 
 INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity, date_done) VALUES
 (1, 41, 10, 5, TRUE, '2025-10-14'),
@@ -254,10 +252,7 @@ INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_act
 (14, 42, 10, 7, TRUE, '2025-10-21'),
 (14, 41, 10, 3, TRUE, '2025-10-18'),
 (15, 41, 10, 19, TRUE, '2025-10-15'),
-(15, 42, 10, 2, TRUE, '2025-10-24'),
-(16, 42, 10, 16, TRUE, '2025-10-22'),
-(16, 41, 10, 20, TRUE, '2025-10-17'),
-(16, 42, 10, 17, TRUE, '2025-10-20');
+(15, 42, 10, 2, TRUE, '2025-10-24');
 
 INSERT IGNORE INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity, date_done) VALUES
 (1, 1, 1, 3, TRUE, '2025-01-08'),
@@ -1043,40 +1038,6 @@ VALUES
 (15, 44, 11, 14, TRUE, '2025-11-06'),
 (15, 44, 11, 15, TRUE, '2025-11-06');
 
-
-INSERT INTO EcoCounter (userID, weekID, monthID, activityID, positive_activity, date_done)
-VALUES 
-(16, 1, 1, 1, TRUE, '2025-01-07'),
-(16, 2, 1, 5, TRUE, '2025-01-16'),
-(16, 4, 1, 13, TRUE, '2025-01-28'),
-(16, 5, 2, 12, TRUE, '2025-02-06'),
-(16, 8, 2, 2, TRUE, '2025-02-26'),
-(16, 9, 3, 5, TRUE, '2025-03-05'),
-(16, 12, 3, 8, TRUE, '2025-03-27'),
-(16, 13, 4, 9, TRUE, '2025-04-04'),
-(16, 14, 4, 1, TRUE, '2025-04-09'),
-(16, 15, 4, 3, TRUE, '2025-04-18'),
-(16, 16, 4, 5, TRUE, '2025-04-25'),
-(16, 20, 5, 6, TRUE, '2025-05-23'),
-(16, 22, 6, 9, TRUE, '2025-06-06'),
-(16, 24, 6, 12, TRUE, '2025-06-20'),
-(16, 25, 7, 8, TRUE, '2025-06-27'),
-(16, 26, 7, 4, TRUE, '2025-07-02'),
-(16, 28, 7, 1, TRUE, '2025-07-18'),
-(16, 29, 8, 4, TRUE, '2025-07-22'),
-(16, 30, 8, 5, TRUE, '2025-08-02'),
-(16, 31, 8, 6, TRUE, '2025-08-05'),
-(16, 32, 8, 7, TRUE, '2025-08-12'),
-(16, 35, 9, 9, TRUE, '2025-09-04'),
-(16, 36, 9, 8, TRUE, '2025-09-13'),
-(16, 41, 10, 6, TRUE, '2025-10-16'),
-(16, 42, 10, 7, TRUE, '2025-10-25'),
-(16, 43, 10, 1, TRUE, '2025-10-29'),
-(16, 44, 11, 3, TRUE, '2025-11-03'),
-(16, 44, 11, 9, TRUE, '2025-11-06'),
-(16, 44, 11, 8, TRUE, '2025-11-06'),
-(16, 44, 11, 5, TRUE, '2025-11-06'),
-(16, 44, 11, 3, TRUE, '2025-11-06');
 
 
 -- For Month
