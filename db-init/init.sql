@@ -73,22 +73,22 @@ CREATE TABLE IF NOT EXISTS EcoCounter (
 
 INSERT IGNORE INTO User (firstName, username, email, avatarFilename, encrypted_password)
 VALUES
-('Taran', 'taran123', 'taran@sky.uk', 'redpanda.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Leo', 'Leonardo', 'leo@sky.uk', 'leo.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Harry', 'harry987', 'harry@sky.uk', 'kayode.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Adnan', 'adnan456', 'adnan@sky.uk', 'homer.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Zubin', 'zubin789', 'zubin@sky.uk', 'elf.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Ben', 'ben321', 'ben@sky.uk', 'madara.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Alice', 'alice01', 'alice@sky.uk', 'taylor.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Boo', 'boo654', 'boo@sky.uk', 'boo.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Spike', 'Spike', 'spike@sky.uk', 'spike.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Elle', 'ElleWoods', 'elle@sky.uk', 'legallyblonde.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Frank', 'franktheman', 'frank@sky.uk', 'aurafarm.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Iris', 'Iris', 'iris@sky.uk', 'iris.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Hannah', 'hannah', 'hannah@sky.uk', 'golden.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Gary', 'gary2', 'gary@sky.uk', 'gary.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Jon', 'Snowman', 'jon@sky.uk', 'jon.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
-('Kevin', 'whereskevin', 'kevin@sky.uk', 'minion.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6');
+('Taran', 'taran123', 'taran@sky.uk', 'redpanda.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Leo', 'Leonardo', 'leo@sky.uk', 'leo.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Harry', 'harry987', 'harry@sky.uk', 'kayode.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Adnan', 'adnan456', 'adnan@sky.uk', 'homer.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Zubin', 'zubin789', 'zubin@sky.uk', 'elf.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Ben', 'ben321', 'ben@sky.uk', 'madara.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Alice', 'alice01', 'alice@sky.uk', 'taylor.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Boo', 'boo654', 'boo@sky.uk', 'boo.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Spike', 'Spike', 'spike@sky.uk', 'spike.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Elle', 'ElleWoods', 'elle@sky.uk', 'legallyblonde.jpeg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Frank', 'franktheman', 'frank@sky.uk', 'aurafarm.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Iris', 'Iris', 'iris@sky.uk', 'iris.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Hannah', 'hannah', 'hannah@sky.uk', 'golden.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Gary', 'gary2', 'gary@sky.uk', 'gary.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Jon', 'Snowman', 'jon@sky.uk', 'jon.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b'),
+('Kevin', 'whereskevin', 'kevin@sky.uk', 'minion.jpg', '1d707811988069ca760826861d6d63a10e8c3b7f171c4441a6472ea58c11711b');
 
 INSERT IGNORE INTO QuestionnaireResponse 
 (userID, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours, turnOffDevices, recycle, reusable, foodWaste) 
