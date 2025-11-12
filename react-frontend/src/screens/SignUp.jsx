@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../components/Button";
 import { Card, CardContent } from "../components/Card";
 import Input from "../components/Input";
@@ -7,13 +7,15 @@ import FooterBanner from "../components/FooterBanner";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ensureCsrfToken } from "../lib/csrf";
+import debounce from "lodash.debounce";
 
 const SignUp = () => {
-  const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState(""); 
 
   const [usernameError, setUsernameError] = useState("Enter your username.");
   const [emailError, setEmailError] = useState("Enter your email address.");
@@ -26,11 +28,48 @@ const SignUp = () => {
   const navigate = useNavigate()
 
   // Validation regexes
-  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
+  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]{1,}$/;
   const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/;
   // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const emailRegex = /^[^\s@]+@sky\.uk$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  useEffect(() => {
+    if (!username) {
+      setUsernameStatus(""); 
+      return;
+    }
+
+    if (!usernameRegex.test(username.trim())) {
+      setUsernameStatus("invalid");
+      return;
+    }
+
+    setUsernameStatus("checking");
+
+    const checkUsername = debounce(async () => {
+      try {
+        const res = await axios.get(`${apiUrl}/api/check-username`, {
+          params: { username },
+          withCredentials: true,
+        });
+
+        if (res.data.available) {
+          setUsernameStatus("available");
+        } else {
+          setUsernameStatus("taken");
+        }
+      } catch (err) {
+        console.error("Username check failed", err);
+        setUsernameStatus("");
+      }
+    }, 500);
+
+    checkUsername();
+
+    return () => checkUsername.cancel();
+  }, [username]);
+
 
   // Each error caught in this function sets the relevant error message and clears the relevant fields
   // This is so if the user makes two mistakes, one after the other, they will not see both error messages, only the one relevant to their most recent mistake
@@ -185,8 +224,15 @@ const SignUp = () => {
                   id="username"
                   type="text"
                   label="Username"
-                  errorMessage={usernameError}
-                  showError={!!usernameError}
+                  errorMessage={
+                    usernameStatus === "invalid"
+                      ? "Username must be 3-16 characters, using letters, numbers, underscores, or hyphens."
+                      : usernameStatus === "taken"
+                      ? "This username is already taken."
+                      : ""
+                  }
+                  isValid={usernameStatus === "valid"}
+                  showError={usernameStatus === "invalid" || usernameStatus === "taken"}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   valid={usernameRegex.test(username)} // <- add this

@@ -1,52 +1,32 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    PROJECT_DIR = "${env.WORKSPACE}"
-  }
-
-  stages {
-    stage('Checkout') {
-      steps {
-        script {
-          // Checkout repo into PROJECT_DIR
-          sh """
-          mkdir -p ${PROJECT_DIR}
-          cd ${PROJECT_DIR}
-          if [ -d .git ]; then
-            git pull origin main
-          else
-            git clone -b main https://github.com/SkyZeroA/SkyProjectGroup5.git ${PROJECT_DIR}
-          fi
-          """
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/your/repo.git', branch: 'main'
+            }
         }
-      }
-    }
 
-    stage('SonarQube Analysis') {
-      environment {
-        scannerHome = tool 'sonarqube'
-      }
-      steps {
-        withSonarQubeEnv('sonar-qube-1') {
-          sh """
-          cd ${PROJECT_DIR}
-          ${scannerHome}/bin/sonar-scanner
-          """
+        stage('Inject .env files') {
+            steps {
+                withCredentials([
+                    file(credentialsId: 'backend-env-team5', variable: 'ROOT_ENV'),
+                    file(credentialsId: 'frontend-env-team5', variable: 'FRONTEND_ENV')
+                ]) {
+                    // Place the files in the correct repo paths
+                    sh '''
+                        cp $ROOT_ENV ./  # copy root .env to repo root
+                        cp $FRONTEND_ENV ./react-frontend/  # copy frontend .env
+                    '''
+                }
+            }
         }
-      }
-    }
 
-    stage('Build & Deploy') {
-      steps {
-        script {
-          sh """
-          cd ${PROJECT_DIR}
-          docker compose down
-          docker compose up --build -d
-          """
+        stage('Build & Start Docker Containers') {
+            steps {
+                sh 'docker compose up --build -d'
+            }
         }
-      }
     }
-  }
 }
