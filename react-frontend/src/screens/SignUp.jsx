@@ -185,13 +185,13 @@ const SignUp = () => {
                   id="username"
                   type="text"
                   label="Username"
-                  errorMessage={usernameError || "Enter your username."}
+                  errorMessage={usernameError}
                   showError={!!usernameError}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  required
-                  aria-describedby="username-error"
+                  valid={usernameRegex.test(username)} // <- add this
                 />
+
 
                 <Input
                   id="email"
