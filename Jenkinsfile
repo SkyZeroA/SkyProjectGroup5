@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git url: 'https://github.com/your/repo.git', branch: 'main'
+                git url: 'https://github.com/SkyZeroA/SkyProjectGroup5.git', branch: 'main'
             }
         }
 
