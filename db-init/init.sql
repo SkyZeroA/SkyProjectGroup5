@@ -73,22 +73,22 @@ CREATE TABLE IF NOT EXISTS EcoCounter (
 
 INSERT IGNORE INTO User (firstName, username, email, avatarFilename, encrypted_password)
 VALUES
-('Taran', 'taran123', 'taran@sky.uk', 'redpanda.jpeg', 'Password1!'),
-('Leo', 'Leonardo', 'leo@sky.uk', 'leo.jpg', 'Password1!'),
-('Harry', 'harry987', 'harry@sky.uk', 'kayode.jpeg', 'Password1!'),
-('Adnan', 'adnan456', 'adnan@sky.uk', 'homer.jpg', 'Password1!'),
-('Zubin', 'zubin789', 'zubin@sky.uk', 'elf.jpeg', 'Password1!'),
-('Ben', 'ben321', 'ben@sky.uk', 'madara.jpeg', 'Password1!'),
-('Alice', 'alice01', 'alice@sky.uk', 'taylor.jpeg', 'Password1!'),
-('Boo', 'boo654', 'boo@sky.uk', 'boo.jpg', 'Password1!'),
-('Spike', 'Spike', 'spike@sky.uk', 'spike.jpg', 'Password1!'),
-('Elle', 'ElleWoods', 'elle@sky.uk', 'legallyblonde.jpeg', 'Password1!'),
-('Frank', 'franktheman', 'frank@sky.uk', 'aurafarm.jpg', 'Password1!'),
-('Iris', 'Iris', 'iris@sky.uk', 'iris.jpg', 'Password1!'),
-('Hannah', 'hannah', 'hannah@sky.uk', 'golden.jpg', 'Password1!'),
-('Gary', 'gary2', 'gary@sky.uk', 'gary.jpg', 'Password1!'),
-('Jon', 'Snowman', 'jon@sky.uk', 'jon.jpg', 'Password1!'),
-('Kevin', 'whereskevin', 'kevin@sky.uk', 'minion.jpg', 'Password1!');
+('Taran', 'taran123', 'taran@sky.uk', 'redpanda.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Leo', 'Leonardo', 'leo@sky.uk', 'leo.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Harry', 'harry987', 'harry@sky.uk', 'kayode.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Adnan', 'adnan456', 'adnan@sky.uk', 'homer.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Zubin', 'zubin789', 'zubin@sky.uk', 'elf.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Ben', 'ben321', 'ben@sky.uk', 'madara.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Alice', 'alice01', 'alice@sky.uk', 'taylor.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Boo', 'boo654', 'boo@sky.uk', 'boo.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Spike', 'Spike', 'spike@sky.uk', 'spike.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Elle', 'ElleWoods', 'elle@sky.uk', 'legallyblonde.jpeg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Frank', 'franktheman', 'frank@sky.uk', 'aurafarm.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Iris', 'Iris', 'iris@sky.uk', 'iris.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Hannah', 'hannah', 'hannah@sky.uk', 'golden.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Gary', 'gary2', 'gary@sky.uk', 'gary.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Jon', 'Snowman', 'jon@sky.uk', 'jon.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6'),
+('Kevin', 'whereskevin', 'kevin@sky.uk', 'minion.jpg', '1b2b0c914f1e7f2b86c6d5425b2db2f57a8deee24a4e7b1b2e5b02a7f0f4bfb6');
 
 INSERT IGNORE INTO QuestionnaireResponse 
 (userID, transportMethod, travelDistance, officeDays, dietDays, meats, heatingHours, turnOffDevices, recycle, reusable, foodWaste) 
