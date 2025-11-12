@@ -20,10 +20,6 @@ const SignIn = ({ colorblind, setColorblind }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
 
-  const emailRegex = /^[^\s@]+@sky\.uk$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-
   const handleSignIn = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -33,18 +29,6 @@ const SignIn = ({ colorblind, setColorblind }) => {
       password,
     };
     console.log("Sign In Payload:", signInPayload);
-
-    if (!emailRegex.test(email.trim())) {
-      const msg = "Email must be a valid @sky.uk address.";
-      setFormErrors([msg]);
-      return;
-    }
-
-    if (!passwordRegex.test(password)) {
-      const msg = "Password must be at least 8 characters, include upper and lower case letters, a number, and a special character.";
-      setFormErrors([msg]);
-      return;
-    }
 
     try {
       // Ensure token is fetched and axios defaults are set
