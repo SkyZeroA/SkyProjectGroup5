@@ -90,7 +90,7 @@ const SignIn = ({ colorblind, setColorblind }) => {
         className="flex items-center justify-center min-h-screen"
       >
         <div className="flex flex-col items-center">
-          <Card className="w-[380px] min-h-[500px] rounded-[7px] bg-white shadow-sm transition-all duration-300 ease-in-out">
+          <Card className="w-[380px] min-h-[460px] rounded-[7px] bg-white shadow-sm transition-all duration-300 ease-in-out">
             <CardContent className="p-6">
               <div className="text-center mb-8">
                 <h1
@@ -164,13 +164,6 @@ const SignIn = ({ colorblind, setColorblind }) => {
                 )}
   
                 <div className="text-center space-y-4">
-                  <Button
-                    variant="link"
-                    className="h-auto p-0 [font-family:'Sky_Text',Helvetica] text-[#000ef5] text-[16.5px] leading-[24.8px]"
-                    aria-label="Forgotten your email or password?"
-                  >
-                    Forgotten your email or password?
-                  </Button>
 
                   <Button
                     variant="link"

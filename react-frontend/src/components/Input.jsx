@@ -64,15 +64,16 @@ const Input = ({ className, type, label, errorMessage, showError, showPasswordTo
             {...props}
           />
           {showPasswordToggle && (
-          <button
-            type="button"
-            onClick={onPasswordToggle}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-            aria-label={type === "password" ? "Show password" : "Hide password"}
-          >
-            {type === "password" ? <FaEyeSlash /> : <FaEye />}
-          </button>
-        )}
+            <span
+              role="button"
+              tabIndex={-1}
+              onClick={onPasswordToggle}
+              aria-hidden="true"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer select-none"
+            >
+              {type === "password" ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          )}
         </div>
         <div className="overflow-hidden">
           <div

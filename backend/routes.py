@@ -26,12 +26,9 @@ def sign_in():
     data = request.get_json()
     session['email'] = data['email']
 
-    # TODO:
-    # Remove this line when passwords are hashed in the database
-    session['password'] = data['password']
-    # h = sha256()
-    # h.update(rdata['password'].encode('utf-8'))
-    # session['password'] = h.hexdigest()
+    h = sha256()
+    h.update(data['password'].encode('utf-8'))
+    session['password'] = h.hexdigest()
 
     if check_password(session['email'], session['password']):
         return jsonify({"message": "Sign in successful"}), 200
@@ -55,20 +52,14 @@ def sign_up():
     if session['email'] in emails:
         return jsonify({"error": "Email already has an account"}), 401
 
-    # TODO:
-    # Remove this line when passwords are hashed in the database    
-    session['password'] = data['password']
-    # h1 = sha256()
-    # h1.update(data['password'].encode('utf-8'))
-    # session['password'] = h1.hexdigest()
+    h1 = sha256()
+    h1.update(data['password'].encode('utf-8'))
+    session['password'] = h1.hexdigest()
 
-    # TODO:
-    # Uncomment this and remove second if statement when passwords are hashed in the database
 
-    # h2 = sha256()
-    # h2.update(data['confirm-password'].encode('utf-8'))
-    # if h2.hexdigest() != session['password']:
-    if data['confirm-password'] != data['password']:
+    h2 = sha256()
+    h2.update(data['confirm-password'].encode('utf-8'))
+    if h2.hexdigest() != session['password']:
         return jsonify({"error": "Passwords do not match"}), 401
     else:
         insert_new_user(session['email'], session['first-name'], session['username'], session['password'])
